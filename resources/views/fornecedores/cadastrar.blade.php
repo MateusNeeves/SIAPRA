@@ -1,8 +1,11 @@
 @extends('layouts.cadastrar')
 
-@section('title', 'Cadastrar Fornecedor')
-
-@section('path', 'cadastrar')
+@section('variables')
+    @php
+        $title =  'Cadastrar Fornecedor';
+        $path = 'fornecedores';
+    @endphp
+@endsection
 
 @section('content')
     <!-- Nome -->

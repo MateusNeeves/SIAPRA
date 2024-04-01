@@ -1,8 +1,11 @@
 @extends('layouts.cadastrar')
 
-@section('title', 'Cadastrar Tipo de Produto')
-
-@section('path', 'cadastrar')
+@section('variables')
+    @php
+        $title =  'Cadastrar Tipo de Produto';
+        $path = 'tipos_produtos';
+    @endphp
+@endsection
 
 @section('content')
     <!-- Nome -->

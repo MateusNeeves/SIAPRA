@@ -1,9 +1,10 @@
-@extends('layouts.cadastrar')
+@extends('layouts.editar')
 
 @section('variables')
     @php
-        $title =  'Cadastrar Usuário';
+        $title = "Editando Usuário '".$usuario->username."'";
         $path = 'usuarios';
+        $id = $usuario->id;
     @endphp
 @endsection
 
@@ -11,14 +12,14 @@
     <!-- Username -->
     <div>
         <x-input-label :value="__('Username *')" />
-        <x-text-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus/>
+        <x-text-input id="username" class="block mt-1 w-full" type="text" name="username" value="{{old('username') ?? $usuario->username}}" required/>
         <x-input-error :messages="$errors->get('username')" class="mt-2" />
     </div>
 
     <!-- Nome -->
     <div class="mt-4">
         <x-input-label :value="__('Nome *')" />
-        <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required/>
+        <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" value="{{old('name') ?? $usuario->name}}" required/>
         <x-input-error :messages="$errors->get('name')" class="mt-2" />
     </div>
 

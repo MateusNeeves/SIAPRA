@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('nome')->unique();
             $table->string('descricao');
             $table->unsignedBigInteger('id_tipo');
-            $table->date('data_emissao');
             $table->integer('qtd_aceitavel');
             $table->integer('qtd_minima');
 

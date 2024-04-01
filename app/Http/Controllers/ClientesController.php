@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -50,6 +51,68 @@ class ClientesController extends Controller
 
         $cliente->save();
 
-        return redirect('clientes')->with('alert-success', 'Cliente cadastrado com sucesso');
+        return redirect()->route('clientes')->with('alert-success', 'Cliente cadastrado com sucesso');
+    }
+
+    public function edit($id){
+        $cliente = Cliente::find($id);
+        if ($cliente)
+            return view('clientes/editar', ['cliente' => $cliente]);
+        else
+            return redirect()->route('clientes')->with('alert-danger', 'Cliente de id #' . $id . ' não encontrado.');
+    }
+
+    public function update(Request $request, $id){
+        $validator = Validator::make(
+            $request->all(),
+            
+            ['cnpj' => Rule::unique('clientes')->ignore($id),
+            'razao_social' => Rule::unique('clientes')->ignore($id),
+            'nome_fantasia' => Rule::unique('clientes')->ignore($id)],
+            
+            ['cnpj.unique' => 'Já existe um cliente com esse CNPJ',
+            'razao_social.unique' => 'Já existe um Cliente com essa Razão Social',
+            'nome_fantasia.unique' => 'Já existe um Cliente com esse Nome Fantasia']
+        );
+
+        if ($validator->fails())
+            return redirect()->back()->with('alert-danger', $validator->messages()->first())->withInput();     
+
+        Cliente::findOrFail($id)->update([
+            'cnpj' => $request->cnpj,
+            'razao_social' => $request->razao_social,
+            'nome_fantasia' => $request->nome_fantasia,
+            'end_logradouro' => $request->end_logradouro,
+            'end_complemento' => $request->end_complemento,
+            'estado' => $request->estado,
+            'cidade' => $request->cidade,
+            'bairro' => $request->bairro,
+            'cep' => $request->cep,
+            'tempo_transp' => $request->tempo_transp
+        ]);
+        return redirect()->route('clientes')->with('alert-success', 'Cliente editado com sucesso');
+    }
+
+    public function destroy(Request $request){
+        // try{
+        //     $cliente = Cliente::find($request->id);
+        // }
+        // catch (\Exception $exception) {
+        //     return redirect()->back()->with('alert-danger', 'Cliete de ID #' . $request->id . ' não Encontrado'); 
+        // }
+
+        // if (Cliente::destroy($request->id))
+        //     return redirect()->back()->with('alert-success', 'Cliente exclúido com sucesso');
+        // else
+        //     return redirect()->back()->with('alert-success', 'Cliente Desativado com sucesso'); 
+        Cliente::find($request->id)->delete();
+
+        try{
+            Cliente::withTrashed()->find($request->id)->forceDelete();
+            return redirect()->back()->with('alert-success', 'Cliente exclúido com sucesso');
+        }
+        catch(\Exception $exception){
+            return redirect()->back()->with('alert-success', 'Cliente Desativado com sucesso');
+        } 
     }
 }

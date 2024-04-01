@@ -33,16 +33,16 @@
                         </x-slot>
 
                         <x-slot name="content" >
-                            <x-dropdown-link :href="route('/fabricantes')">
+                            <x-dropdown-link :href="route('fabricantes')">
                                 {{ __('Fabricantes') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('/fornecedores')">
+                            <x-dropdown-link :href="route('fornecedores')">
                                 {{ __('Fornecedores') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('/tipos_produtos')">
+                            <x-dropdown-link :href="route('tipos_produtos')">
                                 {{ __('Tipos de Produtos') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('/produtos')">
+                            <x-dropdown-link :href="route('produtos')">
                                 {{ __('Produtos') }}
                             </x-dropdown-link>
                         </x-slot>
@@ -87,7 +87,7 @@
                         </x-slot>
 
                         <x-slot name="content" >
-                            <x-dropdown-link :href="route('dashboard')">
+                            <x-dropdown-link :href="route('fracionamentos')">
                                 {{ __('Fracionamento') }}
                             </x-dropdown-link>
                             <x-dropdown-link :href="route('parametros')">

@@ -23,7 +23,8 @@ return new class extends Migration
             $table->string('bairro');
             $table->string('cep');
             $table->string('tempo_transp');
-
+            
+            $table->softDeletes();
             $table->timestamps();
         });
     }

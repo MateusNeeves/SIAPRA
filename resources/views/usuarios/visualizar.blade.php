@@ -3,7 +3,7 @@
 @section('variables')
     @php
         $title = 'Usuários';
-        $path = 'usuarios/cadastrar';
+        $path = 'usuarios';
         $columns = ['#', 'Usuário', 'Nome'];
         $indexes = ['id', 'username', 'name'];
         $infos = $usuarios;

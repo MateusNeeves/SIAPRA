@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Pedido;
 use App\Models\Cliente;
 use App\Models\Parametro;
@@ -24,7 +25,7 @@ class PlanejamentosController extends Controller
         $planejamento = Planejamento::where('data_producao', $request->data_producao)->first();
 
         if ($planejamento == null)
-            return back()->with('alert-dark', 'Não há nenhum planejamento para essa data.')->withInput(); 
+            return redirect()->back()->with('alert-dark', 'Não há nenhum planejamento para essa data.')->withInput(); 
 
         $dur_ciclotron_hora = (int) $planejamento->duracao_ciclotron;
         $dur_ciclotron_min = ceil(($planejamento->duracao_ciclotron - $dur_ciclotron_hora)*60);
@@ -34,8 +35,18 @@ class PlanejamentosController extends Controller
         $pedidos_plan = collect(DB::select('SELECT P.ID, C.NOME_FANTASIA, P.QTD_DOSES, C.TEMPO_TRANSP, PP.ATIV_DEST, PP.VOL_FRASCO
         FROM PEDIDOS P INNER JOIN PEDIDOS_PLAN PP ON (P.ID = PP.ID_PEDIDO) INNER JOIN CLIENTES C ON (P.ID_CLIENTE = C.ID) 
         WHERE PP.ID_PLANEJAMENTO = ?', [$planejamento->id]));
+
+        $hora_saida = Carbon::createFromFormat("h:i:s", $planejamento->hora_saida);
+        $fim_sintese = $hora_saida->subMinutes($planejamento->tempo_exped);
+            $fim_sintese_str = $fim_sintese->format('h:i');
+        $inicio_sintese = $fim_sintese->subMinutes($planejamento->tempo_sintese);
+            $inicio_sintese_str = $inicio_sintese->format('h:i');
+        $fim_ciclotron = $inicio_sintese->subMinutes(5);
+            $fim_ciclotron_str = $fim_ciclotron->format('h:i');
+        $inicio_ciclotron = $fim_ciclotron->subHour($planejamento->duracao_ciclotron);
+            $inicio_ciclotron_str = $inicio_ciclotron->format('h:i');
         
-        return back()->with(['planejamento' => $planejamento, 'pedidos_plan' => $pedidos_plan, 'dur_ciclotron' => $dur_ciclotron_print])->withInput();
+        return redirect()->back()->with(['planejamento' => $planejamento, 'pedidos_plan' => $pedidos_plan, 'dur_ciclotron' => $dur_ciclotron_print, 'inicio_sintese' => $inicio_sintese_str, 'fim_sintese' => $fim_sintese_str, 'inicio_ciclotron' => $inicio_ciclotron_str, 'fim_ciclotron' => $fim_ciclotron_str])->withInput();
     }
 
     public function register(){
@@ -127,9 +138,19 @@ class PlanejamentosController extends Controller
         $eos = sprintf("%.1f",$eos);
         $eob = sprintf("%.1f",$eob);
         $ativ_esp = sprintf("%.1f",$ativ_esp);
-        
+
+        $hora_saida = Carbon::createFromFormat("h:i:s", $request->hora_saida);
+        $fim_sintese = $hora_saida->subMinutes($request->tempo_exped);
+            $fim_sintese_str = $fim_sintese->format('h:i');
+        $inicio_sintese = $fim_sintese->subMinutes($request->tempo_sintese);
+            $inicio_sintese_str = $inicio_sintese->format('h:i');
+        $fim_ciclotron = $inicio_sintese->subMinutes(5);
+            $fim_ciclotron_str = $fim_ciclotron->format('h:i');
+        $inicio_ciclotron = $fim_ciclotron->subHour($dur_ciclotron);
+            $inicio_ciclotron_str = $inicio_ciclotron->format('h:i');
+
         if ($request->action == 'calculate'){
-            return redirect()->back()->with(['dur_ciclotron' => $dur_ciclotron_print, 'eob' => $eob, 'eos'=> $eos, 'ativ_esp' => $ativ_esp, 'infos' => $infos])->withInput();
+            return redirect()->back()->with(['dur_ciclotron' => $dur_ciclotron_print, 'eob' => $eob, 'eos'=> $eos, 'ativ_esp' => $ativ_esp, 'infos' => $infos, 'inicio_sintese' => $inicio_sintese_str, 'fim_sintese' => $fim_sintese_str, 'inicio_ciclotron' => $inicio_ciclotron_str, 'fim_ciclotron' => $fim_ciclotron_str])->withInput();
         }
         else if ($request->action == 'save'){
             try{
@@ -166,7 +187,7 @@ class PlanejamentosController extends Controller
                 }
 
                 DB::commit();
-                return redirect('planejamentos')->with('alert-success', 'Planejamento realizado com sucesso.');
+                return redirect()->route('planejamentos')->with('alert-success', 'Planejamento realizado com sucesso.');
             }
             catch (\Exception $exception) {
                 DB::rollback();
