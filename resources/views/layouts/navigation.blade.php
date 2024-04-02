@@ -137,15 +137,18 @@
     </div>
 </nav>
 
-<div class="flash-message">
-    @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
-        @if(Session::has('alert-' . $msg))
-            <div class="position-absolute w-100 py-16">
-                <p class="alert alert-{{ $msg }}">
-                    {{ Session::get('alert-' . $msg) }} 
-                    <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                </p>
-            </div>
-        @endif
-    @endforeach
-</div>
+@if (!Session::has('modal'))
+    <div class="flash-message">
+        @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
+            @if(Session::has('alert-' . $msg))
+                <div class="position-absolute w-100 py-16">
+                    <p class="alert alert-{{ $msg }}">
+                        {{ Session::get('alert-' . $msg) }} 
+                        <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    </p>
+                </div>
+            @endif
+        @endforeach
+    </div>
+@endif
+

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c55164b276aa62a8cc2263acaecef167",
+    "content-hash": "3c0dac0598d7d3e92b071853232c34db",
     "packages": [
         {
             "name": "brick/math",
@@ -5684,31 +5684,42 @@
             "time": "2022-06-03T18:03:27+00:00"
         },
         {
-            "name": "yajra/laravel-datatables-editor",
+            "name": "yajra/laravel-datatables-oracle",
             "version": "v11.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/yajra/laravel-datatables-editor.git",
-                "reference": "607b0da4e1e67cbdf7d1facef40ab1db8ff2a8e3"
+                "url": "https://github.com/yajra/laravel-datatables.git",
+                "reference": "f4d8a8df5fd2ac26fb6384f9caa41596bd79c305"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables-editor/zipball/607b0da4e1e67cbdf7d1facef40ab1db8ff2a8e3",
-                "reference": "607b0da4e1e67cbdf7d1facef40ab1db8ff2a8e3",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/f4d8a8df5fd2ac26fb6384f9caa41596bd79c305",
+                "reference": "f4d8a8df5fd2ac26fb6384f9caa41596bd79c305",
                 "shasum": ""
             },
             "require": {
-                "illuminate/console": "^11",
                 "illuminate/database": "^11",
+                "illuminate/filesystem": "^11",
                 "illuminate/http": "^11",
-                "illuminate/validation": "^11",
+                "illuminate/support": "^11",
+                "illuminate/view": "^11",
                 "php": "^8.2"
             },
             "require-dev": {
+                "algolia/algoliasearch-client-php": "^3.4.1",
                 "larastan/larastan": "^2.9.1",
                 "laravel/pint": "^1.14",
-                "orchestra/testbench": "^9.0",
+                "laravel/scout": "^10.8.3",
+                "meilisearch/meilisearch-php": "^1.6.1",
+                "orchestra/testbench": "^9",
                 "rector/rector": "^1.0"
+            },
+            "suggest": {
+                "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTables.",
+                "yajra/laravel-datatables-editor": "Plugin to use DataTables Editor (requires a license).",
+                "yajra/laravel-datatables-export": "Plugin for server-side exporting using livewire and queue worker.",
+                "yajra/laravel-datatables-fractal": "Plugin for server-side response using Fractal.",
+                "yajra/laravel-datatables-html": "Plugin for server-side HTML builder of dataTables."
             },
             "type": "library",
             "extra": {
@@ -5717,11 +5728,17 @@
                 },
                 "laravel": {
                     "providers": [
-                        "Yajra\\DataTables\\EditorServiceProvider"
-                    ]
+                        "Yajra\\DataTables\\DataTablesServiceProvider"
+                    ],
+                    "aliases": {
+                        "DataTables": "Yajra\\DataTables\\Facades\\DataTables"
+                    }
                 }
             },
             "autoload": {
+                "files": [
+                    "src/helper.php"
+                ],
                 "psr-4": {
                     "Yajra\\DataTables\\": "src/"
                 }
@@ -5736,34 +5753,24 @@
                     "email": "aqangeles@gmail.com"
                 }
             ],
-            "description": "Laravel DataTables Editor plugin for Laravel 5.5+.",
+            "description": "jQuery DataTables API for Laravel",
             "keywords": [
-                "JS",
                 "datatables",
-                "editor",
-                "html",
                 "jquery",
-                "laravel"
+                "laravel",
+                "yajra"
             ],
             "support": {
-                "issues": "https://github.com/yajra/laravel-datatables-editor/issues",
-                "source": "https://github.com/yajra/laravel-datatables-editor/tree/v11.0.0"
+                "issues": "https://github.com/yajra/laravel-datatables/issues",
+                "source": "https://github.com/yajra/laravel-datatables/tree/v11.0.0"
             },
             "funding": [
                 {
-                    "url": "https://www.paypal.me/yajra",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/yajra",
+                    "url": "https://github.com/sponsors/yajra",
                     "type": "github"
-                },
-                {
-                    "url": "https://www.patreon.com/yajra",
-                    "type": "patreon"
                 }
             ],
-            "time": "2024-03-16T04:27:22+00:00"
+            "time": "2024-03-14T04:05:21+00:00"
         }
     ],
     "packages-dev": [

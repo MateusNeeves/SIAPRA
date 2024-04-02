@@ -17,6 +17,7 @@
 
         <!-- JQUERY -->
         <script defer type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.js"></script>
+        <script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.1.js" type="text/javascript"></script>
     
         <!-- DATATABLES -->
         <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.min.css">
@@ -45,16 +46,12 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 
-        <style>
-            div.dt-container select.dt-input{
-                padding: 2px 20px;
-                background-position: right;
-            }
-        </style>
+        <!-- MEU CSS -->
+        <link rel="stylesheet" href="./css/styles.css">
         
         <!-- MEUS JS -->
+        <script defer type="text/javascript" src="./js/delete.js"></script>
         <script defer type="text/javascript" src="./js/table.js"></script>
-        <script defer type="text/javascript" src="./js/buttons.js"></script>
         <script defer type="text/javascript" src="./js/printPdf.js"></script>
 
         <!-- Scripts -->

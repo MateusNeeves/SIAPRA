@@ -32,6 +32,7 @@ class ClientesController extends Controller
             'nome_fantasia.unique' => 'Cliente com esse Nome Fantasia já existe']
         );
 
+
         if ($validator->fails()){
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->withInput(); 
         }
@@ -62,13 +63,13 @@ class ClientesController extends Controller
             return redirect()->route('clientes')->with('alert-danger', 'Cliente de id #' . $id . ' não encontrado.');
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request){
         $validator = Validator::make(
             $request->all(),
             
-            ['cnpj' => Rule::unique('clientes')->ignore($id),
-            'razao_social' => Rule::unique('clientes')->ignore($id),
-            'nome_fantasia' => Rule::unique('clientes')->ignore($id)],
+            ['cnpj' => Rule::unique('clientes')->ignore($request->id),
+            'razao_social' => Rule::unique('clientes')->ignore($request->id),
+            'nome_fantasia' => Rule::unique('clientes')->ignore($request->id)],
             
             ['cnpj.unique' => 'Já existe um cliente com esse CNPJ',
             'razao_social.unique' => 'Já existe um Cliente com essa Razão Social',
@@ -78,7 +79,7 @@ class ClientesController extends Controller
         if ($validator->fails())
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->withInput();     
 
-        Cliente::findOrFail($id)->update([
+        Cliente::findOrFail($request->id)->update([
             'cnpj' => $request->cnpj,
             'razao_social' => $request->razao_social,
             'nome_fantasia' => $request->nome_fantasia,
@@ -94,17 +95,6 @@ class ClientesController extends Controller
     }
 
     public function destroy(Request $request){
-        // try{
-        //     $cliente = Cliente::find($request->id);
-        // }
-        // catch (\Exception $exception) {
-        //     return redirect()->back()->with('alert-danger', 'Cliete de ID #' . $request->id . ' não Encontrado'); 
-        // }
-
-        // if (Cliente::destroy($request->id))
-        //     return redirect()->back()->with('alert-success', 'Cliente exclúido com sucesso');
-        // else
-        //     return redirect()->back()->with('alert-success', 'Cliente Desativado com sucesso'); 
         Cliente::find($request->id)->delete();
 
         try{

@@ -6,23 +6,17 @@
                 <div class="m-5 text-gray-900 text-center h3">
                     {{$title}}
                 </div>
-                {{-- <button type="button" class="btn btn-dark bg-gradient mb-4" data-bs-toggle="modal" data-bs-target="#newModal">
+                <a class="btn btn-dark bg-gradient mb-4" href="{{route($path . '.register')}}" >
                     {{"Novo"}}
-                </button>
-                <a class="btn btn-dark bg-gradient mb-4">
-                    {{"Editar"}}
                 </a>
-                <a class="btn btn-dark bg-gradient mb-4" >
-                    {{"Deletar"}}
-                </a> --}}
-                <div class="container overflow-auto">
+                <div class="container overflow-auto mb-4">
                     <table id="myTable" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 @foreach ($columns as $column)
                                     <th class="table-dark text-start" scope="col"> {{$column}} </th>
                                 @endforeach
-                                {{-- <th class="table-dark last"> Ações</th> --}}
+                                <th class="table-dark last"> Ações</th>
                             </tr>
                         </thead>
                         <thead class="filters">
@@ -30,7 +24,7 @@
                                 @foreach ($columns as $column)
                                     <td class="filter"> {{$column}} </td>
                                 @endforeach
-                                {{-- <td></td> --}}
+                                <td></td>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,7 +33,7 @@
                                     @foreach ($indexes as $index)
                                         <td class="text-start"> {{$info[$index]}}</td>
                                     @endforeach
-                                    {{-- <td>
+                                    <td>
                                         <div class="text-center">
                                             <form class="mb-4" action="{{route($path . ".edit", ['id' => $info['id']])}}" method="get">
                                                 <button class="btn btn-primary" type="submit">
@@ -50,7 +44,7 @@
                                                 {{"Deletar"}}
                                             </button>
                                         </div>
-                                    </td> --}}
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -60,27 +54,6 @@
         </div>
     </div>
 
-    <!-- Modal NOVO-->
-        <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar {{$title}}</h1>
-                        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form method="post" action="{{route($path. '.store')}}">
-                        @csrf
-                        <div class="modal-body">
-                            @yield('content')
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-danger">Cadastrar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-      
     <!-- Modal DELETAR-->
     <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -104,4 +77,5 @@
             </div>
         </div>
     </div>
+    
 </x-app-layout>
