@@ -29,6 +29,18 @@ You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you
 
 If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
+## Get Project Ready to Use
+
+Open terminal, get to the project folder and execute the following commands:
+
+- **composer update**
+- **copy .env.example .env**
+- **php artisan key:generate**
+- **npm install**
+- **npm run build**
+- **php artisan migrate**
+- **php artisan serve**
+
 ## Laravel Sponsors
 
 We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
