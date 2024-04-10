@@ -12,16 +12,27 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Início') }}
+                    <x-nav-link class=" text-decoration-none" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ 'Início'}}
                     </x-nav-link>
                 </div>
 
+                @if (in_array(\Request::route()->getName(), ['fabricantes', 'fornecedores', 'tipos_produtos', 'produtos']))
+                    <style>
+                        #almoxarifado{
+                            border-bottom: solid 2px #7f9cf5;
+                        }
+                        #almoxarifado button{
+                            color: rgb(17 24 39);
+                        }
+                    </style>
+                @endif
+
                 <!-- Almoxarifado -->
-                <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <div class="hidden sm:flex sm:items-center sm:ms-10" id="almoxarifado">
                     <x-dropdown align="left" width="48">
                         <x-slot name="trigger" class="h-100">
-                            <button class="btn inline-flex items-center pt-2 text-sm font-medium text-gray-500 bg-white">
+                            <button class="inline-flex items-center text-sm font-medium text-gray-500 bg-white hover:text-gray-700">
                                 <div>{{ __('Almoxarifado') }}</div>
                                 <div class="ms-1">
                                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -32,50 +43,60 @@
 
                         </x-slot>
 
-                        <x-slot name="content" >
-                            <x-dropdown-link :href="route('fabricantes')">
+                        <x-slot name="content">
+                            <x-dropdown-link class=" text-decoration-none" :href="route('fabricantes')">
                                 {{ __('Fabricantes') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('fornecedores')">
+                            <x-dropdown-link class=" text-decoration-none" :href="route('fornecedores')">
                                 {{ __('Fornecedores') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('tipos_produtos')">
+                            <x-dropdown-link class=" text-decoration-none" :href="route('tipos_produtos')">
                                 {{ __('Tipos de Produtos') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('produtos')">
+                            <x-dropdown-link class=" text-decoration-none" :href="route('produtos')">
                                 {{ __('Produtos') }}
                             </x-dropdown-link>
                         </x-slot>
-
                     </x-dropdown>
                 </div>
 
                 <!-- Clientes -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-6 sm:flex ">
-                    <x-nav-link :href="route('clientes')" :active="request()->routeIs('clientes')">
+                    <x-nav-link class=" text-decoration-none" :href="route('clientes')" :active="request()->routeIs('clientes')">
                         {{ __('Clientes') }}
                     </x-nav-link>
                 </div>
                 
                 <!-- Usuários -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
-                    <x-nav-link :href="route('usuarios')" :active="request()->routeIs('usuarios')">
+                    <x-nav-link class=" text-decoration-none" :href="route('usuarios')" :active="request()->routeIs('usuarios')">
                         {{ __('Usuários') }}
                     </x-nav-link>
                 </div>
 
                 <!-- Pedidos -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
-                    <x-nav-link :href="route('pedidos')" :active="request()->routeIs('pedidos')">
+                    <x-nav-link class=" text-decoration-none" :href="route('pedidos')" :active="request()->routeIs('pedidos')">
                         {{ __('Pedidos') }}
                     </x-nav-link>
                 </div>
+
+                @if (in_array(\Request::route()->getName(), ['fracionamentos', 'parametros', 'planejamentos']))
+                    <style>
+                        #producao{
+                            border-bottom: solid 2px #7f9cf5;
+                        }
+                        #producao button{
+                            color: rgb(17 24 39);
+                        }
+                    </style>
+                @endif
             
                 <!-- Produção -->
-                <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <div class="hidden sm:flex sm:items-center sm:ms-10" id="producao">
                     <x-dropdown align="left" width="48">
                         <x-slot name="trigger" class="h-100">
-                            <button class="btn inline-flex items-center pt-2 text-sm font-medium text-gray-500 bg-white">
+                            <button class="inline-flex items-center text-sm font-medium text-gray-500 bg-white hover:text-gray-700">
                                 <div>{{ __('Produção') }}</div>
                                 <div class="ms-1">
                                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -87,13 +108,13 @@
                         </x-slot>
 
                         <x-slot name="content" >
-                            <x-dropdown-link :href="route('fracionamentos')">
+                            <x-dropdown-link class=" text-decoration-none" :href="route('fracionamentos')">
                                 {{ __('Fracionamento') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('parametros')">
+                            <x-dropdown-link class=" text-decoration-none" :href="route('parametros')">
                                 {{ __('Parâmetros') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('planejamentos')">
+                            <x-dropdown-link class=" text-decoration-none" :href="route('planejamentos')">
                                 {{ __('Planejamento') }}
                             </x-dropdown-link>
                         </x-slot>
@@ -143,8 +164,10 @@
             @if(Session::has('alert-' . $msg))
                 <div class="position-absolute w-100 py-16">
                     <p class="alert alert-{{ $msg }}">
-                        {{ Session::get('alert-' . $msg) }} 
-                        <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        @foreach(explode('<br>', Session::get('alert-' . $msg)) as $text)
+                        {!! $text . ($loop->last ? "" : '<br>') !!}
+                        @endforeach 
+                        <a href="" style="text-decoration: none;" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                     </p>
                 </div>
             @endif

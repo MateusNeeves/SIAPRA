@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('fracionamentos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_usuario');
-            $table->date('data_producao')->unique();
+            $table->unsignedBigInteger('id_planejamento');
+            $table->date('data_producao');
             $table->float('ativ_eob_calc');
             $table->float('ativ_eob_real');
             $table->time('fim_sintese');
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->float('rend_sintese_real');
 
             $table->foreign('id_usuario')->references('id')->on('users');
+            $table->foreign('id_planejamento')->references('id')->on('planejamentos');
 
             $table->timestamps();
         });

@@ -1,10 +1,14 @@
-$('#btnPdf').click(()=>{
-    let pdf = new jsPDF('p','pt','a4');
-    let btn = document.getElementById('btnPdf');
-    let div = document.getElementById('divPdf');
-    pdf.addHTML(div, function() {
-        pdf.save(btn.name);
-    });
-})
+function printPdf(name) {   
+    $(".collapse").collapse("show");
+    let div = document.getElementById("divPdf");
 
-
+    var opt = {
+        margin: 1,
+        filename: name+'.pdf',
+        html2canvas: {scale: window.devicePixelRatio, scrollY: 0},
+        jsPDF: {format: 'a4', orientation: 'landscape' },
+        pagebreak: {before: ".breakPage"}
+        // mode: "avoid-all",
+    };
+    html2pdf().set(opt).from(div).save();
+}

@@ -2,3 +2,14 @@ div.dt-container select.dt-input{
     padding: 2px 20px;
     background-position: right;
 }
+
+
+table.dataTable tbody tr.selected>* {
+    box-shadow: inset 0 0 0 9999px rgb(175, 175, 175) !important;
+}
+
+/* .btn-dark:hover{
+    color: #fff;
+    background-color: #4e5053;
+    border-color: #1a1e21;
+} */

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,9 +16,9 @@ class ClientesController extends Controller
         return view('clientes/visualizar', ['clientes' => $clientes]);
     }
 
-    public function register(){
-        return view('clientes/cadastrar');
-    }
+    // public function register(){
+    //     return view('clientes/cadastrar');
+    // }
 
     public function store(Request $request){
         $validator = Validator::make(
@@ -34,7 +35,7 @@ class ClientesController extends Controller
 
 
         if ($validator->fails()){
-            return redirect()->back()->with('alert-danger', $validator->messages()->first())->withInput(); 
+            return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#newModal')->withInput(); 
         }
 
         $cliente = new Cliente;
@@ -77,7 +78,7 @@ class ClientesController extends Controller
         );
 
         if ($validator->fails())
-            return redirect()->back()->with('alert-danger', $validator->messages()->first())->withInput();     
+            return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#editModal')->withInput();     
 
         Cliente::findOrFail($request->id)->update([
             'cnpj' => $request->cnpj,
@@ -95,14 +96,23 @@ class ClientesController extends Controller
     }
 
     public function destroy(Request $request){
+        DB::beginTransaction();
+
         Cliente::find($request->id)->delete();
 
-        try{
-            Cliente::withTrashed()->find($request->id)->forceDelete();
-            return redirect()->back()->with('alert-success', 'Cliente exclúido com sucesso');
+        if ($request->soft == 'false'){
+            try{
+                Cliente::withTrashed()->find($request->id)->forceDelete();
+                DB::commit();
+                return redirect()->back()->with('alert-success', 'Cliente excluído com sucesso');
+            }
+            catch(\Exception $exception){
+                DB::rollBack();
+                return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Cliente, pois outras informações dependem dele. <br><br> Deseja Desativar esse Cliente ao invés de Deletar? <br><br> Você pode restaurá-lo futuramente, caso necessário.')->with('modal', '#deleteModal')->withInput();
+            } 
         }
-        catch(\Exception $exception){
-            return redirect()->back()->with('alert-success', 'Cliente Desativado com sucesso');
-        } 
+
+        DB::commit();
+        return redirect()->back()->with('alert-success', 'Cliente desativado com sucesso');
     }
 }

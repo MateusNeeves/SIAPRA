@@ -6,13 +6,15 @@ use App\Models\Pais;
 use App\Models\Fornecedor;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class FornecedoresController extends Controller
 {
     public function index(){
         $fornecedores = Fornecedor::all();
-        return view('fornecedores/visualizar', ['fornecedores' => $fornecedores]);
+        $paises = Pais::all();
+        return view('fornecedores/visualizar', ['fornecedores' => $fornecedores, 'paises' => $paises]);
     }
 
     public function register(){
@@ -33,13 +35,13 @@ class FornecedoresController extends Controller
         );
 
         if ($validator->fails())
-            return redirect()->back()->with('alert-danger', $validator->messages()->first())->withInput();     
+            return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#newModal')->withInput();     
 
         if ($request->pais == "BRASIL" && $request->cnpj == null)
-            return redirect()->back()->with('alert-danger', 'Fornecedor do Brasil deve ter um CNPJ')->withInput();     
+            return redirect()->back()->with('alert-danger', 'Fornecedor do Brasil deve ter um CNPJ')->with('modal', '#newModal')->withInput();     
     
         else if ($request->pais != "BRASIL" && $request->cnpj != null)
-            return redirect()->back()->with('alert-danger', 'Fornecedor extrangeiro não deve possuir CNPJ')->withInput();     
+            return redirect()->back()->with('alert-danger', 'Fornecedor extrangeiro não deve possuir CNPJ')->with('modal', '#newModal')->withInput();     
     
         $fornecedor = new Fornecedor();
         
@@ -66,28 +68,28 @@ class FornecedoresController extends Controller
             return redirect()->route('fornecedores')->with('alert-danger', 'Fornecedor de id #' . $id . ' não encontrado.');
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request){
         $validator = Validator::make(
             ['nome' => $request->nome,
             'cnpj' => $request->cnpj ?? ""],
             
-            ['nome' => Rule::unique('fornecedores')->ignore($id),
-            'cnpj' => Rule::unique('fornecedores')->ignore($id)],
+            ['nome' => Rule::unique('fornecedores')->ignore($request->id),
+            'cnpj' => Rule::unique('fornecedores')->ignore($request->id)],
             
             ['nome.unique' => 'Já existe um Fornecedor com esse Nome',
             'cnpj.unique' => 'Já existe um Fornecedor com esse CNPJ']
         );
 
         if ($validator->fails())
-            return redirect()->back()->with('alert-danger', $validator->messages()->first())->withInput(); 
+            return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#editModal')->withInput(); 
         
         if ($request->pais == "BRASIL" && $request->cnpj == null)
-            return redirect()->back()->with('alert-danger', 'Fornecedor do Brasil deve ter um CNPJ')->withInput();     
+            return redirect()->back()->with('alert-danger', 'Fornecedor do Brasil deve ter um CNPJ')->with('modal', '#editModal')->withInput();     
 
         else if ($request->pais != "BRASIL" && $request->cnpj != null)
-            return redirect()->back()->with('alert-danger', 'Fornecedor extrangeiro não deve possuir CNPJ')->withInput(); 
+            return redirect()->back()->with('alert-danger', 'Fornecedor extrangeiro não deve possuir CNPJ')->with('modal', '#editModal')->withInput(); 
 
-        Fornecedor::findOrFail($id)->update([
+        Fornecedor::findOrFail($request->id)->update([
             'nome' => $request->nome,
             'endereco' => $request->endereco,
             'pais' => $request->pais,
@@ -101,13 +103,23 @@ class FornecedoresController extends Controller
     }
 
     public function destroy(Request $request){
-        try{
-            Fornecedor::findOrFail($request->id)->delete();
-    
-            return redirect()->route('fornecedores')->with('alert-success', 'Fornecedor exclúido com sucesso');
+        DB::beginTransaction();
+
+        Fornecedor::find($request->id)->delete();
+
+        if ($request->soft == 'false'){
+            try{
+                Fornecedor::withTrashed()->find($request->id)->forceDelete();
+                DB::commit();
+                return redirect()->back()->with('alert-success', 'Fornecedor excluído com sucesso');
+            }
+            catch(\Exception $exception){
+                DB::rollBack();
+                return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Fornecedor, pois outras informações dependem dele. <br><br> Deseja Desativar esse Fornecedor ao invés de Deletar? <br><br> Você pode restaurá-lo futuramente, caso necessário.')->with('modal', '#deleteModal')->withInput();
+            } 
         }
-        catch (\Exception $exception) {
-            return redirect()->back()->with('alert-danger', 'Ocorreu um erro ao deletar o fornecedor: ' . $exception->getMessage())->withInput(); 
-        }
+
+        DB::commit();
+        return redirect()->back()->with('alert-success', 'Fornecedor desativado com sucesso');
     }
 }

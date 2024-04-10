@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('site')->nullable();
             $table->string('cnpj')->unique()->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

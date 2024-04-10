@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('planejamentos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_usuario');
-            $table->date('data_producao')->unique();
+            $table->date('data_producao');
+
+            $table->integer('fator_seguranca');
 
             // Parâmetros
             $table->integer('ativ_dose');

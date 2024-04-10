@@ -13,6 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('parametros', function (Blueprint $table) {
+            $table->id();
             $table->integer('ativ_dose');
             $table->integer('tempo_exames');
             $table->integer('vol_max_cq');

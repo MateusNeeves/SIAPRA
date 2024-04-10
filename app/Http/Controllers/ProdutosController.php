@@ -16,16 +16,13 @@ class ProdutosController extends Controller
                                         FROM PRODUTOS P 
                                         INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID)'));
         $produtos = json_decode(json_encode($produtos), true);
-
-        return view('produtos/visualizar', ['produtos' => $produtos]);
-    }
-
-    public function register(){
         $tipos = Tipo_Produto::all();
-        return view('produtos/cadastrar', ['tipos' => $tipos]);
+
+        return view('produtos/visualizar', ['produtos' => $produtos, 'tipos' => $tipos]);
     }
 
     public function store(Request $request){
+        $id_tipo = Tipo_Produto::where('nome', $request->nome)->get()[0]->id;
         $validator = Validator::make(
             $request->all(),
             
@@ -35,13 +32,13 @@ class ProdutosController extends Controller
         );
 
         if ($validator->fails())
-            return redirect()->back()->with('alert-danger', $validator->messages()->first())->withInput();     
-    
+            return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#newModal')->withInput();     
+        
         $produto = new Produto;
 
         $produto->nome = $request->nome;
         $produto->descricao = $request->descricao;
-        $produto->id_tipo = $request->id_tipo;
+        $produto->id_tipo = $id_tipo;
         $produto->qtd_aceitavel = $request->qtd_aceitavel;
         $produto->qtd_minima = $request->qtd_minima;
 
@@ -50,31 +47,23 @@ class ProdutosController extends Controller
         return redirect()->route('produtos')->with('alert-success', 'Produto cadastrado com sucesso');
     }
 
-    public function edit($id){
-        $produto = Produto::find($id);
-        $tipos = Tipo_Produto::all();
-        if ($produto)
-            return view('produtos/editar', ['produto' => $produto, 'tipos' => $tipos]);
-        else
-            return redirect()->route('produtos')->with('alert-danger', 'Produto de id #' . $id . ' não encontrado.');
-    }
-
-    public function update(Request $request, $id){
+    public function update(Request $request){
+        $id_tipo = Tipo_Produto::where('nome', $request->nome)->get()[0]->id;
         $validator = Validator::make(
             $request->all(),
             
-            ['nome' => Rule::unique('produtos')->ignore($id)],
+            ['nome' => Rule::unique('produtos')->ignore($request->id)],
             
             ['nome.unique' => 'Já existe um Produto com esse Nome']
         );
 
         if ($validator->fails())
-            return redirect()->back()->with('alert-danger', $validator->messages()->first())->withInput(); 
+            return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#editModal')->withInput(); 
 
-        Produto::findOrFail($id)->update([
+        Produto::findOrFail($request->id)->update([
             'nome' => $request->nome,
             'descricao' => $request->descricao,
-            'id_tipo' => $request->id_tipo,
+            'id_tipo' => $id_tipo,
             'qtd_aceitavel' => $request->qtd_aceitavel,
             'qtd_minima' => $request->qtd_minima
         ]);
@@ -82,13 +71,23 @@ class ProdutosController extends Controller
     }
 
     public function destroy(Request $request){
-        try{
-            Produto::findOrFail($request->id)->delete();
-    
-            return redirect()->route('produtos')->with('alert-success', 'Produtos exclúido com sucesso');
+        DB::beginTransaction();
+
+        Produto::find($request->id)->delete();
+
+        if ($request->soft == 'false'){
+            try{
+                Produto::withTrashed()->find($request->id)->forceDelete();
+                DB::commit();
+                return redirect()->back()->with('alert-success', 'Produto excluído com sucesso');
+            }
+            catch(\Exception $exception){
+                DB::rollBack();
+                return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Produto, pois outras informações dependem dele. <br><br> Deseja Desativar esse Produto ao invés de Deletar? <br><br> Você pode restaurá-lo futuramente, caso necessário.')->with('modal', '#deleteModal')->withInput();
+            } 
         }
-        catch (\Exception $exception) {
-            return redirect()->back()->with('alert-danger', 'Ocorreu um erro ao deletar o produto: ' . $exception->getMessage())->withInput(); 
-        }
+
+        DB::commit();
+        return redirect()->back()->with('alert-success', 'Produto desativado com sucesso');
     }
 }

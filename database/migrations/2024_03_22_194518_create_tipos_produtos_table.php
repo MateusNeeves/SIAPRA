@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('nome')->unique();
             $table->string('descricao')->nullable();
             $table->string('sigla')->unique();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

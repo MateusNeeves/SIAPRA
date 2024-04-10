@@ -7,6 +7,8 @@
 
         <title>SIAPRA</title>
 
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -23,8 +25,8 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.min.css">
         <script defer type="text/javascript" src="https://cdn.datatables.net/2.0.3/js/dataTables.min.js"></script>
 
-        <!-- DATATABLES BOOTSTRAP 5 -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+        <!-- BOOTSTRAP 5 -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
         <script defer type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         
         <!-- DATATABLES BUTTONS -->
@@ -41,21 +43,20 @@
         <!-- PDF MAKER -->
         <script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
         <script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-        
         <!-- PRINT DIV TO PDF -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 
+        
         <!-- MEU CSS -->
         <link rel="stylesheet" href="./css/styles.css">
         
         <!-- MEUS JS -->
         <script defer type="text/javascript" src="./js/delete.js"></script>
         <script defer type="text/javascript" src="./js/table.js"></script>
+        <script defer type="text/javascript" src="./js/paramTable.js"></script>
         <script defer type="text/javascript" src="./js/printPdf.js"></script>
-
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     </head>
     <body class="font-sans antialiased">

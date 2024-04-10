@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Planejamento extends Model
 {
@@ -12,6 +13,7 @@ class Planejamento extends Model
     protected $fillable = [
         'id_usuario',
         'data_producao',
+        'fator_seguranca',
         'ativ_dose',
         'tempo_exames',
         'vol_max_cq',

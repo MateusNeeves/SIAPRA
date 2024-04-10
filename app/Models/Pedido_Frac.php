@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Pedido_Frac extends Model
 {
@@ -14,6 +15,7 @@ class Pedido_Frac extends Model
     protected $fillable = [
         'id_pedido',
         'id_fracionamento',
-        'vol_real_frasco'
+        'vol_real_frasco',
+        'qtd_doses_selec',
     ];
 }

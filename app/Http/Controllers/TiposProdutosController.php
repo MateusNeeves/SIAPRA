@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tipo_Produto;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TiposProdutosController extends Controller
@@ -31,7 +32,7 @@ class TiposProdutosController extends Controller
         );
 
         if ($validator->fails())
-            return redirect()->back()->with('alert-danger', $validator->messages()->first())->withInput();     
+            return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#newModal')->withInput();     
     
         $tipo_produto = new Tipo_Produto;
 
@@ -52,22 +53,22 @@ class TiposProdutosController extends Controller
             return redirect()->route('tipos_produtos')->with('alert-danger', 'Tipo de Produto de id #' . $id . ' não encontrado.');
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request){
         $validator = Validator::make(
             ['nome' => $request->nome,
             'sigla' => strtoupper($request->sigla)],
             
-            ['nome' => Rule::unique('tipos_produtos')->ignore($id),
-            'sigla' => Rule::unique('tipos_produtos')->ignore($id)],
+            ['nome' => Rule::unique('tipos_produtos')->ignore($request->id),
+            'sigla' => Rule::unique('tipos_produtos')->ignore($request->id)],
             
             ['nome.unique' => 'Já existe um Tipo com esse Nome',
             'sigla.unique' => 'Já existe um Tipo com essa Sigla']
         );
 
         if ($validator->fails())
-            return redirect()->back()->with('alert-danger', $validator->messages()->first())->withInput();     
+            return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#editModal')->withInput();     
 
-            Tipo_Produto::findOrFail($id)->update([
+            Tipo_Produto::findOrFail($request->id)->update([
             'nome' => $request->nome,
             'descricao' => $request->descricao,
             'sigla' => $request->sigla,
@@ -76,13 +77,23 @@ class TiposProdutosController extends Controller
     }
 
     public function destroy(Request $request){
-        try{
-            Tipo_Produto::findOrFail($request->id)->delete();
-    
-            return redirect()->route('tipos_produtos')->with('alert-success', 'Tipo de Produto exclúido com sucesso');
+        DB::beginTransaction();
+
+        Tipo_Produto::find($request->id)->delete();
+
+        if ($request->soft == 'false'){
+            try{
+                Tipo_Produto::withTrashed()->find($request->id)->forceDelete();
+                DB::commit();
+                return redirect()->back()->with('alert-success', 'Tipo de Produto excluído com sucesso');
+            }
+            catch(\Exception $exception){
+                DB::rollBack();
+                return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Tipo de Produto, pois outras informações dependem dele. <br><br> Deseja Desativar esse Tipo de Produto ao invés de Deletar? <br><br> Você pode restaurá-lo futuramente, caso necessário.')->with('modal', '#deleteModal')->withInput();
+            } 
         }
-        catch (\Exception $exception) {
-            return redirect()->back()->with('alert-danger', 'Ocorreu um erro ao deletar o tipo de produto: ' . $exception->getMessage())->withInput(); 
-        }
+
+        DB::commit();
+        return redirect()->back()->with('alert-success', 'Tipo de Produto desativado com sucesso');
     }
 }
