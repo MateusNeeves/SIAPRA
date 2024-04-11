@@ -53,6 +53,7 @@
                                                     <th scope="col"> Ativ. EOB Calculada (mCi) </th>
                                                     <th scope="col"> Ativ. EOB Real (mCi) </th>
                                                     <th scope="col"> Fim da Síntese </th>
+                                                    <th scope="col"> Horário de Saída </th>
                                                     <th scope="col"> Ativ. EOS Necessária (MBq) </th>
                                                     <th scope="col"> Ativ. EOS Real (MBq) </th>
                                                     <th scope="col"> Vol. EOS (mL)</th>
@@ -64,6 +65,7 @@
                                                     <td>{{$fracionamento->ativ_eob_calc}}</td>
                                                     <td>{{$fracionamento->ativ_eob_real}}</td>
                                                     <td>{{$fracionamento->fim_sintese}}</td>
+                                                    <td>{{$fracionamento->hora_saida}}</td>
                                                     <td>{{$fracionamento->ativ_eos_nec}}</td>
                                                     <td>{{$fracionamento->ativ_eos_real}}</td>
                                                     <td>{{$fracionamento->vol_eos}}</td>

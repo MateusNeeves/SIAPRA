@@ -22,7 +22,7 @@ class ProdutosController extends Controller
     }
 
     public function store(Request $request){
-        $id_tipo = Tipo_Produto::where('nome', $request->nome)->get()[0]->id;
+        $id_tipo = Tipo_Produto::where('nome', $request->tipo)->first()->id;
         $validator = Validator::make(
             $request->all(),
             

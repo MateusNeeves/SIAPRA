@@ -15,6 +15,7 @@
                                     <th scope="col"> Ativ. EOB Calculada (mCi) </th>
                                     <th scope="col"> Ativ. EOB Real (mCi) </th>
                                     <th scope="col"> Fim da Síntese </th>
+                                    <th scope="col"> Horário de Saída </th>
                                     <th scope="col"> Ativ. EOS Necessária (MBq) </th>
                                     <th scope="col"> Ativ. EOS Real (MBq) </th>
                                     <th scope="col"> Vol. EOS (mL)</th>
@@ -33,6 +34,7 @@
                                             </a>
                                         </button>
                                     </td>
+                                    <td>{{session()->get('hora_saida') ?? ''}}</td>
                                     <td>{{session()->get('ativ_eos_nec') ?? ''}}</td>
                                     <td style="background-color: rgb(229 231 235);"><input class="bg-transparent border-0 text-center w-100" id="ativ_eos_real" type="number" name="ativ_eos_real" value="{{old('ativ_eos_real')}}" required></td>
                                     <td style="background-color: rgb(229 231 235);"><input class="bg-transparent border-0 text-center w-100" id="vol_eos" type="number" name="vol_eos" value="{{old('vol_eos')}}" required></td>

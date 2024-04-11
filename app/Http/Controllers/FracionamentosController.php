@@ -55,10 +55,8 @@ class FracionamentosController extends Controller{
                                                 ORDER BY PP.ID_PEDIDO', [$planejamento->id]));
 
             $tempo_meia_vida = 109.7;
-            $hora_saida = Carbon::createFromFormat("H:i:s",$planejamento->hora_saida);
             $fim_sintese = Carbon::createFromFormat("H:i:s", date('H:i:s'));
-            // $fim_sintese = Carbon::createFromFormat("H:i:s", "08:35:00");
-
+            $hora_saida = Carbon::createFromFormat("H:i:s", date('H:i:s'))->addMinutes($planejamento->tempo_exped);
             $ativ_eos_real_mCi = $request->ativ_eos_real / 37;
             $rend_sintese_real = $ativ_eos_real_mCi * 100 / $request->ativ_eob_real;
             $rend_sintese_real = sprintf("%.1f", $rend_sintese_real);
@@ -69,7 +67,7 @@ class FracionamentosController extends Controller{
 
             for ($i = 0; $i < count($pedidos_plan); $i++) { 
                 // ativ_eos
-                $tempo = $fim_sintese->diffInMinutes($hora_saida) + $pedidos_plan[$i]->tempo_transp;
+                $tempo = $planejamento->tempo_exped + $pedidos_plan[$i]->tempo_transp;
                 $ativ_eos[$i] = $pedidos_plan[$i]->ativ_dest * exp(M_LN2 * $tempo / $tempo_meia_vida); 
                 
                 // vol_frasco
@@ -85,7 +83,7 @@ class FracionamentosController extends Controller{
             $ativ_esp = sprintf("%.1f", $ativ_esp);
 
             if ($request->action == 'calculate'){
-                return redirect()->back()->with(['ativ_eos' => $ativ_eos, 'vol_frasco' => $vol_frasco, 'ativ_eos_nec' => $ativ_eos_nec, 'ativ_esp' => $ativ_esp, 'ativ_cq' => $ativ_cq, 'rend_sintese_real' => $rend_sintese_real, 'fim_sintese' => $fim_sintese->format('H:i:s')])->withInput();
+                return redirect()->back()->with(['ativ_eos' => $ativ_eos, 'vol_frasco' => $vol_frasco, 'ativ_eos_nec' => $ativ_eos_nec, 'ativ_esp' => $ativ_esp, 'ativ_cq' => $ativ_cq, 'rend_sintese_real' => $rend_sintese_real, 'fim_sintese' => $fim_sintese->format('H:i:s'), 'hora_saida' => $hora_saida->format('H:i:s')])->withInput();
             }
 
             else if  ($request->action == 'save'){
@@ -99,6 +97,7 @@ class FracionamentosController extends Controller{
                     $fracionamento->ativ_eob_calc = $planejamento->ativ_eob;
                     $fracionamento->ativ_eob_real = $request->ativ_eob_real;
                     $fracionamento->fim_sintese = $fim_sintese;
+                    $fracionamento->hora_saida = $hora_saida;
                     $fracionamento->ativ_eos_nec = $ativ_eos_nec;
                     $fracionamento->ativ_eos_real = $request->ativ_eos_real;
                     $fracionamento->vol_eos = $request->vol_eos;

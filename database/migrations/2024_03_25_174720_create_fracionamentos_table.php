@@ -19,6 +19,7 @@ return new class extends Migration
             $table->float('ativ_eob_calc');
             $table->float('ativ_eob_real');
             $table->time('fim_sintese');
+            $table->time('hora_saida');
             $table->float('ativ_eos_nec');
             $table->float('ativ_eos_real');
             $table->float('vol_eos');

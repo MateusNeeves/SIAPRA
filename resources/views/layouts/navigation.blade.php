@@ -50,27 +50,20 @@
                             <x-dropdown-link class=" text-decoration-none" :href="route('fornecedores')">
                                 {{ __('Fornecedores') }}
                             </x-dropdown-link>
-                            <x-dropdown-link class=" text-decoration-none" :href="route('tipos_produtos')">
-                                {{ __('Tipos de Produtos') }}
-                            </x-dropdown-link>
                             <x-dropdown-link class=" text-decoration-none" :href="route('produtos')">
                                 {{ __('Produtos') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link class=" text-decoration-none" :href="route('tipos_produtos')">
+                                {{ __('Tipos de Produtos') }}
                             </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
                 </div>
 
                 <!-- Clientes -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-6 sm:flex ">
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
                     <x-nav-link class=" text-decoration-none" :href="route('clientes')" :active="request()->routeIs('clientes')">
                         {{ __('Clientes') }}
-                    </x-nav-link>
-                </div>
-                
-                <!-- Usuários -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
-                    <x-nav-link class=" text-decoration-none" :href="route('usuarios')" :active="request()->routeIs('usuarios')">
-                        {{ __('Usuários') }}
                     </x-nav-link>
                 </div>
 
@@ -121,7 +114,15 @@
 
                     </x-dropdown>
                 </div>
+
+                <!-- Usuários -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
+                    <x-nav-link class=" text-decoration-none" :href="route('usuarios')" :active="request()->routeIs('usuarios')">
+                        {{ __('Usuários') }}
+                    </x-nav-link>
+                </div>
             </div>
+
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">

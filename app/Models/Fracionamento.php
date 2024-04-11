@@ -17,6 +17,7 @@ class Fracionamento extends Model
         'ativ_eob_calc',
         'ativ_eob_real',
         'fim_sintese',
+        'hora_saida',
         'ativ_eos_nec',
         'ativ_eos_real',
         'vol_eos',
