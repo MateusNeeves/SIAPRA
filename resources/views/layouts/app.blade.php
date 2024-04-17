@@ -55,8 +55,7 @@
         
         <!-- MEUS JS -->
         <script defer type="text/javascript" src="./js/delete.js"></script>
-        <script defer type="text/javascript" src="./js/table.js"></script>
-        <script defer type="text/javascript" src="./js/paramTable.js"></script>
+        <script defer type="text/javascript" src="./js/tables.js"></script>
         <script defer type="text/javascript" src="./js/printPdf.js"></script>
 
     </head>

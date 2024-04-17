@@ -4,7 +4,7 @@ function printPdf(name) {
 
     var opt = {
         margin: 1,
-        filename: name+'.pdf',
+        filename: name,
         html2canvas: {scale: window.devicePixelRatio, scrollY: 0},
         jsPDF: {format: 'a4', orientation: 'landscape' },
         pagebreak: {before: ".breakPage"}

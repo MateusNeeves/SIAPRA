@@ -33,9 +33,10 @@
                         $fim_ciclotron = session()->get('fim_ciclotron');
                         $inicio_sintese = session()->get('inicio_sintese');
                         $fim_sintese = session()->get('fim_sintese');
+                        $data_producao = session()->get('data_producao');
                     @endphp
                     <div class="flex justify-content-end mb-2 me-5">
-                        <button id="pdfBtn" onclick="printPdf('Planejamento_'+'{{$planejamentos[0]->data_producao}}'+'.pdf')" class="btn btn-dark bg-gradient"> PDF </button>
+                        <button id="pdfBtn" onclick="printPdf('Planejamento_'+'{{ $data_producao}}'+'.pdf')" class="btn btn-dark bg-gradient"> PDF </button>
                     </div>
                     <div id="divPdf" class="mb-4 bg-white">
                         @foreach ($planejamentos as $idx => $planejamento)
@@ -69,7 +70,7 @@
                                                 <td class="bg-secondary text-white text-center"> Data da Produção </td>
                                                 <td class="text-end">
                                                     {{-- @php use Carbon\Carbon; @endphp --}}
-                                                    {{Carbon\Carbon::createFromFormat('Y-m-d', $planejamento->data_producao)->format('d/m/Y')}}
+                                                    {{Carbon\Carbon::createFromFormat('d-m-Y', $data_producao)->format('d/m/Y')}}
                                                 </td>
                                                 <td colspan="1"></td>
                         

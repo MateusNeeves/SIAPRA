@@ -27,9 +27,10 @@
                     @php
                         $fracionamentos = session()->get('fracionamentos');
                         $pedidos_frac = session()->get('pedidos_frac');       
+                        $data_producao = session()->get('data_producao');       
                     @endphp
                     <div class="flex justify-content-end mb-2 me-5">
-                        <button id="pdfBtn" onclick="printPdf('Fracionamento_'+'{{$fracionamentos[0]->data_producao}}'+'.pdf')" class="btn btn-dark bg-gradient"> PDF </button>
+                        <button id="pdfBtn" onclick="printPdf('Fracionamento_'+'{{$data_producao}}'+'.pdf')" class="btn btn-dark bg-gradient"> PDF </button>
                     </div>
                     <div id="divPdf" class="bg-white mb-4">
                         @foreach ($fracionamentos as $idx => $fracionamento)
@@ -52,36 +53,36 @@
                                                 <tr>
                                                     <th scope="col"> Ativ. EOB Calculada (mCi) </th>
                                                     <th scope="col"> Ativ. EOB Real (mCi) </th>
-                                                    <th scope="col"> Fim da Síntese </th>
-                                                    <th scope="col"> Horário de Saída </th>
                                                     <th scope="col"> Ativ. EOS Necessária (MBq) </th>
                                                     <th scope="col"> Ativ. EOS Real (MBq) </th>
                                                     <th scope="col"> Vol. EOS (mL)</th>
                                                     <th scope="col"> Ativ. Específica (mCi/mL)</th>
+                                                    <th scope="col"> Fim da Síntese </th>
                                                 </tr>
                                             </thead>
                                             <tbody class="text-center">
                                                 <tr>
-                                                    <td>{{$fracionamento->ativ_eob_calc}}</td>
+                                                    <td>{{$fracionamento->ativ_eob}}</td>
                                                     <td>{{$fracionamento->ativ_eob_real}}</td>
-                                                    <td>{{$fracionamento->fim_sintese}}</td>
-                                                    <td>{{$fracionamento->hora_saida}}</td>
                                                     <td>{{$fracionamento->ativ_eos_nec}}</td>
                                                     <td>{{$fracionamento->ativ_eos_real}}</td>
                                                     <td>{{$fracionamento->vol_eos}}</td>
                                                     <td>{{$fracionamento->ativ_esp}}</td>
+                                                    <td>{{Str::substr($fracionamento->fim_sintese, 0, 5)}}</td>
                                                 </tr>  
                                             </tbody>
                                         </table>
                                     </div>
                                     <br>
                                     <div class="container">
-                                        <table class="table table-bordered table-hover table-striped">
+                                        <table class="table table-bordered">
                                             <thead class="table-dark text-center">
                                                 <tr>
                                                     <th scope="col"> # </th>
                                                     <th scope="col"> Cliente </th>
                                                     <th scope="col"> Qtd Doses </th>
+                                                    <th scope="col"> Qtd Doses Entregues </th>
+                                                    <th scope="col"> Atividade no Destino (mCi) </th>
                                                     <th scope="col"> Tempo de Transporte (min) </th>
                                                     <th scope="col"> Volume no Frasco (ml) </th>
                                                 </tr>
@@ -92,6 +93,8 @@
                                                         <td> {{$pedido_frac->id}}</td>  
                                                         <td> {{$pedido_frac->nome_fantasia}}</td>  
                                                         <td> {{$pedido_frac->qtd_doses_selec}}</td>  
+                                                        <td> {{$pedido_frac->qtd_doses_entregues}}</td>  
+                                                        <td> {{$pedido_frac->ativ_dest}}</td>  
                                                         <td> {{$pedido_frac->tempo_transp}}</td>  
                                                         <td> {{$pedido_frac->vol_real_frasco}}</td>  
                                                     </tr>

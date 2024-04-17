@@ -7,6 +7,7 @@ use App\Models\Pedido;
 use App\Models\Cliente;
 use App\Models\Parametro;
 use App\Models\Pedido_Plan;
+use Illuminate\Support\Str;
 use App\Models\Planejamento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -49,7 +50,7 @@ class PlanejamentosController extends Controller
             
 
         }
-        return redirect()->back()->with(['planejamentos' => $planejamentos, 'pedidos_plan' => $pedidos_plan, 'dur_ciclotron' => $dur_ciclotron_print, 'inicio_sintese' => $inicio_sintese_str, 'fim_sintese' => $fim_sintese_str, 'inicio_ciclotron' => $inicio_ciclotron_str, 'fim_ciclotron' => $fim_ciclotron_str])->withInput();
+        return redirect()->back()->with(['planejamentos' => $planejamentos, 'pedidos_plan' => $pedidos_plan, 'dur_ciclotron' => $dur_ciclotron_print, 'inicio_sintese' => $inicio_sintese_str, 'fim_sintese' => $fim_sintese_str, 'inicio_ciclotron' => $inicio_ciclotron_str, 'fim_ciclotron' => $fim_ciclotron_str, 'data_producao' => implode('-', array_reverse(explode('-', $request->data_producao)))])->withInput();
     }
 
     public function register(){
@@ -138,7 +139,7 @@ class PlanejamentosController extends Controller
         $eob = sprintf("%.1f",$eob);
         $ativ_esp = sprintf("%.1f",$ativ_esp);
 
-        $hora_saida = Carbon::createFromFormat("h:i:s", $request->hora_saida);
+        $hora_saida = Carbon::createFromFormat("h:i", Str::substr($request->hora_saida, 0, 5));
         $fim_sintese = $hora_saida->subMinutes($request->tempo_exped);
             $fim_sintese_str = $fim_sintese->format('h:i');
         $inicio_sintese = $fim_sintese->subMinutes($request->tempo_sintese);
@@ -180,16 +181,15 @@ class PlanejamentosController extends Controller
                 $planejamento->ativ_esp = $ativ_esp;
                 
                 $planejamento->save();
-
-                for ($i=0; $i < count($pedidos); $i++) { 
-                    $pedidos_plan[$i] = new Pedido_Plan;
-                    $pedidos_plan[$i]->id_pedido = $pedidos[$i]->id;
-                    $pedidos_plan[$i]->id_planejamento = $planejamento->id;
-                    $pedidos_plan[$i]->qtd_doses_selec = $request->qtd_doses_selec[$i];
-                    $pedidos_plan[$i]->ativ_dest = $pedidos[$i]->ativ_dest;
-                    $pedidos_plan[$i]->vol_frasco = $pedidos[$i]->vol_frasco;
+                foreach ($pedidos as $idx => $pedido) {
+                    $pedidos_plan[$idx] = new Pedido_Plan;
+                    $pedidos_plan[$idx]->id_pedido = $pedido->id;
+                    $pedidos_plan[$idx]->id_planejamento = $planejamento->id;
+                    $pedidos_plan[$idx]->qtd_doses_selec = $request->qtd_doses_selec[$idx];
+                    $pedidos_plan[$idx]->ativ_dest = $pedido->ativ_dest;
+                    $pedidos_plan[$idx]->vol_frasco = $pedido->vol_frasco;
                     
-                    $pedidos_plan[$i]->save();
+                    $pedidos_plan[$idx]->save();
                 }
 
                 DB::commit();

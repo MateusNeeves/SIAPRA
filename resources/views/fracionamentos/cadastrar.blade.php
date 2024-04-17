@@ -14,8 +14,6 @@
                                 <tr>
                                     <th scope="col"> Ativ. EOB Calculada (mCi) </th>
                                     <th scope="col"> Ativ. EOB Real (mCi) </th>
-                                    <th scope="col"> Fim da Síntese </th>
-                                    <th scope="col"> Horário de Saída </th>
                                     <th scope="col"> Ativ. EOS Necessária (MBq) </th>
                                     <th scope="col"> Ativ. EOS Real (MBq) </th>
                                     <th scope="col"> Vol. EOS (mL)</th>
@@ -27,14 +25,6 @@
                                 <tr>
                                     <td>{{$planejamento->ativ_eob}}</td>
                                     <td style="background-color: rgb(229 231 235);"><input class="bg-transparent border-0 text-center w-100" id="ativ_eob_real" type="number" name="ativ_eob_real" value="{{old('ativ_eob_real')}}" required></td>
-                                    <td>
-                                        <button name="action" value="calculate">
-                                            <a class="btn bg-danger border border-dark" >
-                                                {{ session()->get('fim_sintese') ?? 'Aperte' }}
-                                            </a>
-                                        </button>
-                                    </td>
-                                    <td>{{session()->get('hora_saida') ?? ''}}</td>
                                     <td>{{session()->get('ativ_eos_nec') ?? ''}}</td>
                                     <td style="background-color: rgb(229 231 235);"><input class="bg-transparent border-0 text-center w-100" id="ativ_eos_real" type="number" name="ativ_eos_real" value="{{old('ativ_eos_real')}}" required></td>
                                     <td style="background-color: rgb(229 231 235);"><input class="bg-transparent border-0 text-center w-100" id="vol_eos" type="number" name="vol_eos" value="{{old('vol_eos')}}" required></td>
@@ -75,7 +65,7 @@
                                         <td> {{$pedido_plan->nome_fantasia}}</td>  
                                         <td> {{$pedido_plan->qtd_doses_selec}}</td>  
                                         <td> {{$pedido_plan->tempo_transp}}</td>  
-                                        <td> {{$pedido_plan->ativ_dest}}</td>  
+                                        <td style="background-color: rgb(229 231 235);"><input class="bg-transparent border-0 text-center w-100" type="number" name="ativ_dest[{{$idx}}]" id="ativ_dest[{{$idx}}]" value="{{round(old('ativ_dest')[$idx] ?? $pedido_plan->ativ_dest)}}" required></td>
                                         <td> {{session()->get('ativ_eos')[$idx] ?? ''}}</td>  
                                         <td> {{session()->get('vol_frasco')[$idx] ?? ''}}</td>  
                                     </tr>
@@ -84,12 +74,22 @@
                         </table>
                         <br>
                         <div class="flex justify-content-center">
-                            <button name="action" value="save" class="mb-4">
+                            <button name="action" value="calculate" class="mb-4">
                                 <a class="btn btn-dark" >
-                                    {{ __('Salvar Fracionamento') }}
+                                    {{'Calcular'}}
                                 </a>
                             </button>
                         </div>
+
+                        @if (session()->has('ativ_eos'))
+                            <div class="flex justify-content-center">
+                                <button name="action" value="save" class="mb-4">
+                                    <a class="btn btn-dark" >
+                                        {{ __('Salvar Fracionamento') }}
+                                    </a>
+                                </button>
+                            </div>
+                        @endif
                     </div>
                 </form>
 

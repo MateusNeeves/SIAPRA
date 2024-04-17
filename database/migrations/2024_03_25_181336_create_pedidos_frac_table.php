@@ -16,6 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pedido');
             $table->unsignedBigInteger('id_fracionamento');
             $table->integer('qtd_doses_selec');
+            $table->float('ativ_dest');
+            $table->integer('qtd_doses_entregues');
             $table->float('vol_real_frasco');
 
             $table->foreign('id_pedido')->references('id')->on('pedidos');

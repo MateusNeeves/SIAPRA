@@ -162,7 +162,7 @@
                                             <td>{{$pedido->id}}</td>
                                             <td>{{$pedido->nome_fantasia}}</td>
                                             <td style="background-color: rgb(229 231 235);">
-                                                <select id="qtd_doses_selec" class="input select block mt-1 w-full bg-transparent border-0" name="qtd_doses_selec[{{$idx}}]" value="{{old('qtd_doses_selec')[$idx] ?? $pedido->qtd_doses}}" required>
+                                                <select id="qtd_doses_selec" class="block mt-1 w-full bg-transparent border-0" name="qtd_doses_selec[{{$idx}}]" value="{{old('qtd_doses_selec')[$idx] ?? $pedido->qtd_doses}}" required>
                                                     @for ($i = 0; $i <= $pedido->qtd_doses ; $i++)
                                                         <option value="{{$i}}" {{old('qtd_doses_selec') ? (old('qtd_doses_selec')[$idx] == $i ? "selected" : "") : ($pedido->qtd_doses == $i ? "selected" : "")}}
                                                         > {{$i}} </option>

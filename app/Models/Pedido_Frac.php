@@ -17,5 +17,7 @@ class Pedido_Frac extends Model
         'id_fracionamento',
         'vol_real_frasco',
         'qtd_doses_selec',
+        'ativ_dest',
+        'qtd_doses_entregues',
     ];
 }

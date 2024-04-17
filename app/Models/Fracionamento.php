@@ -13,15 +13,12 @@ class Fracionamento extends Model
     protected $fillable = [
         'id_usuario',
         'id_planejamento',
-        'data_producao',
-        'ativ_eob_calc',
         'ativ_eob_real',
-        'fim_sintese',
-        'hora_saida',
         'ativ_eos_nec',
         'ativ_eos_real',
         'vol_eos',
         'ativ_esp',
         'rend_sintese_real',
+        'fim_sintese',
     ];
 }
