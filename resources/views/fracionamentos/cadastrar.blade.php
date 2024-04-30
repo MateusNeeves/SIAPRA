@@ -92,7 +92,7 @@
                             @endif
                         </div>
                     </div>
-                    <table class="table table-bordered ms-4 h6" style="width: 100px; height: 100px;">
+                    <table class="table table-bordered ms-4 h6" style="width: fit-content; height: fit-content;">
                         <thead class="table-dark text-center">
                             <tr>
                                 <th scope="col"> Qtd. Doses </th>

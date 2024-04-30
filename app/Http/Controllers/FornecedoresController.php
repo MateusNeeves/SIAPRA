@@ -17,11 +17,6 @@ class FornecedoresController extends Controller
         return view('fornecedores/visualizar', ['fornecedores' => $fornecedores, 'paises' => $paises]);
     }
 
-    public function register(){
-        $paises = Pais::all();
-        return view('fornecedores/cadastrar', ['paises' => $paises]);
-    }
-
     public function store(Request $request){
         $validator = Validator::make(
             ['nome' => $request->nome,
@@ -57,15 +52,6 @@ class FornecedoresController extends Controller
         $fornecedor->save();
         return redirect()->route('fornecedores')->with('alert-success', 'Fornecedor cadastrado com sucesso');
 
-    }
-
-    public function edit($id){
-        $fornecedor = Fornecedor::find($id);
-        $paises = Pais::all();
-        if ($fornecedor)
-            return view('fornecedores/editar', ['fornecedor' => $fornecedor, 'paises' => $paises]);
-        else
-            return redirect()->route('fornecedores')->with('alert-danger', 'Fornecedor de id #' . $id . ' não encontrado.');
     }
 
     public function update(Request $request){

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\User;
 use App\Models\Pedido;
 use App\Models\Cliente;
 use App\Models\Pedido_Plan;
@@ -52,15 +51,6 @@ class PedidosController extends Controller
         $pedido->save();
 
         return redirect()->back()->with('alert-success', 'Pedido cadastrado com sucesso');
-    }
-
-    public function edit($id){
-        $pedido = Pedido::find($id);
-        $clientes = Cliente::all();
-        if ($pedido)
-            return view('pedidos/editar', ['pedido' => $pedido, 'clientes' => $clientes]);
-        else
-            return redirect()->back()->with('alert-danger', 'Pedido de id #' . $id . ' não encontrado.');
     }
 
     public function update(Request $request){

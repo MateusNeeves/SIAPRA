@@ -15,10 +15,6 @@ class UsersController extends Controller
         return view('usuarios/visualizar', ['usuarios' => $usuarios]);
     }
 
-    public function register(){
-        return view('usuarios/cadastrar');
-    }
-
     public function store(Request $request){
         $validator = Validator::make(
             $request->all(),
@@ -40,14 +36,6 @@ class UsersController extends Controller
         $usuario->save();
 
         return redirect()->route('usuarios')->with('alert-success', 'Usuário cadastrado com sucesso');
-    }
-
-    public function edit($id){
-            $usuario = User::find($id);
-            if ($usuario)
-                return view('usuarios/editar', ['usuario' => $usuario]);
-            else
-                return redirect()->route('usuarios')->with('alert-danger', 'Usuário de id #' . $id . ' não encontrado.');
     }
 
     public function update(Request $request){

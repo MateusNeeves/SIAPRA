@@ -56,14 +56,6 @@ class ClientesController extends Controller
         return redirect()->route('clientes')->with('alert-success', 'Cliente cadastrado com sucesso');
     }
 
-    public function edit($id){
-        $cliente = Cliente::find($id);
-        if ($cliente)
-            return view('clientes/editar', ['cliente' => $cliente]);
-        else
-            return redirect()->route('clientes')->with('alert-danger', 'Cliente de id #' . $id . ' não encontrado.');
-    }
-
     public function update(Request $request){
         $validator = Validator::make(
             $request->all(),

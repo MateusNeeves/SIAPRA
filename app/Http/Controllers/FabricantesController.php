@@ -17,11 +17,6 @@ class FabricantesController extends Controller
         return view('fabricantes/visualizar', ['fabricantes' => $fabricantes, 'paises' => $paises]);
     }
 
-    public function register(){
-        $paises = Pais::all();
-        return view('fabricantes/cadastrar', ['paises' => $paises]);
-    }
-
     public function store(Request $request){
         $validator = Validator::make(
             ['nome' => $request->nome,
@@ -56,15 +51,6 @@ class FabricantesController extends Controller
 
         $fabricantes->save();
         return redirect()->route('fabricantes')->with('alert-success', 'Fabricante cadastrado com sucesso');
-    }
-
-    public function edit($id){
-        $fabricante = Fabricante::find($id);
-        $paises = Pais::all();
-        if ($fabricante)
-            return view('fabricantes/editar', ['fabricante' => $fabricante, 'paises' => $paises]);
-        else
-            return redirect()->route('fabricantes')->with('alert-danger', 'Fabricante de id #' . $id . ' não encontrado.');
     }
 
     public function update(Request $request){

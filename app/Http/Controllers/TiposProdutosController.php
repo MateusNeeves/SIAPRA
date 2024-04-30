@@ -15,10 +15,6 @@ class TiposProdutosController extends Controller
         return view('tipos_produtos/visualizar', ['tipos_produtos' => $tipos_produtos]);
     }
 
-    public function register(){
-        return view('tipos_produtos/cadastrar');
-    }
-
     public function store(Request $request){
         $validator = Validator::make(
             ['nome' => $request->nome,
@@ -43,14 +39,6 @@ class TiposProdutosController extends Controller
         $tipo_produto->save();
 
         return redirect()->route('tipos_produtos')->with('alert-success', 'Tipo de Produto cadastrado com sucesso');
-    }
-
-    public function edit($id){
-        $tipo_produto = Tipo_Produto::find($id);
-        if ($tipo_produto)
-            return view('tipos_produtos/editar', ['tipo_produto' => $tipo_produto]);
-        else
-            return redirect()->route('tipos_produtos')->with('alert-danger', 'Tipo de Produto de id #' . $id . ' não encontrado.');
     }
 
     public function update(Request $request){
