@@ -62,7 +62,7 @@
     @if (Session::has('modal'))
         <script>
             $(window).on('load', function() {
-                $('{{Session::get('modal')}}').modal('show');
+                $("{{Session::get('modal')}}").modal('show');
             });
         </script>        
     @endif

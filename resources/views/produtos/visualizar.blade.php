@@ -36,6 +36,39 @@
         </select>
     </div>
 
+    <!-- Fabricante -->
+    <div class="mt-4">
+        <x-input-label :value="__('Fabricantes')" />
+        <select id="fabricantes" class="block mt-1 w-full border rounded" name="fabricantes[]" multiple>
+            <option value="" hidden></option>
+            @foreach ($fabricantes as $fabricante)
+                <option value="{{$fabricante['nome']}}"> {{$fabricante['nome']}} </option>
+            @endforeach
+        </select>
+    </div>
+
+    <!-- Fornecedor -->
+    <div class="mt-4">
+        <x-input-label :value="__('Fornecedores')" />
+        <select id="fornecedores" class="block mt-1 w-full border rounded" name="fornecedores[]" multiple>
+            <option value="" hidden></option>
+            @foreach ($fornecedores as $fornecedor)
+                <option value="{{$fornecedor['nome']}}"> {{$fornecedor['nome']}} </option>
+            @endforeach
+        </select>
+    </div>
+
+    <script>
+        $('#fornecedores').select2( {
+            theme: "bootstrap-5",
+            width: '100%',
+        } );
+        $('#fabricantes').select2( {
+            theme: "bootstrap-5",
+            width: '100%',
+        } );
+    </script>
+
     <!-- Quantidade Aceitável -->
     <div class="mt-4">
         <x-input-label :value="__('Quantidade Aceitável *')" />
@@ -47,4 +80,5 @@
         <x-input-label :value="__('Quantidade Mínima *')" />
         <x-text-input id="qtd_minima" class="input block mt-1 w-full" type="number" name="qtd_minima" :value="old('qtd_minima')" required/>
     </div>
+
 @endsection

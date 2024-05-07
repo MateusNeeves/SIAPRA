@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Produto_Fab;
+use App\Models\Produto_Forn;
 use App\Models\Produto;
+use App\Models\Fabricante;
+use App\Models\Fornecedor;
 use App\Models\Tipo_Produto;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -17,11 +21,14 @@ class ProdutosController extends Controller
                                         INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID)'));
         $produtos = json_decode(json_encode($produtos), true);
         $tipos = Tipo_Produto::all();
+        $fabricantes = Fabricante::all();
+        $fornecedores = Fornecedor::all();
 
-        return view('produtos/visualizar', ['produtos' => $produtos, 'tipos' => $tipos]);
+        return view('produtos/visualizar', ['produtos' => $produtos, 'tipos' => $tipos, 'fabricantes' => $fabricantes, 'fornecedores' => $fornecedores]);
     }
 
     public function store(Request $request){
+        // return response()->json($request->fornecedores == null);
         $id_tipo = Tipo_Produto::where('nome', $request->tipo)->first()->id;
         $validator = Validator::make(
             $request->all(),
@@ -34,17 +41,52 @@ class ProdutosController extends Controller
         if ($validator->fails())
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#newModal')->withInput();     
         
-        $produto = new Produto;
+        try{
+            DB::beginTransaction();
 
-        $produto->nome = $request->nome;
-        $produto->descricao = $request->descricao;
-        $produto->id_tipo = $id_tipo;
-        $produto->qtd_aceitavel = $request->qtd_aceitavel;
-        $produto->qtd_minima = $request->qtd_minima;
+            $produto = new Produto;
+    
+            $produto->nome = $request->nome;
+            $produto->descricao = $request->descricao;
+            $produto->id_tipo = $id_tipo;
+            $produto->qtd_aceitavel = $request->qtd_aceitavel;
+            $produto->qtd_minima = $request->qtd_minima;
+    
+            $produto->save();
 
-        $produto->save();
+            if ($request->fabricantes){
+                for($i = 0 ; $i < count($request->fabricantes) ; $i++){
+                    $id_fabricante = Fabricante::where('nome', $request->fabricantes[$i])->first()->id;
+                    
+                    $produto_fab[$i] = new Produto_Fab;
 
-        return redirect()->route('produtos')->with('alert-success', 'Produto cadastrado com sucesso');
+                    $produto_fab[$i]->id_produto = $produto->id;
+                    $produto_fab[$i]->id_fabricante = $id_fabricante;
+
+                    $produto_fab[$i]->save();
+                }
+            }
+
+            if ($request->fornecedores){
+                for($i = 0 ; $i < count($request->fornecedores) ; $i++){
+                    $id_fornecedor = Fornecedor::where('nome', $request->fornecedor[$i])->first()->id;
+                    
+                    $produto_forn[$i] = new Produto_Forn;
+                    
+                    $produto_forn[$i]->id_produto = $produto->id;
+                    $produto_forn[$i]->id_fornecedor = $id_fornecedor;
+
+                    $produto_forn[$i]->save();
+                }
+            }
+            
+            return redirect()->back()->with('alert-success', 'Produto cadastrado com sucesso');
+        }
+        catch (\Exception $exception) {
+            DB::rollback();
+            return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput();
+        }
+
     }
 
     public function update(Request $request){
