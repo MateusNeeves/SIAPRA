@@ -51,7 +51,7 @@
                                     </div>
                                 </button>
                                 <div data-html2canvas-ignore="true" class="collapse collapse-horizontal ms-2" id="collapse_{{$idx}}">
-                                    <button type="submit" class="btn btn-danger mb-2 me-5" data-id={{$planejamento->id}} data-bs-toggle="modal" data-bs-target="#deleteModal_">Deletar</button>
+                                    <button type="submit" class="btn btn-danger mb-2 me-5" data-id={{$planejamento->id}} data-bs-toggle="modal" data-bs-target="#deleteModal_" onclick="$('#deleteModal_ .modal-body #id').val({{$planejamento->id}})">Deletar</button>
                                 </div>
                             </div>
                             <div class="collapse mb-5 bg-white" id="collapse_{{$idx}}">
@@ -238,7 +238,7 @@
                     @method('DELETE')
                     <div class="modal-body">
                         {{'Tem Certeza Que Deseja Deletar Esse Planejamento?'}}
-                        <input type="hidden" name="id" id="id" value="{{old('id')}}">
+                        <input hidden name="id" id="id" value="{{old('id')}}">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar </button>

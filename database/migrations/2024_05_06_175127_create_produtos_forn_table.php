@@ -18,6 +18,7 @@ return new class extends Migration
 
             $table->foreign('id_produto')->references('id')->on('produtos');
             $table->foreign('id_fornecedor')->references('id')->on('fornecedores');
+            $table->unique(['id_produto', 'id_fornecedor']);
 
             $table->timestamps();
             

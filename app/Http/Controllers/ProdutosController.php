@@ -16,20 +16,35 @@ use Illuminate\Support\Facades\Validator;
 class ProdutosController extends Controller
 {
     public function index(){
-        $produtos = collect(DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA
-                                        FROM PRODUTOS P 
-                                        INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID)'));
-        $produtos = json_decode(json_encode($produtos), true);
+        $produtos = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID)');
+        
+        // ALTERANDO FORMATO DOS FABRICANTES E FORNECEDORES PARA DISPLAY
+        foreach ($produtos as $idx => $produto) {
+            $fabricantes = DB::select('SELECT NOME FROM FABRICANTES WHERE ID IN (SELECT ID_FABRICANTE FROM PRODUTOS_FAB WHERE ID_PRODUTO = ?)', [$produto->id]);
+            $fab = "";
+            foreach ($fabricantes as $i => $fabricante)
+                $fab .= $fabricante->nome . ($i == count($fabricantes) - 1 ? '' : '<br>');
+
+            $fornecedores = DB::select('SELECT NOME FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
+            $forn = "";
+            foreach ($fornecedores as $i => $fornecedor)
+                $forn .= $fornecedor->nome . ($i == count($fornecedores) - 1 ? '' : '<br>');
+            
+            $produtos[$idx]->fabricantes = $fab;
+            $produtos[$idx]->fornecedores = $forn;
+        }
+        
         $tipos = Tipo_Produto::all();
         $fabricantes = Fabricante::all();
         $fornecedores = Fornecedor::all();
-
+        
+        $produtos = json_decode(json_encode($produtos), true);
         return view('produtos/visualizar', ['produtos' => $produtos, 'tipos' => $tipos, 'fabricantes' => $fabricantes, 'fornecedores' => $fornecedores]);
     }
 
     public function store(Request $request){
-        // return response()->json($request->fornecedores == null);
-        $id_tipo = Tipo_Produto::where('nome', $request->tipo)->first()->id;
+        // VERIFICANDO UNICIDADE
+
         $validator = Validator::make(
             $request->all(),
             
@@ -44,42 +59,45 @@ class ProdutosController extends Controller
         try{
             DB::beginTransaction();
 
+            // ADICIONANDO PRODUTO
+
             $produto = new Produto;
     
             $produto->nome = $request->nome;
             $produto->descricao = $request->descricao;
-            $produto->id_tipo = $id_tipo;
+            $produto->id_tipo = Tipo_Produto::where('nome', $request->tipo)->first()->id;
             $produto->qtd_aceitavel = $request->qtd_aceitavel;
             $produto->qtd_minima = $request->qtd_minima;
     
             $produto->save();
 
-            if ($request->fabricantes){
-                for($i = 0 ; $i < count($request->fabricantes) ; $i++){
-                    $id_fabricante = Fabricante::where('nome', $request->fabricantes[$i])->first()->id;
+            // ADICIONANDO FABRICANTES
+
+            foreach ((array) $request->fabricantes as $i => $fabricante) {
+                $id_fabricante = Fabricante::where('nome', $fabricante)->first()->id;
                     
-                    $produto_fab[$i] = new Produto_Fab;
-
-                    $produto_fab[$i]->id_produto = $produto->id;
-                    $produto_fab[$i]->id_fabricante = $id_fabricante;
-
-                    $produto_fab[$i]->save();
-                }
+                $produto_fab[$i] = new Produto_Fab;
+                
+                $produto_fab[$i]->id_produto = $produto->id;
+                $produto_fab[$i]->id_fabricante = $id_fabricante;
+                
+                $produto_fab[$i]->save();
             }
 
-            if ($request->fornecedores){
-                for($i = 0 ; $i < count($request->fornecedores) ; $i++){
-                    $id_fornecedor = Fornecedor::where('nome', $request->fornecedor[$i])->first()->id;
-                    
-                    $produto_forn[$i] = new Produto_Forn;
-                    
-                    $produto_forn[$i]->id_produto = $produto->id;
-                    $produto_forn[$i]->id_fornecedor = $id_fornecedor;
+            // ADICIONANDO FORNECEDORES
 
-                    $produto_forn[$i]->save();
-                }
+            foreach ((array) $request->fornecedores as $i => $fornecedor) {
+                $id_fornecedor = Fornecedor::where('nome', $request->fornecedores[$i])->first()->id;
+                    
+                $produto_forn[$i] = new Produto_Forn;
+                
+                $produto_forn[$i]->id_produto = $produto->id;
+                $produto_forn[$i]->id_fornecedor = $id_fornecedor;
+                
+                $produto_forn[$i]->save();
             }
             
+            DB::commit();
             return redirect()->back()->with('alert-success', 'Produto cadastrado com sucesso');
         }
         catch (\Exception $exception) {
@@ -89,47 +107,129 @@ class ProdutosController extends Controller
 
     }
 
+    public function edit(Request $request){
+        $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) WHERE P.ID = ?', [$request->id_edit])[0];
+                
+        $forns = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
+        $fornecedores = [];
+        foreach ($forns as $fornecedor)
+            $fornecedores[] = $fornecedor->nome;
+
+        $fabs = DB::select('SELECT * FROM FABRICANTES WHERE ID IN (SELECT ID_FABRICANTE FROM PRODUTOS_FAB WHERE ID_PRODUTO = ?)', [$produto->id]);
+        $fabricantes = [];
+        foreach ($fabs as $fabricante)
+            $fabricantes[] = $fabricante->nome;
+
+        return redirect()->back()->with(['produto' => $produto, 'modal' => '#editModal', 'fabricantes' => $fabricantes, 'fornecedores' => $fornecedores])->withInput(); 
+
+    }
+
     public function update(Request $request){
-        $id_tipo = Tipo_Produto::where('nome', $request->nome)->get()[0]->id;
+        // VERIFICANDO UNICIDADE
         $validator = Validator::make(
             $request->all(),
             
-            ['nome' => Rule::unique('produtos')->ignore($request->id)],
+            ['nome' => Rule::unique('produtos')->ignore($request->id_edit)],
             
             ['nome.unique' => 'Já existe um Produto com esse Nome']
         );
-
+        
         if ($validator->fails())
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#editModal')->withInput(); 
+    
+        
+        try{
+            DB::beginTransaction();
 
-        Produto::findOrFail($request->id)->update([
-            'nome' => $request->nome,
-            'descricao' => $request->descricao,
-            'id_tipo' => $id_tipo,
-            'qtd_aceitavel' => $request->qtd_aceitavel,
-            'qtd_minima' => $request->qtd_minima
-        ]);
-        return redirect()->route('produtos')->with('alert-success', 'Produto editado com sucesso');
+            // ATUALIZANDO PRODUTO
+            
+                $produto = Produto::findOrFail($request->id_edit);
+                
+                $produto->update([
+                    'nome' => $request->nome,
+                    'descricao' => $request->descricao,
+                    'id_tipo' => Tipo_Produto::where('nome', $request->tipo)->get()[0]->id,
+                    'qtd_aceitavel' => $request->qtd_aceitavel,
+                    'qtd_minima' => $request->qtd_minima
+                ]);
+
+            // ATUALIZANDO FORNECEDORES
+            
+                // lista desatualizada de fornecedores
+                $forns = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
+                $old_forns = [];
+                foreach ($forns as $fornecedor)
+                    $old_forns[] = $fornecedor->nome;
+            
+                $new_forns = array_diff($request->fornecedores ?? [], $old_forns ?? []);
+                $removed_forns = array_diff($old_forns ?? [], $request->fornecedores ?? []);
+            
+                // REMOVENDO FORNECEDORES
+                Produto_Forn::join('fornecedores', 'produtos_forn.id_fornecedor', '=', 'fornecedores.id')->where('produtos_forn.id_produto', $produto->id)->whereIn('fornecedores.nome', $removed_forns)->delete();
+
+                // ADICIONANDO FORNECEDORES
+                foreach ($new_forns as $i => $fornecedor) {
+                    $id_fornecedor = Fornecedor::where('nome', $fornecedor)->first()->id;
+                        
+                    $produto_forn[$i] = new Produto_Forn;
+                    
+                    $produto_forn[$i]->id_produto = $produto->id;
+                    $produto_forn[$i]->id_fornecedor = $id_fornecedor;
+                    
+                    $produto_forn[$i]->save();
+                }
+            
+            /// ATUALIZANDO FABRICANTES
+            
+                // lista desatualizada de fabricantes
+                $fabs = DB::select('SELECT * FROM FABRICANTES WHERE ID IN (SELECT ID_FABRICANTE FROM PRODUTOS_FAB WHERE ID_PRODUTO = ?)', [$produto->id]);
+                $old_fabs = [];
+                foreach ($fabs as $fabricante)
+                    $old_fabs[] = $fabricante->nome;
+            
+                $new_fabs = array_diff($request->fabricantes ?? [], $old_fabs ?? []);
+                $removed_fabs = array_diff($old_fabs ?? [], $request->fabricantes ?? []);
+            
+                // REMOVENDO FABRICANTES
+                Produto_Fab::join('fabricantes', 'produtos_fab.id_fabricante', '=', 'fabricantes.id')->where('produtos_fab.id_produto', $produto->id)->whereIn('fabricantes.nome', $removed_fabs)->delete();
+
+                // ADICIONANDO FABRICANTES
+                foreach ($new_fabs as $i => $fabricante) {
+                    $id_fabricante = Fabricante::where('nome', $fabricante)->first()->id;
+                        
+                    $produto_fab[$i] = new Produto_Fab;
+                    
+                    $produto_fab[$i]->id_produto = $produto->id;
+                    $produto_fab[$i]->id_fabricante = $id_fabricante;
+                    
+                    $produto_fab[$i]->save();
+                }
+
+            DB::commit();
+            return redirect()->back()->with('alert-success', 'Produto editado com sucesso');
+        }
+        catch(\Exception $exception){
+            DB::rollBack();
+            return redirect()->back()->with('alert-danger', 'Ocorreu um erro na atualização no banco de dados: ' . $exception->getMessage())->withInput();
+        }
     }
 
     public function destroy(Request $request){
-        DB::beginTransaction();
+        try{
+            DB::beginTransaction();
 
-        Produto::find($request->id)->delete();
+            Produto_Fab::where('id_produto', $request->id_delete)->delete();
+            Produto_Forn::where('id_produto', $request->id_delete)->delete();
+            Produto::find($request->id_delete)->delete();
 
-        if ($request->soft == 'false'){
-            try{
-                Produto::withTrashed()->find($request->id)->forceDelete();
-                DB::commit();
-                return redirect()->back()->with('alert-success', 'Produto excluído com sucesso');
-            }
-            catch(\Exception $exception){
-                DB::rollBack();
-                return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Produto, pois outras informações dependem dele. <br><br> Deseja Desativar esse Produto ao invés de Deletar? <br><br> Você pode restaurá-lo futuramente, caso necessário.')->with('modal', '#deleteModal')->withInput();
-            } 
+            DB::commit();
+            return redirect()->back()->with('alert-success', 'Produto excluído com sucesso');
         }
+        catch(\Exception $exception){
+            DB::rollBack();
 
-        DB::commit();
-        return redirect()->back()->with('alert-success', 'Produto desativado com sucesso');
+            return redirect()->back()->with('alert-danger', $exception->getMessage())->withInput();
+            return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Produto, pois outras informações dependem dele.')->withInput();
+        } 
     }
 }

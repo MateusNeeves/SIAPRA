@@ -165,9 +165,7 @@
             @if(Session::has('alert-' . $msg))
                 <div class="position-absolute w-100 py-16">
                     <p class="alert alert-{{ $msg }}">
-                        @foreach(explode('<br>', Session::get('alert-' . $msg)) as $text)
-                        {!! $text . ($loop->last ? "" : '<br>') !!}
-                        @endforeach 
+                        {!! Session::get('alert-' . $msg) !!}
                         <a href="" style="text-decoration: none;" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                     </p>
                 </div>

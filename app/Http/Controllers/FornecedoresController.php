@@ -18,6 +18,8 @@ class FornecedoresController extends Controller
     }
 
     public function store(Request $request){
+        // VERIFICANDO UNICIDADE E CONDIÇÕES
+
         $validator = Validator::make(
             ['nome' => $request->nome,
             'cnpj' => $request->cnpj ?? ""],
@@ -41,11 +43,11 @@ class FornecedoresController extends Controller
         $fornecedor = new Fornecedor();
         
         $fornecedor->nome = $request->nome;
-        $fornecedor->endereco = $request->endereco;
+        $fornecedor->endereco = mb_strtoupper($request->endereco);
         $fornecedor->pais = $request->pais;
         $fornecedor->nome_contato = $request->nome_contato;
         $fornecedor->telefone = $request->telefone;
-        $fornecedor->email = $request->email;
+        $fornecedor->email = mb_strtolower($request->email);
         $fornecedor->site = $request->site;
         $fornecedor->cnpj = $request->cnpj;
 
@@ -54,13 +56,20 @@ class FornecedoresController extends Controller
 
     }
 
+    public function edit(Request $request){
+        $fornecedor = Fornecedor::where('id', $request->id_edit)->get()[0];
+
+        return redirect()->back()->with(['fornecedor' => $fornecedor, 'modal' => '#editModal'])->withInput(); 
+    }
+
     public function update(Request $request){
+        // VERIFICANDO UNICIDADE E CONDIÇÕES
         $validator = Validator::make(
             ['nome' => $request->nome,
             'cnpj' => $request->cnpj ?? ""],
             
-            ['nome' => Rule::unique('fornecedores')->ignore($request->id),
-            'cnpj' => Rule::unique('fornecedores')->ignore($request->id)],
+            ['nome' => Rule::unique('fornecedores')->ignore($request->id_edit),
+            'cnpj' => Rule::unique('fornecedores')->ignore($request->id_edit)],
             
             ['nome.unique' => 'Já existe um Fornecedor com esse Nome',
             'cnpj.unique' => 'Já existe um Fornecedor com esse CNPJ']
@@ -74,14 +83,15 @@ class FornecedoresController extends Controller
 
         else if ($request->pais != "BRASIL" && $request->cnpj != null)
             return redirect()->back()->with('alert-danger', 'Fornecedor extrangeiro não deve possuir CNPJ')->with('modal', '#editModal')->withInput(); 
-
-        Fornecedor::findOrFail($request->id)->update([
+        
+        // SALVANDO FABRICANTE
+        Fornecedor::findOrFail($request->id_edit)->update([
             'nome' => $request->nome,
-            'endereco' => $request->endereco,
+            'endereco' => mb_strtoupper($request->endereco),
             'pais' => $request->pais,
             'nome_contato' => $request->nome_contato,
             'telefone' => $request->telefone,
-            'email' => $request->email,
+            'email' => mb_strtolower($request->email),
             'site' => $request->site,
             'cnpj' => $request->cnpj
         ]);
@@ -91,11 +101,11 @@ class FornecedoresController extends Controller
     public function destroy(Request $request){
         DB::beginTransaction();
 
-        Fornecedor::find($request->id)->delete();
+        Fornecedor::find($request->id_delete)->delete();
 
         if ($request->soft == 'false'){
             try{
-                Fornecedor::withTrashed()->find($request->id)->forceDelete();
+                Fornecedor::withTrashed()->find($request->id_delete)->forceDelete();
                 DB::commit();
                 return redirect()->back()->with('alert-success', 'Fornecedor excluído com sucesso');
             }

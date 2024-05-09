@@ -21,7 +21,6 @@ return new class extends Migration
 
             $table->foreign('id_tipo')->references('id')->on('tipos_produtos');
             
-            $table->softDeletes();
             $table->timestamps();
         });
     }

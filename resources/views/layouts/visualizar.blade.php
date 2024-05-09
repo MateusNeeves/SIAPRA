@@ -6,9 +6,19 @@
                 <div class="m-5 text-gray-900 text-center h3">
                     {{$title}}
                 </div>
-                {{-- <a class="btn btn-dark bg-gradient mb-4" href="{{route($path . '.register')}}" >
-                    {{"Novo"}}
-                </a> --}}
+
+                <div class="flex mb-2">
+                    <button onclick="$('#newModal').modal('show')" class="btn btn-dark bg-gradient me-2"> Novo </button>
+                    
+                    <form method="post" action="{{route($path. '.edit')}}">
+                        @csrf
+                        <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
+                        <button onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Editar </button>
+                    </form>
+    
+                    <button onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-dark bg-gradient me-2"> Deletar </button>
+                </div>
+
                 <div class="container overflow-auto mb-4">
                     <table id="myTable" class="table table-bordered table-hover">
                         <thead>
@@ -16,7 +26,6 @@
                                 @foreach ($columns as $column)
                                     <th class="table-dark text-start" scope="col"> {{$column}} </th>
                                 @endforeach
-                                {{-- <th class="table-dark last"> Ações</th> --}}
                             </tr>
                         </thead>
                         <thead class="filters">
@@ -24,32 +33,14 @@
                                 @foreach ($columns as $column)
                                     <td class="filter"> {{$column}} </td>
                                 @endforeach
-                                {{-- <td></td> --}}
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($infos as $info)
                                 <tr>
                                     @for ($i = 0, $e = 0; $i < count($indexes); $i++)
-                                        @if ($indexes[$i] == $editables[$e])
-                                            <td class="get text-start"> {{$info[$indexes[$i]]}}</td>  
-                                            @php $e++; @endphp
-                                        @else
-                                            <td class="text-start"> {{$info[$indexes[$i]]}}</td>   
-                                        @endif
+                                        <td class="{{$indexes[$i]}} text-start">{!!$info[$indexes[$i]]!!}</td>   
                                     @endfor
-                                    {{-- <td>
-                                        <div class="text-center">
-                                            <form class="mb-4" action="{{route($path . ".edit", ['id' => $info['id']])}}" method="get">
-                                                <button class="btn btn-primary" type="submit">
-                                                    {{"Editar"}}
-                                                </button>
-                                            </form>
-                                            <button class="btn btn-danger" data-id={{$info['id']}} data-bs-toggle="modal" data-bs-target="#delete">
-                                                {{"Deletar"}}
-                                            </button>
-                                        </div>
-                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
@@ -84,16 +75,13 @@
                                     @if(Session::has('alert-' . $msg))
                                         <div class="w-100">
                                             <p class="alert alert-{{ $msg }}">
-                                                @foreach(explode('<br>', Session::get('alert-' . $msg)) as $text)
-                                                {!! $text . ($loop->last ? "" : '<br>') !!}
-                                                @endforeach 
+                                                {!! Session::get('alert-' . $msg) !!}
                                             </p>
                                         </div>
                                     @endif
                                 @endforeach
                             </div>
                         @endif
-
                         @yield('content')
                     </div>
                     <div class="modal-footer">
@@ -122,16 +110,14 @@
                                     @if(Session::has('alert-' . $msg))
                                         <div class="w-100">
                                             <p class="alert alert-{{ $msg }}">
-                                                @foreach(explode('<br>', Session::get('alert-' . $msg)) as $text)
-                                                {!! $text . ($loop->last ? "" : '<br>') !!}
-                                                @endforeach 
+                                                {!! Session::get('alert-' . $msg) !!}
                                             </p>
                                         </div>
                                     @endif
                                 @endforeach
                             </div>
                         @endif
-                        <input type="hidden" name="id" id="id" value="{{old('id')}}">
+                        <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
                         @yield('content')
                     </div>
                     <div class="modal-footer">
@@ -160,22 +146,17 @@
                                     @if(Session::has('alert-' . $msg))
                                         <div class="w-100">
                                             <p class="alert alert-{{ $msg }}">
-                                                @foreach(explode('<br>', Session::get('alert-' . $msg)) as $text)
-                                                {!! $text . ($loop->last ? "" : '<br>') !!}
-                                                @endforeach
+                                                {!! Session::get('alert-' . $msg) !!}
                                             </p>
                                         </div>
                                     @endif
                                 @endforeach
                             </div>
-                            {{-- {{"Deseja Desativar esse registro ao invés de Deletar?"}}
-                            <br>
-                            {{"Você pode restaurá-lo futuramente, caso necessário."}} --}}
-                            <input type="hidden" name="id" id="id" value="{{old('id')}}">
+                            <input hidden name="id_delete" id="id_delete" value="{{old('id_delete')}}">
                             <input type="hidden" name="soft" id="soft" value="true">
                         @else
                             {{"Tem certeza que quer deletar?"}}
-                            <input type="hidden" name="id" id="id" value="{{old('id')}}">
+                            <input hidden name="id_delete" id="id_delete" value="{{old('id_delete')}}">
                             <input type="hidden" name="soft" id="soft" value="false">
                         @endif
                     </div>

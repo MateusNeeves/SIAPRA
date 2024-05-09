@@ -18,6 +18,8 @@ class FabricantesController extends Controller
     }
 
     public function store(Request $request){
+        // VERIFICANDO UNICIDADE E CONDIÇÕES
+
         $validator = Validator::make(
             ['nome' => $request->nome,
             'cnpj' => $request->cnpj ?? ""],
@@ -38,14 +40,15 @@ class FabricantesController extends Controller
         else if ($request->pais != "BRASIL" && $request->cnpj != null)
             return redirect()->back()->with('alert-danger', 'Fabricante extrangeiro não deve possuir CNPJ')->with('modal', '#newModal')->withInput();     
 
+        // SALVANDO FABRICANTE
         $fabricantes = new Fabricante();
         
         $fabricantes->nome = $request->nome;
-        $fabricantes->endereco = $request->endereco;
+        $fabricantes->endereco = mb_strtoupper($request->endereco);
         $fabricantes->pais = $request->pais;
         $fabricantes->nome_contato = $request->nome_contato;
         $fabricantes->telefone = $request->telefone;
-        $fabricantes->email = $request->email;
+        $fabricantes->email = mb_strtolower($request->email);
         $fabricantes->site = $request->site;
         $fabricantes->cnpj = $request->cnpj;
 
@@ -53,13 +56,20 @@ class FabricantesController extends Controller
         return redirect()->route('fabricantes')->with('alert-success', 'Fabricante cadastrado com sucesso');
     }
 
+    public function edit(Request $request){
+        $fabricante = Fabricante::where('id', $request->id_edit)->get()[0];
+
+        return redirect()->back()->with(['fabricante' => $fabricante, 'modal' => '#editModal'])->withInput(); 
+    }
+
     public function update(Request $request){
+        // VERIFICANDO UNICIDADE E CONDIÇÕES
         $validator = Validator::make(
             ['nome' => $request->nome,
             'cnpj' => $request->cnpj ?? ""],
             
-            ['nome' => Rule::unique('fabricantes')->ignore($request->id),
-            'cnpj' => Rule::unique('fabricantes')->ignore($request->id)],
+            ['nome' => Rule::unique('fabricantes')->ignore($request->id_edit),
+            'cnpj' => Rule::unique('fabricantes')->ignore($request->id_edit)],
             
             ['nome.unique' => 'Já existe um Fabricante com esse Nome',
             'cnpj.unique' => 'Já existe um Fabricante com esse CNPJ']
@@ -73,14 +83,15 @@ class FabricantesController extends Controller
 
         else if ($request->pais != "BRASIL" && $request->cnpj != null)
             return redirect()->back()->with('alert-danger', 'Fabricante extrangeiro não deve possuir CNPJ')->with('modal', '#editModal')->withInput(); 
-
-        Fabricante::findOrFail($request->id)->update([
+        
+        // SALVANDO FABRICANTE
+        Fabricante::findOrFail($request->id_edit)->update([
             'nome' => $request->nome,
-            'endereco' => $request->endereco,
+            'endereco' => mb_strtoupper($request->endereco),
             'pais' => $request->pais,
             'nome_contato' => $request->nome_contato,
             'telefone' => $request->telefone,
-            'email' => $request->email,
+            'email' => mb_strtolower($request->email),
             'site' => $request->site,
             'cnpj' => $request->cnpj
         ]);
@@ -90,11 +101,11 @@ class FabricantesController extends Controller
     public function destroy(Request $request){
         DB::beginTransaction();
 
-        Fabricante::find($request->id)->delete();
+        Fabricante::find($request->id_delete)->delete();
 
         if ($request->soft == 'false'){
             try{
-                Fabricante::withTrashed()->find($request->id)->forceDelete();
+                Fabricante::withTrashed()->find($request->id_delete)->forceDelete();
                 DB::commit();
                 return redirect()->back()->with('alert-success', 'Fabricante excluído com sucesso');
             }

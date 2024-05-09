@@ -23,18 +23,21 @@ Route::get('/', function () {
 // Clientes
     Route::get('/clientes', [ClientesController::class, 'index'])->middleware(['auth'])->name('clientes');
     Route::post('/clientes/cadastrar', [ClientesController::class, 'store'])->middleware(['auth'])->name('clientes.store');
+    Route::post('/clientes/editar', [ClientesController::class, 'edit'])->middleware(['auth'])->name('clientes.edit');
     Route::put('/clientes/editar', [ClientesController::class, 'update'])->middleware(['auth'])->name('clientes.update');
     Route::delete('/clientes/deletar', [ClientesController::class, 'destroy'])->middleware(['auth'])->name('clientes.destroy');
     
 //Usuários
     Route::get('/usuarios', [UsersController::class, 'index'])->middleware(['auth'])->name('usuarios');
     Route::post('/usuarios/cadastrar', [UsersController::class, 'store'])->middleware(['auth'])->name('usuarios.store');
+    Route::post('/usuarios/editar', [UsersController::class, 'edit'])->middleware(['auth'])->name('usuarios.edit');
     Route::put('/usuarios/editar', [UsersController::class, 'update'])->middleware(['auth'])->name('usuarios.update');
     Route::delete('/usuarios/deletar', [UsersController::class, 'destroy'])->middleware(['auth'])->name('usuarios.destroy');
 
 //Pedidos
     Route::get('/pedidos', [PedidosController::class, 'index'])->middleware(['auth'])->name('pedidos');
     Route::post('/pedidos/cadastrar', [PedidosController::class, 'store'])->middleware(['auth'])->name('pedidos.store');
+    Route::post('/pedidos/editar', [PedidosController::class, 'edit'])->middleware(['auth'])->name('pedidos.edit');
     Route::put('/pedidos/editar', [PedidosController::class, 'update'])->middleware(['auth'])->name('pedidos.update');
     Route::delete('/pedidos/deletar', [PedidosController::class, 'destroy'])->middleware(['auth'])->name('pedidos.destroy');
 
@@ -59,24 +62,28 @@ Route::get('/', function () {
 // Fabricantes
     Route::get('/fabricantes', [FabricantesController::class, 'index'])->middleware(['auth'])->name('fabricantes');
     Route::post('/fabricantes/cadastrar', [FabricantesController::class, 'store'])->middleware(['auth'])->name('fabricantes.store');
+    Route::post('/fabricantes/editar', [FabricantesController::class, 'edit'])->middleware(['auth'])->name('fabricantes.edit');
     Route::put('/fabricantes/editar', [FabricantesController::class, 'update'])->middleware(['auth'])->name('fabricantes.update');
     Route::delete('/fabricantes/deletar', [FabricantesController::class, 'destroy'])->middleware(['auth'])->name('fabricantes.destroy');
 
 // Fornecedores
     Route::get('/fornecedores', [FornecedoresController::class, 'index'])->middleware(['auth'])->name('fornecedores');
     Route::post('/fornecedores/cadastrar', [FornecedoresController::class, 'store'])->middleware(['auth'])->name('fornecedores.store');
+    Route::post('/fornecedores/editar', [FornecedoresController::class, 'edit'])->middleware(['auth'])->name('fornecedores.edit');
     Route::put('/fornecedores/editar', [FornecedoresController::class, 'update'])->middleware(['auth'])->name('fornecedores.update');
     Route::delete('/fornecedores/deletar', [FornecedoresController::class, 'destroy'])->middleware(['auth'])->name('fornecedores.destroy');
 
 // Tipos de Produto
     Route::get('/tipos_produtos', [TiposProdutosController::class, 'index'])->middleware(['auth'])->name('tipos_produtos');
     Route::post('/tipos_produtos/cadastrar', [TiposProdutosController::class, 'store'])->middleware(['auth'])->name('tipos_produtos.store');
+    Route::post('/tipos_produtos/editar', [TiposProdutosController::class, 'edit'])->middleware(['auth'])->name('tipos_produtos.edit');
     Route::put('/tipos_produtos/editar', [TiposProdutosController::class, 'update'])->middleware(['auth'])->name('tipos_produtos.update');
     Route::delete('/tipos_produtos/deletar', [TiposProdutosController::class, 'destroy'])->middleware(['auth'])->name('tipos_produtos.destroy');
 
 // Produtos
     Route::get('/produtos', [ProdutosController::class, 'index'])->middleware(['auth'])->name('produtos');
     Route::post('/produtos/cadastrar', [ProdutosController::class, 'store'])->middleware(['auth'])->name('produtos.store');
+    Route::post('/produtos/editar', [ProdutosController::class, 'edit'])->middleware(['auth'])->name('produtos.edit');
     Route::put('/produtos/editar', [ProdutosController::class, 'update'])->middleware(['auth'])->name('produtos.update');
     Route::delete('/produtos/deletar', [ProdutosController::class, 'destroy'])->middleware(['auth'])->name('produtos.destroy');
 
