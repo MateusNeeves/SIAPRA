@@ -42,6 +42,10 @@ class ProdutosController extends Controller
         return view('produtos/visualizar', ['produtos' => $produtos, 'tipos' => $tipos, 'fabricantes' => $fabricantes, 'fornecedores' => $fornecedores]);
     }
 
+    public function register(){
+        return redirect()->back()->with('modal', '#newModal');
+    }
+
     public function store(Request $request){
         // VERIFICANDO UNICIDADE
 

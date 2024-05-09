@@ -17,6 +17,10 @@ class FabricantesController extends Controller
         return view('fabricantes/visualizar', ['fabricantes' => $fabricantes, 'paises' => $paises]);
     }
 
+    public function register(){
+        return redirect()->back()->with('modal', '#newModal');
+    }
+
     public function store(Request $request){
         // VERIFICANDO UNICIDADE E CONDIÇÕES
 

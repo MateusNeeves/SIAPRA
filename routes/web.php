@@ -22,6 +22,7 @@ Route::get('/', function () {
 
 // Clientes
     Route::get('/clientes', [ClientesController::class, 'index'])->middleware(['auth'])->name('clientes');
+    Route::get('/clientes/cadastrar', [ClientesController::class, 'register'])->middleware(['auth'])->name('clientes.register');
     Route::post('/clientes/cadastrar', [ClientesController::class, 'store'])->middleware(['auth'])->name('clientes.store');
     Route::post('/clientes/editar', [ClientesController::class, 'edit'])->middleware(['auth'])->name('clientes.edit');
     Route::put('/clientes/editar', [ClientesController::class, 'update'])->middleware(['auth'])->name('clientes.update');
@@ -29,6 +30,7 @@ Route::get('/', function () {
     
 //Usuários
     Route::get('/usuarios', [UsersController::class, 'index'])->middleware(['auth'])->name('usuarios');
+    Route::get('/usuarios/cadastrar', [UsersController::class, 'register'])->middleware(['auth'])->name('usuarios.register');
     Route::post('/usuarios/cadastrar', [UsersController::class, 'store'])->middleware(['auth'])->name('usuarios.store');
     Route::post('/usuarios/editar', [UsersController::class, 'edit'])->middleware(['auth'])->name('usuarios.edit');
     Route::put('/usuarios/editar', [UsersController::class, 'update'])->middleware(['auth'])->name('usuarios.update');
@@ -36,6 +38,7 @@ Route::get('/', function () {
 
 //Pedidos
     Route::get('/pedidos', [PedidosController::class, 'index'])->middleware(['auth'])->name('pedidos');
+    Route::get('/pedidos/cadastrar', [PedidosController::class, 'register'])->middleware(['auth'])->name('pedidos.register');
     Route::post('/pedidos/cadastrar', [PedidosController::class, 'store'])->middleware(['auth'])->name('pedidos.store');
     Route::post('/pedidos/editar', [PedidosController::class, 'edit'])->middleware(['auth'])->name('pedidos.edit');
     Route::put('/pedidos/editar', [PedidosController::class, 'update'])->middleware(['auth'])->name('pedidos.update');
@@ -61,6 +64,7 @@ Route::get('/', function () {
 
 // Fabricantes
     Route::get('/fabricantes', [FabricantesController::class, 'index'])->middleware(['auth'])->name('fabricantes');
+    Route::get('/fabricantes/cadastrar', [FabricantesController::class, 'register'])->middleware(['auth'])->name('fabricantes.register');
     Route::post('/fabricantes/cadastrar', [FabricantesController::class, 'store'])->middleware(['auth'])->name('fabricantes.store');
     Route::post('/fabricantes/editar', [FabricantesController::class, 'edit'])->middleware(['auth'])->name('fabricantes.edit');
     Route::put('/fabricantes/editar', [FabricantesController::class, 'update'])->middleware(['auth'])->name('fabricantes.update');
@@ -68,6 +72,7 @@ Route::get('/', function () {
 
 // Fornecedores
     Route::get('/fornecedores', [FornecedoresController::class, 'index'])->middleware(['auth'])->name('fornecedores');
+    Route::get('/fornecedores/cadastrar', [FornecedoresController::class, 'register'])->middleware(['auth'])->name('fornecedores.register');
     Route::post('/fornecedores/cadastrar', [FornecedoresController::class, 'store'])->middleware(['auth'])->name('fornecedores.store');
     Route::post('/fornecedores/editar', [FornecedoresController::class, 'edit'])->middleware(['auth'])->name('fornecedores.edit');
     Route::put('/fornecedores/editar', [FornecedoresController::class, 'update'])->middleware(['auth'])->name('fornecedores.update');
@@ -75,6 +80,7 @@ Route::get('/', function () {
 
 // Tipos de Produto
     Route::get('/tipos_produtos', [TiposProdutosController::class, 'index'])->middleware(['auth'])->name('tipos_produtos');
+    Route::get('/tipos_produtos/cadastrar', [TiposProdutosController::class, 'register'])->middleware(['auth'])->name('tipos_produtos.register');
     Route::post('/tipos_produtos/cadastrar', [TiposProdutosController::class, 'store'])->middleware(['auth'])->name('tipos_produtos.store');
     Route::post('/tipos_produtos/editar', [TiposProdutosController::class, 'edit'])->middleware(['auth'])->name('tipos_produtos.edit');
     Route::put('/tipos_produtos/editar', [TiposProdutosController::class, 'update'])->middleware(['auth'])->name('tipos_produtos.update');
@@ -82,6 +88,7 @@ Route::get('/', function () {
 
 // Produtos
     Route::get('/produtos', [ProdutosController::class, 'index'])->middleware(['auth'])->name('produtos');
+    Route::get('/produtos/cadastrar', [ProdutosController::class, 'register'])->middleware(['auth'])->name('produtos.register');
     Route::post('/produtos/cadastrar', [ProdutosController::class, 'store'])->middleware(['auth'])->name('produtos.store');
     Route::post('/produtos/editar', [ProdutosController::class, 'edit'])->middleware(['auth'])->name('produtos.edit');
     Route::put('/produtos/editar', [ProdutosController::class, 'update'])->middleware(['auth'])->name('produtos.update');

@@ -15,6 +15,10 @@ class TiposProdutosController extends Controller
         return view('tipos_produtos/visualizar', ['tipos_produtos' => $tipos_produtos]);
     }
 
+    public function register(){
+        return redirect()->back()->with('modal', '#newModal');
+    }
+
     public function store(Request $request){
         // VERIFICANDO UNICIDADE E CONDIÇÕES
 

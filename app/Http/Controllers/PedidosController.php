@@ -27,6 +27,10 @@ class PedidosController extends Controller
         return view('pedidos/visualizar', ['pedidos' => $pedidos, 'clientes' => $clientes]);
     }
 
+    public function register(){
+        return redirect()->back()->with('modal', '#newModal');
+    }
+
     public function store(Request $request){
         // VERIFICANDO UNICIDADE E CONDIÇÕES
         $id_cliente = Cliente::where('nome_fantasia', $request->cliente)->get()[0]->id;

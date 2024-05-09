@@ -8,8 +8,8 @@
                 </div>
 
                 <div class="flex mb-2">
-                    <button onclick="$('#newModal').modal('show')" class="btn btn-dark bg-gradient me-2"> Novo </button>
-                    
+                    <a class="btn btn-dark bg-gradient me-2" href="{{route($path. '.register')}}"> Novo </a>
+
                     <form method="post" action="{{route($path. '.edit')}}">
                         @csrf
                         <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
