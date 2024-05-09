@@ -13,11 +13,24 @@
                     <form method="post" action="{{route($path. '.edit')}}">
                         @csrf
                         <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
-                        <button onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Editar </button>
+                        <button disabled id="edit_button" onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Editar </button>
                     </form>
     
-                    <button onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-dark bg-gradient me-2"> Deletar </button>
+                    <button disabled id="delete_button" onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-dark bg-gradient me-2"> Deletar </button>
                 </div>
+
+                <script>
+                    $(document).on('click', function() {
+                        if ($('.selected').length){
+                            $('#edit_button').prop('disabled', false);
+                            $('#delete_button').prop('disabled', false);
+                        }
+                        else{
+                            $('#edit_button').prop('disabled', true);
+                            $('#delete_button').prop('disabled', true);
+                        }
+                    });
+                </script>
 
                 <div class="container overflow-auto mb-4">
                     <table id="myTable" class="table table-bordered table-hover">
