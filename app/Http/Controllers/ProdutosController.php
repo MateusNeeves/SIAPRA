@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produto_Fab;
+use App\Models\Produto_Lote;
 use App\Models\Produto_Forn;
 use App\Models\Produto;
 use App\Models\Fabricante;
@@ -108,6 +109,25 @@ class ProdutosController extends Controller
             DB::rollback();
             return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput();
         }
+
+    }
+
+    public function view(Request $request){
+        $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) WHERE P.ID = ?', [$request->id_view])[0];
+                
+        $forns = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
+        $fornecedores = [];
+        foreach ($forns as $fornecedor)
+            $fornecedores[] = $fornecedor->nome;
+
+        $fabs = DB::select('SELECT * FROM FABRICANTES WHERE ID IN (SELECT ID_FABRICANTE FROM PRODUTOS_FAB WHERE ID_PRODUTO = ?)', [$produto->id]);
+        $fabricantes = [];
+        foreach ($fabs as $fabricante)
+            $fabricantes[] = $fabricante->nome;
+
+        $lotes = Produto_Lote::where('id_produto', $produto->id)->get();
+        
+        return redirect()->back()->with(['produtoV' => $produto, 'modal' => '#viewModal', 'fabricantesV' => $fabricantes, 'fornecedoresV' => $fornecedores, 'lotesV' => $lotes])->withInput(); 
 
     }
 
@@ -232,8 +252,71 @@ class ProdutosController extends Controller
         catch(\Exception $exception){
             DB::rollBack();
 
-            return redirect()->back()->with('alert-danger', $exception->getMessage())->withInput();
             return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Produto, pois outras informações dependem dele.')->withInput();
         } 
+    }
+
+    public function register_lote(Request $request){
+        $fabricantes = DB::select('SELECT * FROM FABRICANTES WHERE ID IN (SELECT ID_FABRICANTE FROM PRODUTOS_FAB WHERE ID_PRODUTO = ?)', [$request->id_view]);
+
+        $fornecedores = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$request->id_view]);
+
+        $fabricantes = json_decode(json_encode($fabricantes), true);
+        $fornecedores = json_decode(json_encode($fornecedores), true);
+
+        return redirect()->back()->with(['fabricantes_lote' => $fabricantes, 'fornecedores_lote' => $fornecedores, 'modal' => '#loteModal'])->withInput();
+    }
+
+    public function store_lote(Request $request){
+        // VERIFICANDO UNICIDADE
+         
+        $id_fabricante = Fabricante::where('nome', $request->fabricante)->get()[0]->id;
+        $id_fornecedor = Fornecedor::where('nome', $request->fornecedor)->get()[0]->id;
+
+        $lote = Produto_Lote::where('id_produto', $request->id_view)->where('id_fabricante', $id_fabricante)->where('lote_fabricante', $request->lote_fabricante)->first();
+        
+        if ($lote){
+            // ATUALIZANDO QTD LOTE DO PRODUTO
+            Produto_Lote::findOrFail($lote->id)->update([
+                'qtd_itens_recebidos' => $lote->qtd_itens_recebidos + $request->qtd_itens_recebidos,
+                'qtd_itens_estoque' => $lote->qtd_itens_estoque + $request->qtd_itens_recebidos,
+                'preco' => $lote->preco + $request->preco
+            ]);
+        }
+        else{
+            // ADICIONANDO LOTE DO PRODUTO
+
+            $lote = new Produto_Lote;
+    
+            $lote->id_produto = $request->id_view;
+            $lote->id_fabricante = $id_fabricante;
+            $lote->lote_fabricante = $request->lote_fabricante;
+            $lote->id_fornecedor = $id_fornecedor;
+            $lote->qtd_itens_recebidos = $request->qtd_itens_recebidos;
+            $lote->qtd_itens_estoque = $request->qtd_itens_recebidos;
+            $lote->preco = $request->preco;
+            $lote->data_entrega = $request->data_entrega;
+            $lote->data_validade = $request->data_validade;
+            
+            $lote->save();
+        }
+
+        $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) WHERE P.ID = ?', [$request->id_view])[0];
+                
+        $forns = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
+        $fornecedores = [];
+        foreach ($forns as $fornecedor)
+            $fornecedores[] = $fornecedor->nome;
+
+        $fabs = DB::select('SELECT * FROM FABRICANTES WHERE ID IN (SELECT ID_FABRICANTE FROM PRODUTOS_FAB WHERE ID_PRODUTO = ?)', [$produto->id]);
+        $fabricantes = [];
+        foreach ($fabs as $fabricante)
+            $fabricantes[] = $fabricante->nome;
+
+        $lotes = Produto_Lote::where('id_produto', $produto->id)->get();
+        
+        // return response()->json($fornecedores);
+
+        return redirect()->back()->with(['alert-success' => 'Lote do Produto Adicionado com Sucesso', 'modal' => '#viewModal', 'id_view_backup' => $request->id_view, 'produtoV' => $produto, 'fabricantesV' => $fabricantes, 'fornecedoresV' => $fornecedores, 'lotesV' => $lotes]);
     }
 }

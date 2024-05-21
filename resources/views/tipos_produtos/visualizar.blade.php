@@ -2,7 +2,7 @@
 
 @section('variables')
     @php
-        $title = 'Tipos de Produtos';
+        $title = ['Tipos de Produtos', 'Tipo de Produto'];
         $path = 'tipos_produtos';
         $columns = ['#', 'Nome', 'Descrição', 'Sigla'];
         $indexes = ['id', 'nome', 'descricao', 'sigla'];

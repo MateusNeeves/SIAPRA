@@ -10,6 +10,12 @@
                 <div class="flex mb-2">
                     <a class="btn btn-dark bg-gradient me-2 ms-3" href="{{route($path. '.register')}}"> Novo </a>
 
+                    <form method="post" action="{{route($path. '.view')}}">
+                        @csrf
+                        <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
+                        <button disabled id="view_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Visualizar </button>
+                    </form>
+
                     <form method="post" action="{{route($path. '.edit')}}">
                         @csrf
                         <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
@@ -23,10 +29,12 @@
                     $(document).on('click', function() {
                         if ($('.selected').length){
                             $('#edit_button').prop('disabled', false);
+                            $('#view_button').prop('disabled', false);
                             $('#delete_button').prop('disabled', false);
                         }
                         else{
                             $('#edit_button').prop('disabled', true);
+                            $('#view_button').prop('disabled', true);
                             $('#delete_button').prop('disabled', true);
                         }
                     });
@@ -101,6 +109,36 @@
                         <button type="submit" class="btn btn-dark">Cadastrar</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal VISUALIZAR-->
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Visualizar {{$title[1]}}</h1>
+                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (Session::has('modal')  && Session::get('modal') == '#viewModal')
+                        <div class="flash-message">
+                            @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
+                                @if(Session::has('alert-' . $msg))
+                                    <div class="w-100">
+                                        <p class="alert alert-{{ $msg }}">
+                                            {!! Session::get('alert-' . $msg) !!}
+                                        </p>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    @endif
+                    @yield('visualizar')
+                </div>
+                <div class="modal-footer">
+                </div>
             </div>
         </div>
     </div>
@@ -180,6 +218,41 @@
                         @else
                             <button type="submit" class="btn btn-danger">Deletar</button>
                         @endif
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal LOTE-->
+    <div class="modal fade" id="loteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar Novo Lote</h1>
+                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{{route($path. '.store_lote')}}">
+                    @csrf
+                    <div class="modal-body">
+                        @if (Session::has('modal') && Session::get('modal') == '#loteModal')
+                            <div class="flash-message">
+                                @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
+                                    @if(Session::has('alert-' . $msg))
+                                        <div class="w-100">
+                                            <p class="alert alert-{{ $msg }}">
+                                                {!! Session::get('alert-' . $msg) !!}
+                                            </p>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                            @endif
+                        <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
+                        @yield('novo_lote')
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary">Cadastrar</button>
                     </div>
                 </form>
             </div>

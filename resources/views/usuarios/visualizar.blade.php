@@ -2,7 +2,7 @@
 
 @section('variables')
     @php
-        $title = 'Usuários';
+        $title = ['Usuários', 'Usuário'];
         $path = 'usuarios';
         $columns = ['#', 'Usuário', 'Nome'];
         $indexes = ['id', 'username', 'name'];

@@ -90,9 +90,13 @@ Route::get('/', function () {
     Route::get('/produtos', [ProdutosController::class, 'index'])->middleware(['auth'])->name('produtos');
     Route::get('/produtos/cadastrar', [ProdutosController::class, 'register'])->middleware(['auth'])->name('produtos.register');
     Route::post('/produtos/cadastrar', [ProdutosController::class, 'store'])->middleware(['auth'])->name('produtos.store');
+    Route::post('/produtos/visualizar', [ProdutosController::class, 'view'])->middleware(['auth'])->name('produtos.view');
     Route::post('/produtos/editar', [ProdutosController::class, 'edit'])->middleware(['auth'])->name('produtos.edit');
     Route::put('/produtos/editar', [ProdutosController::class, 'update'])->middleware(['auth'])->name('produtos.update');
     Route::delete('/produtos/deletar', [ProdutosController::class, 'destroy'])->middleware(['auth'])->name('produtos.destroy');
+    
+    Route::post('/produtos/cadastrar_lote', [ProdutosController::class, 'register_lote'])->middleware(['auth'])->name('produtos.register_lote');
+    Route::post('/produtos/salvar_lote', [ProdutosController::class, 'store_lote'])->middleware(['auth'])->name('produtos.store_lote');
 
 
 Route::middleware('auth')->group(function () {
