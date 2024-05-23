@@ -315,8 +315,6 @@ class ProdutosController extends Controller
 
         $lotes = Produto_Lote::where('id_produto', $produto->id)->get();
         
-        // return response()->json($fornecedores);
-
         return redirect()->back()->with(['alert-success' => 'Lote do Produto Adicionado com Sucesso', 'modal' => '#viewModal', 'id_view_backup' => $request->id_view, 'produtoV' => $produto, 'fabricantesV' => $fabricantes, 'fornecedoresV' => $fornecedores, 'lotesV' => $lotes]);
     }
 }

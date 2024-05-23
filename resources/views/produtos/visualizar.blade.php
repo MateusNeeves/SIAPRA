@@ -83,18 +83,9 @@
         $lotesV = Session::get('lotesV') ?? [];
     @endphp
 
-    <form  method="post" action="{{route($path. '.register_lote')}}">
-        @csrf
-        <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-        <div class="flex justify-content-end">
-
-            <button id="lote_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Novo Lote </button>
-        </div>
-    </form>
-
     <!-- Nome -->
     <div>
-        <x-input-label class="h6 mt-4" :value="__('Nome')" />
+        <x-input-label class="h6" :value="__('Nome')" />
         <x-input-label class="mt-2 text-secondary" :value="__($produtoV->nome ?? '')" />
     </div>
 
