@@ -311,8 +311,46 @@ $(document).ready(function(){
     });
     
     table.columns().eq(0).each(function(colIdx){
-        $('input', $('.filters td')[colIdx]).on('keyup change', function () {
+        $('input', $('#myTable .filters td')[colIdx]).on('keyup change', function () {
             table.column( colIdx ).search( this.value ).draw();
+        });
+    });
+    
+});
+
+// TABLE IMPRIMIR ROTULO PRODUTO
+$(document).ready(function(){
+    $('#myTableImprimir .filters .filter').each( function () {
+        let input = document.createElement('input');
+        input.placeholder = this.textContent;
+        input.style.width = '100%';
+        input.style.padding = '3px';
+        input.style.boxSizing = 'border-box';
+
+        this.replaceChildren(input);
+    });
+
+
+    $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
+    
+    var tableImprimir = $('#myTableImprimir').DataTable({
+        layout: {
+            topStart: {},
+            topEnd: {},
+            bottomStart: {},
+            bottomEnd: {},
+        },
+        select: true,
+        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "todos"] ],
+        language:{
+            "emptyTable": "Nenhum registro encontrado",
+            "zeroRecords": "Nenhum registro encontrado",
+        }
+    });
+    
+    tableImprimir.columns().eq(0).each(function(colIdx){
+        $('input', $('#myTableImprimir .filters td')[colIdx]).on('keyup change', function () {
+            tableImprimir.column( colIdx ).search( this.value ).draw();
         });
     });
     
