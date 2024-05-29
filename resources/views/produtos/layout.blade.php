@@ -27,7 +27,7 @@
 
                 <script>
                     $(document).on('click', function() {
-                        if ($('.selected').length){
+                        if ($('#myTable .selected').length){
                             $('#edit_button').prop('disabled', false);
                             $('#view_button').prop('disabled', false);
                             $('#delete_button').prop('disabled', false);
@@ -285,24 +285,37 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-body">
-                    @if (Session::has('modal')  && Session::get('modal') == '#printModal')
-                        <div class="flash-message">
-                            @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
-                                @if(Session::has('alert-' . $msg))
-                                    <div class="w-100">
-                                        <p class="alert alert-{{ $msg }}">
-                                            {!! Session::get('alert-' . $msg) !!}
-                                        </p>
-                                    </div>
-                                @endif
-                            @endforeach
-                        </div>
-                    @endif
-                    @yield('imprimir')
-                </div>
-                <div class="modal-footer">
-                </div>
+                <form method="get" action="{{route('dashboard')}}">
+
+                    <div class="modal-body">
+                        @if (Session::has('modal')  && Session::get('modal') == '#printModal')
+                            <div class="flash-message">
+                                @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
+                                    @if(Session::has('alert-' . $msg))
+                                        <div class="w-100">
+                                            <p class="alert alert-{{ $msg }}">
+                                                {!! Session::get('alert-' . $msg) !!}
+                                            </p>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
+                        @yield('imprimir')
+                    </div>
+                    <div class="modal-footer">
+                        <button disabled id="printButton" type="submit" class="btn btn-dark">Imprimir</button>
+                    </div>
+
+                    <script>
+                        $(document).on('click', function() {
+                            if ($('#myTableImprimir .selected').length)
+                                $('#printButton').prop('disabled', false);
+                            else
+                                $('#printButton').prop('disabled', true);
+                        });
+                    </script>
+                </form>
             </div>
         </div>
     </div>
