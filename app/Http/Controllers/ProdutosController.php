@@ -125,7 +125,7 @@ class ProdutosController extends Controller
         foreach ($fabs as $fabricante)
             $fabricantes[] = $fabricante->nome;
 
-        $lotes = Produto_Lote::where('id_produto', $produto->id)->get();
+        $lotes = Produto_Lote::where('id_produto', $produto->id)->orderBy('data_validade', 'asc')->get();
         
         return redirect()->back()->with(['produtoV' => $produto, 'modal' => '#viewModal', 'fabricantesV' => $fabricantes, 'fornecedoresV' => $fornecedores, 'lotesV' => $lotes])->withInput(); 
 
@@ -316,5 +316,15 @@ class ProdutosController extends Controller
         $lotes = Produto_Lote::where('id_produto', $produto->id)->get();
         
         return redirect()->back()->with(['alert-success' => 'Lote do Produto Adicionado com Sucesso', 'modal' => '#viewModal', 'id_view_backup' => $request->id_view, 'produtoV' => $produto, 'fabricantesV' => $fabricantes, 'fornecedoresV' => $fornecedores, 'lotesV' => $lotes]);
+    }
+    public function view_print(Request $request){
+        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ?', [$request->id_view]);
+        $lotes = json_decode(json_encode($lotes), true);
+        //return response()->json(gettype($lotes));
+        return redirect()->back()->with(['modal' => '#printModal','lotesP' => $lotes]);
+
+    }
+    public function print_lote(){
+
     }
 }

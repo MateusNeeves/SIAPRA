@@ -124,11 +124,15 @@
                             <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                     </div>
-                    <div class="d-flex flex-column mt-3">
+                    <div class="d-flex mt-3">
                         <form method="post" action="{{route($path. '.register_lote')}}">
                             @csrf
                             <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
                             <button id="lote_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Novo Lote </button>
+                        </form>
+                        <form method="get" action="{{route($path. '.view_print')}}">
+                            <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
+                            <button id="print_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Imprimir Rótulo </button>
                         </form>
                     </div>
                 </div>
@@ -266,6 +270,39 @@
                         <button type="submit" class="btn btn-secondary">Cadastrar</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal IMPRIMIR-->
+    <div class="modal fade" id="printModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header d-block">
+                    <div class="d-flex">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Imprimir Rótulo</h1>
+                        <div class="ms-auto">
+                            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    @if (Session::has('modal')  && Session::get('modal') == '#printModal')
+                        <div class="flash-message">
+                            @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
+                                @if(Session::has('alert-' . $msg))
+                                    <div class="w-100">
+                                        <p class="alert alert-{{ $msg }}">
+                                            {!! Session::get('alert-' . $msg) !!}
+                                        </p>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    @endif
+                    @yield('imprimir')
+                </div>
+                <div class="modal-footer">
+                </div>
             </div>
         </div>
     </div>
