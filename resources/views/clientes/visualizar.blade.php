@@ -2,7 +2,7 @@
 
 @section('variables')
     @php
-        $title = 'Clientes';
+        $title = ['Clientes', 'Cliente'];
         $path = 'clientes';
         $columns = ['#', 'CNPJ', 'Razão Social', 'Nome Fantasia', 'Logradouro', 'Complemento', 'Estado', 'Cidade', 'Bairro', 'CEP', 'Tempo de Transporte'];
         $indexes = ['id', 'cnpj', 'razao_social', 'nome_fantasia', 'end_logradouro', 'end_complemento', 'estado', 'cidade', 'bairro', 'cep', 'tempo_transp'];
