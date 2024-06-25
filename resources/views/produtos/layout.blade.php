@@ -41,7 +41,7 @@
                 </script>
 
                 <div class="container overflow-auto mb-4">
-                    <table id="myTable" class="table table-bordered table-hover">
+                    <table id="myTable" class="table table-bordered table-hover text-sm">
                         <thead>
                             <tr>
                                 @foreach ($columns as $column)

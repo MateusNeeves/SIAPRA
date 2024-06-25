@@ -19,7 +19,8 @@ use Illuminate\Database\UniqueConstraintViolationException;
 class PlanejamentosController extends Controller
 {
     public function index(){
-        return view('planejamentos/visualizar');
+        $datas = Planejamento::select('data_producao')->distinct()->pluck('data_producao');
+        return view('planejamentos/visualizar', ['datas' => $datas]);
     }
 
     public function show(Request $request){

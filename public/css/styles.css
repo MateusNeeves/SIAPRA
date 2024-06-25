@@ -11,3 +11,15 @@ table.dataTable tbody tr.selected>* {
 .collapse.show {
     visibility: visible;
   }
+
+.placeholder-visible::placeholder {
+    color: white; /* Ajuste a cor do placeholder conforme necessário */
+}
+.input-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: black; /* Ajuste a cor conforme necessário */
+    pointer-events: none; /* Permite clicar no input em vez do ícone */
+}

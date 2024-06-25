@@ -14,7 +14,11 @@ use Illuminate\Support\Facades\Validator;
 
 class FracionamentosController extends Controller{
     public function index(){
-        return view('fracionamentos/visualizar');
+
+        $datas = collect(DB::select('SELECT DISTINCT DATA_PRODUCAO
+        FROM PLANEJAMENTOS WHERE ID IN (SELECT ID_PLANEJAMENTO FROM FRACIONAMENTOS)'))->pluck('data_producao');
+
+        return view('fracionamentos/visualizar', ['datas' => $datas]);
     }
 
     public function show(Request $request){

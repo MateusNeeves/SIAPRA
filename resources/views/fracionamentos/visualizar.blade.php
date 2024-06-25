@@ -13,12 +13,54 @@
                             {{ __('Novo Fracionamento') }}
                         </a>
                     </div>
-                    <div class="flex justify-content-center  mb-5">
-                        <input class="me-1 bg-secondary border rounded border-dark" id="data_producao" type="date" name="data_producao" value="{{old('data_producao')}}" required>
+                    <div class="flex justify-content-center mb-5">
+                        <div class="position-relative" style="width: 230px">
+                            <input class="btn btn-secondary border rounded border-dark placeholder-visible pe-3"  type="text" id="datePicker" name="data_producao" value="{{old('data_producao')}}" placeholder="Selecionar Data" readonly required>
+                            <i class="bi bi-calendar3-week input-icon"></i>
+                        </div>
+                        
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                // Obtém as datas do backend passadas pelo Blade
+                                const datas = @json($datas);
+                                var field = document.getElementById('datePicker');
+                                var button = document.getElementById('visualizar_button');
+
+                                const datePicker = new Pikaday({
+                                    field: field,
+                                    onSelect: function(date) {
+                                        field.value = moment(date).format('DD/MM/YYYY');
+                                    },
+                                    disableDayFn: function(date) {
+                                        const dateString = date.toISOString().split('T')[0];
+                                        return !datas.includes(dateString);
+                                    },
+                                    i18n: {
+                                        previousMonth: 'Mês anterior',
+                                        nextMonth: 'Próximo mês',
+                                        months: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                                        weekdays: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'],
+                                        weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+                                    }
+                                });
+                                if (field.value) {
+                                    datePicker.setDate(moment(field.value, 'DD/MM/YYYY').toDate());
+                                };
+                            });
+                            
+                            document.getElementById('datePicker').addEventListener('change', function() {
+                                if (document.getElementById('datePicker').value) {
+                                    document.getElementById('visualizar_button').disabled = false;
+                                }
+                            });
+
+                                              
+                        </script>
+
                         <button>
-                            <a class="btn btn-dark" >
+                            <button disabled class="btn btn-dark ms-2" id="visualizar_button" style="width: 230px">
                                 {{ __('Visualizar Fracionamento') }}
-                            </a>
+                            </button>
                         </button>
                     </div>
                 </form>
