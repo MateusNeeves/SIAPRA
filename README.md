@@ -38,8 +38,8 @@ Install the following applications:
 - **Node e NPM**
 
 Open the file php.ini in a text editor and uncomment the following lines:
-- extension=fileinfo
-- extension=zip
+- **extension=fileinfo**
+- **extension=zip**
 
 Open terminal, get to the project folder and execute the following commands:
 
