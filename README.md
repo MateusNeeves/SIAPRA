@@ -1,4 +1,4 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+ <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
@@ -31,6 +31,16 @@ If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Lar
 
 ## Get Project Ready to Use
 
+Install the following applications:
+- **PostgreSQL**
+- **PHP 8.2 or above**
+- **Composer**
+- **Node e NPM**
+
+Open the file php.ini in a text editor and uncomment the following lines:
+- extension=fileinfo
+- extension=zip
+
 Open terminal, get to the project folder and execute the following commands:
 
 - **composer update**
@@ -38,6 +48,7 @@ Open terminal, get to the project folder and execute the following commands:
 - **php artisan key:generate**
 - **npm install**
 - **npm run build**
+- **php artisan db:create SIAPRA**
 - **php artisan migrate**
 - **php artisan serve**
 
