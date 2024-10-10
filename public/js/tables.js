@@ -320,7 +320,7 @@ $(document).ready(function(){
 
 // TABLE IMPRIMIR ROTULO PRODUTO
 $(document).ready(function(){
-    $('#myTableImprimir .filters .filter').each( function () {
+    $('#myTableSelect .filters .filter').each( function () {
         let input = document.createElement('input');
         input.placeholder = this.textContent;
         input.style.width = '100%';
@@ -333,7 +333,7 @@ $(document).ready(function(){
 
     $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
     
-    var tableImprimir = $('#myTableImprimir').DataTable({
+    var tableImprimir = $('#myTableSelect').DataTable({
         layout: {
             topStart: {},
             topEnd: {},
@@ -349,7 +349,7 @@ $(document).ready(function(){
     });
     
     tableImprimir.columns().eq(0).each(function(colIdx){
-        $('input', $('#myTableImprimir .filters td')[colIdx]).on('keyup change', function () {
+        $('input', $('#myTableSelect .filters td')[colIdx]).on('keyup change', function () {
             tableImprimir.column( colIdx ).search( this.value ).draw();
         });
     });

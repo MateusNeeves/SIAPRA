@@ -262,13 +262,13 @@
 
 @endsection
 
-@section('imprimir')
+@section('selecionar_lote')
     @php
         $lotesP = Session::get('lotesP') ?? [];
     @endphp
 
     <div>
-        <table id="myTableImprimir" class="table table-bordered w-100">
+        <table id="myTableSelect" class="table table-bordered w-100">
             <thead>
                 <tr>
                     <th colspan="4" class="table-dark text-start" data-dt-order="disable"> Selecione um Lote </th>

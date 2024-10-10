@@ -130,6 +130,11 @@
                             <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
                             <button id="lote_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Novo Lote </button>
                         </form>
+                        <form method="post" action="{{route($path. '.make_mov')}}">
+                            @csrf
+                            <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
+                            <button id="mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Movimentar </button>
+                        </form>
                         <form method="get" action="{{route($path. '.view_print')}}">
                             <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
                             <button id="print_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Imprimir Rótulo </button>
@@ -273,22 +278,22 @@
             </div>
         </div>
     </div>
-    <!-- Modal IMPRIMIR-->
-    <div class="modal fade" id="printModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <!-- Modal SELECIONAR LOTE-->
+    <div class="modal fade" id="selecLoteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header d-block">
                     <div class="d-flex">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Imprimir Rótulo</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{Session::get('title_modal')}}</h1>
                         <div class="ms-auto">
                             <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                     </div>
                 </div>
-                <form method="get" action="{{route('dashboard')}}">
+                <form method="get" action="{{route(Session::get('route_modal', 'dashboard'))}}">
 
                     <div class="modal-body">
-                        @if (Session::has('modal')  && Session::get('modal') == '#printModal')
+                        @if (Session::has('modal')  && Session::get('modal') == '#selecLoteModal')
                             <div class="flash-message">
                                 @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
                                     @if(Session::has('alert-' . $msg))
@@ -301,18 +306,18 @@
                                 @endforeach
                             </div>
                         @endif
-                        @yield('imprimir')
+                        @yield('selecionar_lote')
                     </div>
                     <div class="modal-footer">
-                        <button disabled id="printButton" type="submit" class="btn btn-dark">Imprimir</button>
+                        <button disabled id="selectButton" type="submit" class="btn btn-dark">Selecionar</button>
                     </div>
 
                     <script>
                         $(document).on('click', function() {
-                            if ($('#myTableImprimir .selected').length)
-                                $('#printButton').prop('disabled', false);
+                            if ($('#myTableSelect .selected').length)
+                                $('#selectButton').prop('disabled', false);
                             else
-                                $('#printButton').prop('disabled', true);
+                                $('#selectButton').prop('disabled', true);
                         });
                     </script>
                 </form>

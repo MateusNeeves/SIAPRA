@@ -96,6 +96,7 @@ Route::get('/', function () {
     Route::delete('/produtos/deletar', [ProdutosController::class, 'destroy'])->middleware(['auth'])->name('produtos.destroy');
     
     Route::post('/produtos/cadastrar_lote', [ProdutosController::class, 'register_lote'])->middleware(['auth'])->name('produtos.register_lote');
+    Route::post('/produtos/movimentar', [ProdutosController::class, 'make_mov'])->middleware(['auth'])->name('produtos.make_mov');
     Route::post('/produtos/salvar_lote', [ProdutosController::class, 'store_lote'])->middleware(['auth'])->name('produtos.store_lote');
     Route::get('/produtos/imprimir_rotulo', [ProdutosController::class, 'view_print'])->middleware(['auth'])->name('produtos.view_print');
 

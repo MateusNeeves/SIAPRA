@@ -320,11 +320,12 @@ class ProdutosController extends Controller
     public function view_print(Request $request){
         $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ?', [$request->id_view]);
         $lotes = json_decode(json_encode($lotes), true);
-        //return response()->json(gettype($lotes));
-        return redirect()->back()->with(['modal' => '#printModal','lotesP' => $lotes]);
-
+        return redirect()->back()->with(['modal' => '#selecLoteModal','lotesP' => $lotes, 'title_modal' => 'Selecione o lote para imprimir rótulo:', 'route_modal' => 'produtos']);
     }
-    public function print_lote(){
 
+    public function make_mov(Request $request){
+        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ?', [$request->id_view]);
+        $lotes = json_decode(json_encode($lotes), true);
+        return redirect()->back()->with(['modal' => '#selecLoteModal','lotesP' => $lotes, 'title_modal' => 'Selecione o lote para movimentação:', 'route_modal' => 'produtos']);
     }
 }
