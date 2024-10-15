@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Dest_Produto;
 use App\Models\Produto_Fab;
 use App\Models\Produto_Lote;
 use App\Models\Produto_Forn;
 use App\Models\Produto;
 use App\Models\Fabricante;
 use App\Models\Fornecedor;
+use App\Models\Produto_Mov;
 use App\Models\Tipo_Produto;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -318,14 +321,45 @@ class ProdutosController extends Controller
         return redirect()->back()->with(['alert-success' => 'Lote do Produto Adicionado com Sucesso', 'modal' => '#viewModal', 'id_view_backup' => $request->id_view, 'produtoV' => $produto, 'fabricantesV' => $fabricantes, 'fornecedoresV' => $fornecedores, 'lotesV' => $lotes]);
     }
     public function view_print(Request $request){
-        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ?', [$request->id_view]);
+        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ?', [$request->id_view]);
         $lotes = json_decode(json_encode($lotes), true);
-        return redirect()->back()->with(['modal' => '#selecLoteModal','lotesP' => $lotes, 'title_modal' => 'Selecione o lote para imprimir rótulo:', 'route_modal' => 'produtos']);
+        return redirect()->back()->with(['modal' => '#selecLoteModal','lotesP' => $lotes, 'title_modal' => 'Selecione o lote para imprimir rótulo:', 'route_modal' => '']);
     }
 
     public function make_mov(Request $request){
-        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ?', [$request->id_view]);
+        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? AND L.QTD_ITENS_ESTOQUE > 0', [$request->id_view]);
         $lotes = json_decode(json_encode($lotes), true);
-        return redirect()->back()->with(['modal' => '#selecLoteModal','lotesP' => $lotes, 'title_modal' => 'Selecione o lote para movimentação:', 'route_modal' => 'produtos']);
+        return redirect()->back()->with(['modal' => '#selecLoteModal','lotesP' => $lotes, 'title_modal' => 'Selecione o lote para retirada:', 'route_modal' => '.register_mov']);
+    }
+    
+    public function register_mov(Request $request){
+        $dest_produtos = Dest_Produto::all();
+
+        return redirect()->back()->with(['id_lote' => $request->id_lote, 'qtd_estoque_lote' => $request->qtd_estoque_lote, 'dest_produtos' => $dest_produtos, 'modal' => '#newMovModal'])->withInput();
+    }
+
+    public function store_mov(Request $request){
+        try{
+            DB::beginTransaction();
+
+            $mov = new Produto_Mov;
+    
+            $mov->id_produtos_lote = $request->id_lote;
+            $mov->id_destino = $request->destino;
+            $mov->qtd_itens_movidos = $request->qtd_itens_movidos;
+            $mov->hora_mov = Carbon::createFromFormat("H:i:s", date('H:i:s'));
+
+            $mov->save();
+
+            Produto_Lote::findOrFail($request->id_lote)->decrement('qtd_itens_estoque', $request->qtd_itens_movidos);
+            
+            DB::commit();
+            return redirect()->back()->with('alert-success', 'Retirada realizada com sucesso com sucesso');
+        }
+        catch (\Exception $exception) {
+            DB::rollback();
+            return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput();
+        }
+
     }
 }

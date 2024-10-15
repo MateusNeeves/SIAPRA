@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('produtos_mov', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_produto');
-            $table->unsignedBigInteger('id_fabricante');
-            $table->unsignedBigInteger('id_fornecedor');
+            $table->unsignedBigInteger('id_produtos_lote');
 
             $table->unsignedBigInteger('id_destino');
 
@@ -25,11 +23,8 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->foreign('id_produto')->references('id')->on('produtos');
-            $table->foreign('id_fabricante')->references('id')->on('fabricantes');
-            $table->foreign('id_fornecedor')->references('id')->on('fornecedores');
-            $table->foreign('id_destino')->references('id')->on('produtos_dest');
-            $table->unique(['id_produto', 'id_fabricante', 'lote_fabricante']);
+            $table->foreign('id_produtos_lote')->references('id')->on('produtos_lote');
+            $table->foreign('id_destino')->references('id')->on('dest_produtos');
         });
     }
 

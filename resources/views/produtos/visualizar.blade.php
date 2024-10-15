@@ -271,12 +271,13 @@
         <table id="myTableSelect" class="table table-bordered w-100">
             <thead>
                 <tr>
-                    <th colspan="4" class="table-dark text-start" data-dt-order="disable"> Selecione um Lote </th>
+                    <th colspan="5" class="table-dark text-start" data-dt-order="disable"> Selecione um Lote </th>
                 </tr>
                 <tr class="text-sm">
                     <th class="table-light text-start table-dark" scope="col"> # </th>
                     <th class="table-light text-start table-dark" scope="col"> Fabricante </th>
                     <th class="table-light text-start table-dark" scope="col"> Lote do Fabricante </th>
+                    <th class="table-light text-start table-dark" scope="col"> Qtd em Estoque </th>
                     <th class="table-light text-start table-dark" scope="col"> Data de Validade </th>
                 </tr>
             </thead>
@@ -285,19 +286,49 @@
                     <td class="filter"> # </td>
                     <td class="filter"> Fabricante </td>
                     <td class="filter"> Lote do Fabricante </td>
+                    <td class="filter"> Qtd em Estoque </td>
                     <td class="filter"> Data de Validade </td>
                 </tr>
             </thead>
             <tbody class="text-sm"> 
                 @foreach ($lotesP as $lote)
                     <tr>
-                        <td class="text-center">{{$lote['id']}}</td>
+                        <td class="text-center id">{{$lote['id']}}</td>
                         <td class="text-center">{{$lote['nome']}}</td>      
                         <td class="text-center">{{$lote['lote_fabricante']}}</td>      
+                        <td class="text-center qtd">{{$lote['qtd_itens_estoque']}}</td>      
                         <td class="text-center">{{$lote['data_validade']}}</td>      
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
+@endsection
+
+@section('novo_mov')
+    @php
+        $id_lote = Session::get('id_lote') ?? null;
+        $qtd_estoque_lote = Session::get('qtd_estoque_lote') ?? null;
+        $destinos = Session::get('dest_produtos') ?? [];
+    @endphp
+
+    <!-- Destino do Produto -->
+    <div class="mt-4">
+        <x-input-label :value="__('Destino do Produto *')" />
+        <select id="destino" class="block mt-1 w-full border rounded" name="destino" required>
+            <option value="" hidden></option>
+            @foreach ($destinos as $destino)
+                <option value="{{$destino['id']}}" {{$destino['nome'] == (old('destino') ?? "") ? "selected" : ""}}> {{$destino['nome']}} </option>
+            @endforeach
+        </select>
+    </div>
+
+    <!-- Quantidade de Itens Retirados -->
+    <div class="mt-4">
+        <x-input-label :value="__('Quantidade de Itens Retirados *')" />
+        <x-text-input id="qtd_itens_movidos" class="block mt-1 w-full" type="number" max="{{$qtd_estoque_lote}}" name="qtd_itens_movidos" :value="old('qtd_itens_movidos', $produto->qtd_itens_movidos ?? '')" required/>
+    </div>
+
+    <input hidden name="id_lote" id="id_lote" value="{{$id_lote}}">
+
 @endsection

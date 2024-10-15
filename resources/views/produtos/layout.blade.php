@@ -133,7 +133,7 @@
                         <form method="post" action="{{route($path. '.make_mov')}}">
                             @csrf
                             <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-                            <button id="mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Movimentar </button>
+                            <button id="mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Retirar Itens </button>
                         </form>
                         <form method="get" action="{{route($path. '.view_print')}}">
                             <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
@@ -290,7 +290,7 @@
                         </div>
                     </div>
                 </div>
-                <form method="get" action="{{route(Session::get('route_modal', 'dashboard'))}}">
+                <form method="get" action="{{route($path. Session::get('route_modal'))}}">
 
                     <div class="modal-body">
                         @if (Session::has('modal')  && Session::get('modal') == '#selecLoteModal')
@@ -306,10 +306,13 @@
                                 @endforeach
                             </div>
                         @endif
+                        <input hidden name="id_lote" id="id_lote" value="{{old('id_lote')}}">
+                        <input hidden name="qtd_estoque_lote" id="qtd_estoque_lote" value="{{old('qtd_estoque_lote')}}">
+                            
                         @yield('selecionar_lote')
                     </div>
                     <div class="modal-footer">
-                        <button disabled id="selectButton" type="submit" class="btn btn-dark">Selecionar</button>
+                        <button disabled onclick="$('#id_lote').val($('#myTableSelect .selected .id').text()); $('#qtd_estoque_lote').val($('#myTableSelect .selected .qtd').text())" id="selectButton" type="submit" class="btn btn-dark">Selecionar</button>
                     </div>
 
                     <script>
@@ -320,6 +323,33 @@
                                 $('#selectButton').prop('disabled', true);
                         });
                     </script>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal MOVIMENTACAO -->
+    <div class="modal fade" id="newMovModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header d-block">
+                    <div class="d-flex">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel"> Retirada de Produto </h1>
+                        <div class="ms-auto">
+                            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+                <form method="post" action="{{route($path. '.store_mov')}}">
+                    @csrf
+
+                    <div class="modal-body">
+                        @yield('novo_mov')
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-dark">Confirmar</button>
+                    </div>
+
                 </form>
             </div>
         </div>

@@ -56,6 +56,9 @@
                             <x-dropdown-link class=" text-decoration-none" :href="route('tipos_produtos')">
                                 {{ __('Tipos de Produtos') }}
                             </x-dropdown-link>
+                            <x-dropdown-link class=" text-decoration-none" :href="route('dest_produtos')">
+                                {{ __('Destinos dos Produtos') }}
+                            </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
                 </div>

@@ -8,6 +8,7 @@ use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\ParametrosController;
 use App\Http\Controllers\FabricantesController;
+use App\Http\Controllers\DestProdutosController;
 use App\Http\Controllers\FornecedoresController;
 use App\Http\Controllers\PlanejamentosController;
 use App\Http\Controllers\TiposProdutosController;
@@ -86,6 +87,14 @@ Route::get('/', function () {
     Route::put('/tipos_produtos/editar', [TiposProdutosController::class, 'update'])->middleware(['auth'])->name('tipos_produtos.update');
     Route::delete('/tipos_produtos/deletar', [TiposProdutosController::class, 'destroy'])->middleware(['auth'])->name('tipos_produtos.destroy');
 
+// Destino do Produto
+    Route::get('/dest_produtos', [DestProdutosController::class, 'index'])->middleware(['auth'])->name('dest_produtos');
+    Route::get('/dest_produtos/cadastrar', [DestProdutosController::class, 'register'])->middleware(['auth'])->name('dest_produtos.register');
+    Route::post('/dest_produtos/cadastrar', [DestProdutosController::class, 'store'])->middleware(['auth'])->name('dest_produtos.store');
+    Route::post('/dest_produtos/editar', [DestProdutosController::class, 'edit'])->middleware(['auth'])->name('dest_produtos.edit');
+    Route::put('/dest_produtos/editar', [DestProdutosController::class, 'update'])->middleware(['auth'])->name('dest_produtos.update');
+    Route::delete('/dest_produtos/deletar', [DestProdutosController::class, 'destroy'])->middleware(['auth'])->name('dest_produtos.destroy');
+
 // Produtos
     Route::get('/produtos', [ProdutosController::class, 'index'])->middleware(['auth'])->name('produtos');
     Route::get('/produtos/cadastrar', [ProdutosController::class, 'register'])->middleware(['auth'])->name('produtos.register');
@@ -96,10 +105,12 @@ Route::get('/', function () {
     Route::delete('/produtos/deletar', [ProdutosController::class, 'destroy'])->middleware(['auth'])->name('produtos.destroy');
     
     Route::post('/produtos/cadastrar_lote', [ProdutosController::class, 'register_lote'])->middleware(['auth'])->name('produtos.register_lote');
-    Route::post('/produtos/movimentar', [ProdutosController::class, 'make_mov'])->middleware(['auth'])->name('produtos.make_mov');
     Route::post('/produtos/salvar_lote', [ProdutosController::class, 'store_lote'])->middleware(['auth'])->name('produtos.store_lote');
     Route::get('/produtos/imprimir_rotulo', [ProdutosController::class, 'view_print'])->middleware(['auth'])->name('produtos.view_print');
-
+    
+    Route::post('/produtos/movimentar', [ProdutosController::class, 'make_mov'])->middleware(['auth'])->name('produtos.make_mov');
+    Route::get('/produtos/movimentar/cadastrar', [ProdutosController::class, 'register_mov'])->middleware(['auth'])->name('produtos.register_mov');
+    Route::post('/produtos/movimentar/cadastrar', [ProdutosController::class, 'store_mov'])->middleware(['auth'])->name('produtos.store_mov');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
