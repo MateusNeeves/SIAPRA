@@ -128,8 +128,11 @@ class ProdutosController extends Controller
         foreach ($fabs as $fabricante)
             $fabricantes[] = $fabricante->nome;
 
-        $lotes = Produto_Lote::where('id_produto', $produto->id)->orderBy('data_validade', 'asc')->get();
+
+        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ?', [$produto->id]);
         
+        $lotes = json_decode(json_encode($lotes), true);
+
         return redirect()->back()->with(['produtoV' => $produto, 'modal' => '#viewModal', 'fabricantesV' => $fabricantes, 'fornecedoresV' => $fornecedores, 'lotesV' => $lotes])->withInput(); 
 
     }

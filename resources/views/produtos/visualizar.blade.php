@@ -154,13 +154,14 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th colspan="4" class="table-secondary text-start text-dark" scope="col"> Lista da Qtd em Estoque </th>
+                    <th colspan="5" class="table-secondary text-start text-dark" scope="col"> Lista da Qtd em Estoque </th>
                 </tr>
                 <tr class="text-sm">
-                    <th class="table-light text-start text-dark" scope="col"> # </th>
-                    <th class="table-light text-start text-dark" scope="col"> Lote do Fabricante </th>
-                    <th class="table-light text-start text-dark" scope="col"> Qtd em Estoque </th>
-                    <th class="table-light text-start text-dark" scope="col"> Data de Validade </th>
+                    <th class="table-light text-center text-dark" scope="col"> # </th>
+                    <th class="table-light text-center text-dark" scope="col"> Fabricante </th>
+                    <th class="table-light text-center text-dark" scope="col"> Lote do Fabricante </th>
+                    <th class="table-light text-center text-dark" scope="col"> Qtd em Estoque </th>
+                    <th class="table-light text-center text-dark" scope="col"> Data de Validade </th>
 
                 </tr>
             </thead>
@@ -171,6 +172,7 @@
 
                     <tr>
                         <td>{{$lote['id']}}</td>
+                        <td>{{$lote['nome']}}</td>
                         <td>{{$lote['lote_fabricante']}}</td>      
                         <td>{{$lote['qtd_itens_estoque']}}</td>      
                         <td>{{$lote['data_validade']}}</td>      
@@ -179,7 +181,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="4" class="table-light text-end text-danger" scope="col"> Total: {{$total}}</th>
+                    <th colspan="5" class="table-light text-end text-danger" scope="col"> Total: {{$total}}</th>
                 </tr>
             </tfoot>
         </table>
@@ -326,7 +328,7 @@
     <!-- Quantidade de Itens Retirados -->
     <div class="mt-4">
         <x-input-label :value="__('Quantidade de Itens Retirados *')" />
-        <x-text-input id="qtd_itens_movidos" class="block mt-1 w-full" type="number" max="{{$qtd_estoque_lote}}" name="qtd_itens_movidos" :value="old('qtd_itens_movidos', $produto->qtd_itens_movidos ?? '')" required/>
+        <x-text-input id="qtd_itens_movidos" class="block mt-1 w-full" type="number" min="0" max="{{$qtd_estoque_lote}}" name="qtd_itens_movidos" :value="old('qtd_itens_movidos', $produto->qtd_itens_movidos ?? '')" required/>
     </div>
 
     <input hidden name="id_lote" id="id_lote" value="{{$id_lote}}">
