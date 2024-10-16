@@ -129,7 +129,7 @@ class ProdutosController extends Controller
             $fabricantes[] = $fabricante->nome;
 
 
-        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ?', [$produto->id]);
+        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? ORDER BY L.DATA_VALIDADE', [$produto->id]);
         
         $lotes = json_decode(json_encode($lotes), true);
 
@@ -363,6 +363,18 @@ class ProdutosController extends Controller
             DB::rollback();
             return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput();
         }
+    }
 
+    public function view_mov(Request $request){
+
+        $lotes_entrada = DB::select('SELECT ID, QTD_ITENS_RECEBIDOS, DATA_ENTREGA FROM PRODUTOS_LOTE WHERE ID_PRODUTO = ? ORDER BY DATA_ENTREGA', [$request->id_view]);
+        $lotes_entrada = json_decode(json_encode($lotes_entrada), true);
+ 
+        foreach ($lotes_entrada as $i => $lote_entrada) {
+            $lotes_saida[$i] = DB::select('SELECT M.QTD_ITENS_MOVIDOS, M.HORA_MOV, D.NOME FROM PRODUTOS_MOV M INNER JOIN DEST_PRODUTOS D ON (M.ID_DESTINO = D.ID) WHERE ID_PRODUTOS_LOTE = ? ORDER BY HORA_MOV', [$lote_entrada['id']]);
+            $lotes_saida[$i] = json_decode(json_encode($lotes_saida[$i]), true);
+        }
+
+        return redirect()->back()->with(['lotes_entrada' => $lotes_entrada, 'lotes_saida' => $lotes_saida, 'modal' => '#viewMovModal'])->withInput();
     }
 }

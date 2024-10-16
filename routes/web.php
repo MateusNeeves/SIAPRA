@@ -108,9 +108,10 @@ Route::get('/', function () {
     Route::post('/produtos/salvar_lote', [ProdutosController::class, 'store_lote'])->middleware(['auth'])->name('produtos.store_lote');
     Route::get('/produtos/imprimir_rotulo', [ProdutosController::class, 'view_print'])->middleware(['auth'])->name('produtos.view_print');
     
-    Route::post('/produtos/movimentar', [ProdutosController::class, 'make_mov'])->middleware(['auth'])->name('produtos.make_mov');
+    Route::post('/produtos/movimentar/selecionar_lote', [ProdutosController::class, 'make_mov'])->middleware(['auth'])->name('produtos.make_mov');
     Route::get('/produtos/movimentar/cadastrar', [ProdutosController::class, 'register_mov'])->middleware(['auth'])->name('produtos.register_mov');
     Route::post('/produtos/movimentar/cadastrar', [ProdutosController::class, 'store_mov'])->middleware(['auth'])->name('produtos.store_mov');
+    Route::get('/produtos/movimentar', [ProdutosController::class, 'view_mov'])->middleware(['auth'])->name('produtos.view_mov');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

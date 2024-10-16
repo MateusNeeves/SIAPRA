@@ -334,3 +334,45 @@
     <input hidden name="id_lote" id="id_lote" value="{{$id_lote}}">
 
 @endsection
+
+@section('view_mov')
+    @php
+        $lotes_entrada = Session::get('lotes_entrada') ?? [];
+        $lotes_saida = Session::get('lotes_saida') ?? [];
+    @endphp
+
+    <div>
+        <table id="myTableSelect" class="table table-bordered w-100">
+            <thead>
+                <tr class="text-sm">
+                    <th class="text-start table-dark" scope="col"> # </th>
+                    <th class="text-start table-dark" scope="col"> Tipo </th>
+                    <th class="text-start table-dark" scope="col"> Data </th>
+                    <th class="text-start table-dark" scope="col"> Qtd Itens</th>
+                    <th class="text-start table-dark" scope="col"> Destino </th>
+                </tr>
+            </thead>
+            <tbody class="text-sm"> 
+                @foreach ($lotes_entrada as $i => $lote_entrada)
+                    <tr class="bg-secondary">
+                        <td class="text-center" style="background-color: rgb(229 231 235);">{{$lote_entrada['id']}}</td>
+                        <td class="text-center" style="background-color: rgb(229 231 235);">ENTRADA</td>      
+                        <td class="text-center" style="background-color: rgb(229 231 235);">{{$lote_entrada['data_entrega']}}</td>      
+                        <td class="text-center" style="background-color: rgb(229 231 235);">{{$lote_entrada['qtd_itens_recebidos']}}</td>      
+                        <td class="text-center" style="background-color: rgb(229 231 235);"></td>      
+                    </tr>
+                    @foreach ($lotes_saida[$i] as $j => $lote_saida)
+                        <tr>
+                            <td class="text-center"></td>
+                            <td class="text-center">SAÍDA</td>      
+                            <td class="text-center">{{$lote_saida['hora_mov']}}</td>      
+                            <td class="text-center">{{$lote_saida['qtd_itens_movidos']}}</td>      
+                            <td class="text-center">{{$lote_saida['nome']}}</td>      
+                        </tr>
+                    @endforeach
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+@endsection
