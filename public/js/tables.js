@@ -341,7 +341,8 @@ $(document).ready(function(){
             bottomEnd: {},
         },
         select: true,
-        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "todos"] ],
+        ordering: false,
+        // "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "todos"] ],
         language:{
             "emptyTable": "Nenhum registro encontrado",
             "zeroRecords": "Nenhum registro encontrado",

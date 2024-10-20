@@ -268,43 +268,44 @@
     @php
         $lotesP = Session::get('lotesP') ?? [];
     @endphp
-
-    <div>
-        <table id="myTableSelect" class="table table-bordered w-100">
-            <thead>
-                <tr>
-                    <th colspan="5" class="table-dark text-start" data-dt-order="disable"> Selecione um Lote </th>
-                </tr>
-                <tr class="text-sm">
-                    <th class="table-light text-start table-dark" scope="col"> # </th>
-                    <th class="table-light text-start table-dark" scope="col"> Fabricante </th>
-                    <th class="table-light text-start table-dark" scope="col"> Lote do Fabricante </th>
-                    <th class="table-light text-start table-dark" scope="col"> Qtd em Estoque </th>
-                    <th class="table-light text-start table-dark" scope="col"> Data de Validade </th>
-                </tr>
-            </thead>
-            <thead class="filters">
-                <tr class="text-sm">
-                    <td class="filter"> # </td>
-                    <td class="filter"> Fabricante </td>
-                    <td class="filter"> Lote do Fabricante </td>
-                    <td class="filter"> Qtd em Estoque </td>
-                    <td class="filter"> Data de Validade </td>
-                </tr>
-            </thead>
-            <tbody class="text-sm"> 
-                @foreach ($lotesP as $lote)
+    @if ($lotesP != [])
+        <div>
+            <table id="myTableSelect" class="table table-bordered w-100">
+                <thead>
                     <tr>
-                        <td class="text-center id">{{$lote['id']}}</td>
-                        <td class="text-center">{{$lote['nome']}}</td>      
-                        <td class="text-center">{{$lote['lote_fabricante']}}</td>      
-                        <td class="text-center qtd">{{$lote['qtd_itens_estoque']}}</td>      
-                        <td class="text-center">{{$lote['data_validade']}}</td>      
+                        <th colspan="5" class="table-dark text-start" data-dt-order="disable"> Selecione um Lote </th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+                    <tr class="text-sm">
+                        <th class="table-light text-start table-dark" scope="col"> # </th>
+                        <th class="table-light text-start table-dark" scope="col"> Fabricante </th>
+                        <th class="table-light text-start table-dark" scope="col"> Lote do Fabricante </th>
+                        <th class="table-light text-start table-dark" scope="col"> Qtd em Estoque </th>
+                        <th class="table-light text-start table-dark" scope="col"> Data de Validade </th>
+                    </tr>
+                </thead>
+                <thead class="filters">
+                    <tr class="text-sm">
+                        <td class="filter"> # </td>
+                        <td class="filter"> Fabricante </td>
+                        <td class="filter"> Lote do Fabricante </td>
+                        <td class="filter"> Qtd em Estoque </td>
+                        <td class="filter"> Data de Validade </td>
+                    </tr>
+                </thead>
+                <tbody class="text-sm"> 
+                    @foreach ($lotesP as $lote)
+                        <tr>
+                            <td class="text-center id">{{$lote['id']}}</td>
+                            <td class="text-center">{{$lote['nome']}}</td>      
+                            <td class="text-center">{{$lote['lote_fabricante']}}</td>      
+                            <td class="text-center qtd">{{$lote['qtd_itens_estoque']}}</td>      
+                            <td class="text-center">{{$lote['data_validade']}}</td>      
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
 @endsection
 
 @section('novo_mov')
@@ -340,39 +341,73 @@
         $lotes_entrada = Session::get('lotes_entrada') ?? [];
         $lotes_saida = Session::get('lotes_saida') ?? [];
     @endphp
-
-    <div>
-        <table id="myTableSelect" class="table table-bordered w-100">
-            <thead>
-                <tr class="text-sm">
-                    <th class="text-start table-dark" scope="col"> # </th>
-                    <th class="text-start table-dark" scope="col"> Tipo </th>
-                    <th class="text-start table-dark" scope="col"> Data </th>
-                    <th class="text-start table-dark" scope="col"> Qtd Itens</th>
-                    <th class="text-start table-dark" scope="col"> Destino </th>
-                </tr>
-            </thead>
-            <tbody class="text-sm"> 
-                @foreach ($lotes_entrada as $i => $lote_entrada)
-                    <tr class="bg-secondary">
-                        <td class="text-center" style="background-color: rgb(229 231 235);">{{$lote_entrada['id']}}</td>
-                        <td class="text-center" style="background-color: rgb(229 231 235);">ENTRADA</td>      
-                        <td class="text-center" style="background-color: rgb(229 231 235);">{{$lote_entrada['data_entrega']}}</td>      
-                        <td class="text-center" style="background-color: rgb(229 231 235);">{{$lote_entrada['qtd_itens_recebidos']}}</td>      
-                        <td class="text-center" style="background-color: rgb(229 231 235);"></td>      
+    @if ($lotes_entrada  != [])
+        <div>
+            <table class="table table-bordered w-100">
+                <thead>
+                    <tr class="text-sm">
+                        <th class="text-start table-dark" scope="col"> # </th>
+                        <th class="text-start table-dark" scope="col"> Tipo </th>
+                        <th class="text-start table-dark" scope="col"> Data </th>
+                        <th class="text-start table-dark" scope="col"> Qtd Itens</th>
+                        <th class="text-start table-dark" scope="col"> Destino </th>
                     </tr>
-                    @foreach ($lotes_saida[$i] as $j => $lote_saida)
-                        <tr>
-                            <td class="text-center"></td>
-                            <td class="text-center">SAÍDA</td>      
-                            <td class="text-center">{{$lote_saida['hora_mov']}}</td>      
-                            <td class="text-center">{{$lote_saida['qtd_itens_movidos']}}</td>      
-                            <td class="text-center">{{$lote_saida['nome']}}</td>      
+                </thead>
+                <tbody class="text-sm"> 
+                    @foreach ($lotes_entrada as $i => $lote_entrada)
+                        <tr class="bg-secondary">
+                            <td class="text-center" style="background-color: rgb(229 231 235);">{{$lote_entrada['id']}}</td>
+                            <td class="text-center" style="background-color: rgb(229 231 235);">ENTRADA</td>      
+                            <td class="text-center" style="background-color: rgb(229 231 235);">{{$lote_entrada['data_entrega']}}</td>      
+                            <td class="text-center" style="background-color: rgb(229 231 235);">{{$lote_entrada['qtd_itens_recebidos']}}</td>      
+                            <td class="text-center" style="background-color: rgb(229 231 235);"></td>      
+                        </tr>
+                        @foreach ($lotes_saida[$i] as $j => $lote_saida)
+                            <tr>
+                                <td class="text-center"></td>
+                                <td class="text-center">SAÍDA</td>      
+                                <td class="text-center">{{$lote_saida['hora_mov']}}</td>      
+                                <td class="text-center">{{$lote_saida['qtd_itens_movidos']}}</td>      
+                                <td class="text-center">{{$lote_saida['nome']}}</td>      
+                            </tr>
+                        @endforeach
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
+@endsection
+
+@section('view_exp')
+    @php
+        $lotes_vencidos = Session::get('lotes_vencidos') ?? [];
+    @endphp
+    @if ($lotes_vencidos  != [])
+        <div>
+            <table id="myTableSelect" class="table table-bordered table-hover text-sm w-100">
+                <thead>
+                    <tr class="text-sm">
+                        <th class="text-start table-dark" scope="col"> # </th>
+                        <th class="text-start table-dark" scope="col"> Produto </th>
+                        <th class="text-start table-dark" scope="col"> Fabricante </th>
+                        <th class="text-start table-dark" scope="col"> Lote Fabricante </th>
+                        <th class="text-start table-dark" scope="col"> Qtd Itens </th>
+                        <th class="text-start table-dark" scope="col"> Validade </th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm"> 
+                    @foreach ($lotes_vencidos as $i => $lote_vencido)
+                        <tr class="bg-secondary">
+                            <td class="text-center">{{$lote_vencido['id']}}</td>
+                            <td class="text-center">{{$lote_vencido['produto']}}</td>      
+                            <td class="text-center">{{$lote_vencido['fabricante']}}</td>      
+                            <td class="text-center">{{$lote_vencido['lote_fabricante']}}</td>      
+                            <td class="text-center">{{$lote_vencido['qtd_itens_estoque']}}</td>      
+                            <td class="text-center">{{$lote_vencido['data_validade']}}</td>      
                         </tr>
                     @endforeach
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-
+                </tbody>
+            </table>
+        </div>
+    @endif
 @endsection

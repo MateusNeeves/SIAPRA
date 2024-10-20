@@ -7,22 +7,28 @@
                     {{$title[0]}}
                 </div>
 
-                <div class="flex mb-2">
-                    <a class="btn btn-dark bg-gradient me-2 ms-3" href="{{route($path. '.register')}}"> Novo </a>
-
-                    <form method="post" action="{{route($path. '.view')}}">
-                        @csrf
-                        <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
-                        <button disabled id="view_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Visualizar </button>
-                    </form>
-
-                    <form method="post" action="{{route($path. '.edit')}}">
-                        @csrf
-                        <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
-                        <button disabled id="edit_button" onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Editar </button>
-                    </form>
+                <div class="flex mb-2 justify-between">
+                    <div class="flex">
+                        <a class="btn btn-dark bg-gradient me-2 ms-3" href="{{route($path. '.register')}}"> Novo </a>
     
-                    <button disabled id="delete_button" onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-dark bg-gradient me-2"> Deletar </button>
+                        <form method="post" action="{{route($path. '.view')}}">
+                            @csrf
+                            <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
+                            <button disabled id="view_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Visualizar </button>
+                        </form>
+    
+                        <form method="post" action="{{route($path. '.edit')}}">
+                            @csrf
+                            <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
+                            <button disabled id="edit_button" onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Editar </button>
+                        </form>
+        
+                        <button disabled id="delete_button" onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-dark bg-gradient me-2"> Deletar </button>
+                    </div>
+                    
+                    <div class="flex">
+                        <a class="btn btn-dark bg-gradient me-2" href="{{route($path. '.view_expired')}}"> Ver Vencidos </a>
+                    </div>
                 </div>
 
                 <script>
@@ -373,6 +379,25 @@
                 </div>
                 <div class="modal-body flex-wrap">
                     @yield('view_mov')
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Modal VIEW MOVIMENTACAO -->
+     <div class="modal fade" id="viewExpModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header d-block">
+                    <div class="d-flex">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel"> Produtos Vencidos </h1>
+                        <div class="ms-auto">
+                            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body flex-wrap">
+                    @yield('view_exp')
                 </div>
             </div>
         </div>

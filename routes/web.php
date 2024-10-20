@@ -104,6 +104,8 @@ Route::get('/', function () {
     Route::put('/produtos/editar', [ProdutosController::class, 'update'])->middleware(['auth'])->name('produtos.update');
     Route::delete('/produtos/deletar', [ProdutosController::class, 'destroy'])->middleware(['auth'])->name('produtos.destroy');
     
+    Route::get('/produtos/vencidos', [ProdutosController::class, 'view_expired'])->middleware(['auth'])->name('produtos.view_expired');
+
     Route::post('/produtos/cadastrar_lote', [ProdutosController::class, 'register_lote'])->middleware(['auth'])->name('produtos.register_lote');
     Route::post('/produtos/salvar_lote', [ProdutosController::class, 'store_lote'])->middleware(['auth'])->name('produtos.store_lote');
     Route::get('/produtos/imprimir_rotulo', [ProdutosController::class, 'view_print'])->middleware(['auth'])->name('produtos.view_print');

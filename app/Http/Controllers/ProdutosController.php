@@ -129,7 +129,7 @@ class ProdutosController extends Controller
             $fabricantes[] = $fabricante->nome;
 
 
-        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? ORDER BY L.DATA_VALIDADE', [$produto->id]);
+        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? ORDER BY L.DATA_VALIDADE ASC', [$produto->id]);
         
         $lotes = json_decode(json_encode($lotes), true);
 
@@ -262,6 +262,15 @@ class ProdutosController extends Controller
         } 
     }
 
+    public function view_expired(){
+        $now = Carbon::createFromFormat("H:i:s", date('H:i:s'));
+
+        $lotes_vencidos = DB::select('SELECT P.ID, P.NOME AS PRODUTO, F.NOME AS FABRICANTE, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, l.DATA_VALIDADE  FROM PRODUTOS P INNER JOIN PRODUTOS_LOTE L ON (P.ID = L.ID_PRODUTO) INNER JOIN FABRICANTES F ON (F.ID = L.ID_FABRICANTE) WHERE L.DATA_VALIDADE < ?', [$now]);
+        $lotes_vencidos = json_decode(json_encode($lotes_vencidos), true);
+
+        return redirect()->back()->with(['lotes_vencidos' => $lotes_vencidos, 'modal' => '#viewExpModal'])->withInput();
+    }
+
     public function register_lote(Request $request){
         $fabricantes = DB::select('SELECT * FROM FABRICANTES WHERE ID IN (SELECT ID_FABRICANTE FROM PRODUTOS_FAB WHERE ID_PRODUTO = ?)', [$request->id_view]);
 
@@ -324,13 +333,14 @@ class ProdutosController extends Controller
         return redirect()->back()->with(['alert-success' => 'Lote do Produto Adicionado com Sucesso', 'modal' => '#viewModal', 'id_view_backup' => $request->id_view, 'produtoV' => $produto, 'fabricantesV' => $fabricantes, 'fornecedoresV' => $fornecedores, 'lotesV' => $lotes]);
     }
     public function view_print(Request $request){
-        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ?', [$request->id_view]);
+        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? ORDER BY L.DATA_VALIDADE ASC', [$request->id_view]);
         $lotes = json_decode(json_encode($lotes), true);
         return redirect()->back()->with(['modal' => '#selecLoteModal','lotesP' => $lotes, 'title_modal' => 'Selecione o lote para imprimir rótulo:', 'route_modal' => '']);
     }
 
     public function make_mov(Request $request){
-        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? AND L.QTD_ITENS_ESTOQUE > 0', [$request->id_view]);
+        $now = Carbon::createFromFormat("H:i:s", date('H:i:s'));
+        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_LOTE L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? AND L.QTD_ITENS_ESTOQUE > 0 AND L.DATA_VALIDADE > ? ORDER BY L.DATA_VALIDADE ASC', [$request->id_view, $now]);
         $lotes = json_decode(json_encode($lotes), true);
         return redirect()->back()->with(['modal' => '#selecLoteModal','lotesP' => $lotes, 'title_modal' => 'Selecione o lote para retirada:', 'route_modal' => '.register_mov']);
     }
