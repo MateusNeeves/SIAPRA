@@ -384,7 +384,7 @@
         </div>
     </div>
 
-     <!-- Modal VIEW MOVIMENTACAO -->
+     <!-- Modal VIEW VENCIDOS -->
      <div class="modal fade" id="viewExpModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -399,6 +399,24 @@
                 <div class="modal-body flex-wrap">
                     @yield('view_exp')
                 </div>
+                <div class="modal-footer">
+                    <form method="post" action="{{route($path. '.destroy_expired')}}">
+                        @csrf
+                        <input hidden name="id_exp" id="id_exp" value="{{old('id_view')}}">
+                        <button disabled id="exp_button" onclick="$('#id_exp').val($('#myTableSelect .selected .id').text())" type="submit" class="btn btn-danger">Confirmar Retirada do Estoque</button>
+                    </form>
+                </div>
+
+                <script>
+                    $(document).on('click', function() {
+                        if ($('#myTableSelect .selected').length){
+                            $('#exp_button').prop('disabled', false);
+                        }
+                        else{
+                            $('#exp_button').prop('disabled', true);
+                        }
+                    });
+                </script>
             </div>
         </div>
     </div>

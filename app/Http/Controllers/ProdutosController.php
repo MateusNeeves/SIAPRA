@@ -265,10 +265,37 @@ class ProdutosController extends Controller
     public function view_expired(){
         $now = Carbon::createFromFormat("H:i:s", date('H:i:s'));
 
-        $lotes_vencidos = DB::select('SELECT P.ID, P.NOME AS PRODUTO, F.NOME AS FABRICANTE, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, l.DATA_VALIDADE  FROM PRODUTOS P INNER JOIN PRODUTOS_LOTE L ON (P.ID = L.ID_PRODUTO) INNER JOIN FABRICANTES F ON (F.ID = L.ID_FABRICANTE) WHERE L.DATA_VALIDADE < ?', [$now]);
+        $lotes_vencidos = DB::select('SELECT L.ID, P.NOME AS PRODUTO, F.NOME AS FABRICANTE, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, l.DATA_VALIDADE  FROM PRODUTOS P INNER JOIN PRODUTOS_LOTE L ON (P.ID = L.ID_PRODUTO) INNER JOIN FABRICANTES F ON (F.ID = L.ID_FABRICANTE) WHERE L.DATA_VALIDADE < ? AND L.QTD_ITENS_ESTOQUE > 0', [$now]);
         $lotes_vencidos = json_decode(json_encode($lotes_vencidos), true);
 
         return redirect()->back()->with(['lotes_vencidos' => $lotes_vencidos, 'modal' => '#viewExpModal'])->withInput();
+    }
+
+    public function destroy_expired(Request $request){
+        try{
+            DB::beginTransaction();
+
+            $lote = Produto_Lote::findOrFail($request->id_exp);
+
+            $mov = new Produto_Mov;
+    
+            $mov->id_produtos_lote = $lote->id;
+            $mov->id_destino = Dest_Produto::where('nome', 'Vencido')->get()[0]->id;
+
+            $mov->qtd_itens_movidos = $lote->qtd_itens_estoque;
+            $mov->hora_mov = Carbon::createFromFormat("H:i:s", date('H:i:s'));
+
+            $mov->save();
+
+            $lote->update(['qtd_itens_estoque' => 0]);
+
+            DB::commit();
+            return redirect()->back()->with('alert-success', 'Confirmação de Retirada realizada com sucesso com sucesso');
+        }
+        catch (\Exception $exception) {
+            DB::rollback();
+            return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput();
+        }
     }
 
     public function register_lote(Request $request){

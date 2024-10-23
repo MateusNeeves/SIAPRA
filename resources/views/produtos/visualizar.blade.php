@@ -387,8 +387,8 @@
             <table id="myTableSelect" class="table table-bordered table-hover text-sm w-100">
                 <thead>
                     <tr class="text-sm">
-                        <th class="text-start table-dark" scope="col"> # </th>
                         <th class="text-start table-dark" scope="col"> Produto </th>
+                        <th class="text-start table-dark" scope="col"> # Lote </th>
                         <th class="text-start table-dark" scope="col"> Fabricante </th>
                         <th class="text-start table-dark" scope="col"> Lote Fabricante </th>
                         <th class="text-start table-dark" scope="col"> Qtd Itens </th>
@@ -398,8 +398,8 @@
                 <tbody class="text-sm"> 
                     @foreach ($lotes_vencidos as $i => $lote_vencido)
                         <tr class="bg-secondary">
-                            <td class="text-center">{{$lote_vencido['id']}}</td>
                             <td class="text-center">{{$lote_vencido['produto']}}</td>      
+                            <td class="text-center id">{{$lote_vencido['id']}}</td>
                             <td class="text-center">{{$lote_vencido['fabricante']}}</td>      
                             <td class="text-center">{{$lote_vencido['lote_fabricante']}}</td>      
                             <td class="text-center">{{$lote_vencido['qtd_itens_estoque']}}</td>      
