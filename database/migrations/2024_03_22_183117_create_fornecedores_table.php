@@ -14,14 +14,18 @@ return new class extends Migration
         Schema::create('fornecedores', function (Blueprint $table) {
             $table->id();
             $table->string('nome')->unique();
-            $table->string('endereco');
             $table->string('pais');
+            $table->string('cnpj')->unique()->nullable();
+            $table->string('cep')->nullable();
+            $table->string('endereco');
+            $table->string('numero')->nullable();
+            $table->string('complemento')->nullable();
+            $table->string('cidade')->nullable();
+            $table->string('estado')->nullable();
             $table->string('nome_contato')->nullable();
             $table->string('telefone');
             $table->string('email')->nullable();
             $table->string('site')->nullable();
-            $table->string('cnpj')->unique()->nullable();
-
             $table->softDeletes();
             $table->timestamps();
         });

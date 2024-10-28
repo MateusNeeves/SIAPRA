@@ -21,7 +21,7 @@ return new class extends Migration
         });
 
         DB::table('dest_produtos')->insert(
-            ['nome' => 'Vencido']
+            ['nome' => 'VENCIDO']
         );
     }
 

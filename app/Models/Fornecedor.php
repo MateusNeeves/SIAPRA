@@ -15,11 +15,16 @@ class Fornecedor extends Model
 
     protected $fillable = [
         'nome',
-        'endereco',
         'pais',
+        'cnpj',
+        'cep',
+        'endereco',
+        'numero',
+        'complemento',
+        'cidade',
+        'estado',
         'nome_contato',
         'email',
         'site',
-        'cnpj',
-    ];
+];
 }

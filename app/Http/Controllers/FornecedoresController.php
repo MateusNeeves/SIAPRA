@@ -13,6 +13,12 @@ class FornecedoresController extends Controller
 {
     public function index(){
         $fornecedores = Fornecedor::all();
+        foreach ($fornecedores as $i => $forn) {
+            if ($forn->pais == "BRASIL"){
+                // return response()->json($fab);
+                $fornecedores[$i]->endereco = $forn->endereco . ($forn->numero != null ? ", " . $forn->numero : "") . ($forn->complemento != null ? ", " . $forn->complemento : "") . ", " . $forn->cidade . " - " . $forn->estado . ($forn->cep != null ? ", " . $forn->cep : "");
+            }
+        }
         $paises = Pais::all();
         return view('fornecedores/visualizar', ['fornecedores' => $fornecedores, 'paises' => $paises]);
     }
@@ -36,24 +42,26 @@ class FornecedoresController extends Controller
         );
 
         if ($validator->fails())
-            return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#newModal')->withInput();     
-
-        if ($request->pais == "BRASIL" && $request->cnpj == null)
-            return redirect()->back()->with('alert-danger', 'Fornecedor do Brasil deve ter um CNPJ')->with('modal', '#newModal')->withInput();     
-    
-        else if ($request->pais != "BRASIL" && $request->cnpj != null)
-            return redirect()->back()->with('alert-danger', 'Fornecedor extrangeiro não deve possuir CNPJ')->with('modal', '#newModal')->withInput();     
+            return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#newModal')->withInput();       
     
         $fornecedor = new Fornecedor();
         
         $fornecedor->nome = $request->nome;
-        $fornecedor->endereco = mb_strtoupper($request->endereco);
         $fornecedor->pais = $request->pais;
+        $fornecedor->endereco = mb_strtoupper($request->endereco);
         $fornecedor->nome_contato = $request->nome_contato;
         $fornecedor->telefone = $request->telefone;
         $fornecedor->email = mb_strtolower($request->email);
         $fornecedor->site = $request->site;
-        $fornecedor->cnpj = $request->cnpj;
+
+        if ($request->pais == "BRASIL"){
+            $fornecedor->cnpj = $request->cnpj;
+            $fornecedor->cep = $request->cep;
+            $fornecedor->numero = $request->numero;
+            $fornecedor->complemento = mb_strtoupper($request->complemento);
+            $fornecedor->cidade = mb_strtoupper($request->cidade);
+            $fornecedor->estado = mb_strtoupper($request->estado);
+        }
 
         $fornecedor->save();
         return redirect()->route('fornecedores')->with('alert-success', 'Fornecedor cadastrado com sucesso');
@@ -82,23 +90,41 @@ class FornecedoresController extends Controller
         if ($validator->fails())
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#editModal')->withInput(); 
         
-        if ($request->pais == "BRASIL" && $request->cnpj == null)
-            return redirect()->back()->with('alert-danger', 'Fornecedor do Brasil deve ter um CNPJ')->with('modal', '#editModal')->withInput();     
-
-        else if ($request->pais != "BRASIL" && $request->cnpj != null)
-            return redirect()->back()->with('alert-danger', 'Fornecedor extrangeiro não deve possuir CNPJ')->with('modal', '#editModal')->withInput(); 
-        
         // SALVANDO FABRICANTE
-        Fornecedor::findOrFail($request->id_edit)->update([
-            'nome' => $request->nome,
-            'endereco' => mb_strtoupper($request->endereco),
-            'pais' => $request->pais,
-            'nome_contato' => $request->nome_contato,
-            'telefone' => $request->telefone,
-            'email' => mb_strtolower($request->email),
-            'site' => $request->site,
-            'cnpj' => $request->cnpj
-        ]);
+        if ($request->pais == "BRASIL"){
+            Fornecedor::findOrFail($request->id_edit)->update([
+                'nome' => $request->nome,
+                'pais' => $request->pais,
+                'cnpj' => $request->cnpj,
+                'cep' => $request->cep,
+                'endereco' => mb_strtoupper($request->endereco),
+                'numero' => $request->numero,
+                'complemento' => mb_strtoupper($request->complemento),
+                'cidade' => mb_strtoupper($request->cidade),
+                'estado' => mb_strtoupper($request->estado),
+                'nome_contato' => $request->nome_contato,
+                'telefone' => $request->telefone,
+                'email' => mb_strtolower($request->email),
+                'site' => $request->site,
+            ]);
+        }
+        else{
+            Fornecedor::findOrFail($request->id_edit)->update([
+                'nome' => $request->nome,
+                'pais' => $request->pais,
+                'cnpj' => null,
+                'cep' => null,
+                'endereco' => mb_strtoupper($request->endereco),
+                'numero' => null,
+                'complemento' => null,
+                'cidade' => null,
+                'estado' => null,
+                'nome_contato' => $request->nome_contato,
+                'telefone' => $request->telefone,
+                'email' => mb_strtolower($request->email),
+                'site' => $request->site,
+            ]);
+        }
         return redirect()->route('fornecedores')->with('alert-success', 'Fornecedor editado com sucesso');
     }
 

@@ -13,6 +13,12 @@ class FabricantesController extends Controller
 {
     public function index(){
         $fabricantes = Fabricante::all();
+        foreach ($fabricantes as $i => $fab) {
+            if ($fab->pais == "BRASIL"){
+                // return response()->json($fab);
+                $fabricantes[$i]->endereco = $fab->endereco . ($fab->numero != null ? ", " . $fab->numero : "") . ($fab->complemento != null ? ", " . $fab->complemento : "") . ", " . $fab->cidade . " - " . $fab->estado . ($fab->cep != null ? ", " . $fab->cep : "");
+            }
+        }
         $paises = Pais::all();
         return view('fabricantes/visualizar', ['fabricantes' => $fabricantes, 'paises' => $paises]);
     }
@@ -38,23 +44,25 @@ class FabricantesController extends Controller
         if ($validator->fails())
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#newModal')->withInput();     
     
-        if ($request->pais == "BRASIL" && $request->cnpj == null)
-            return redirect()->back()->with('alert-danger', 'Fabricante do Brasil deve ter um CNPJ')->with('modal', '#newModal')->withInput();     
-
-        else if ($request->pais != "BRASIL" && $request->cnpj != null)
-            return redirect()->back()->with('alert-danger', 'Fabricante extrangeiro não deve possuir CNPJ')->with('modal', '#newModal')->withInput();     
-
         // SALVANDO FABRICANTE
         $fabricantes = new Fabricante();
         
         $fabricantes->nome = $request->nome;
-        $fabricantes->endereco = mb_strtoupper($request->endereco);
         $fabricantes->pais = $request->pais;
+        $fabricantes->endereco = mb_strtoupper($request->endereco);
         $fabricantes->nome_contato = $request->nome_contato;
         $fabricantes->telefone = $request->telefone;
         $fabricantes->email = mb_strtolower($request->email);
         $fabricantes->site = $request->site;
-        $fabricantes->cnpj = $request->cnpj;
+
+        if ($request->pais == "BRASIL"){
+            $fabricantes->cnpj = $request->cnpj;
+            $fabricantes->cep = $request->cep;
+            $fabricantes->numero = $request->numero;
+            $fabricantes->complemento = mb_strtoupper($request->complemento);
+            $fabricantes->cidade = mb_strtoupper($request->cidade);
+            $fabricantes->estado = mb_strtoupper($request->estado);
+        }
 
         $fabricantes->save();
         return redirect()->route('fabricantes')->with('alert-success', 'Fabricante cadastrado com sucesso');
@@ -80,25 +88,46 @@ class FabricantesController extends Controller
         );
 
         if ($validator->fails())
-            return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#editModal')->withInput(); 
-        
-        if ($request->pais == "BRASIL" && $request->cnpj == null)
-            return redirect()->back()->with('alert-danger', 'Fabricante do Brasil deve ter um CNPJ')->with('modal', '#editModal')->withInput();     
-
-        else if ($request->pais != "BRASIL" && $request->cnpj != null)
-            return redirect()->back()->with('alert-danger', 'Fabricante extrangeiro não deve possuir CNPJ')->with('modal', '#editModal')->withInput(); 
+            return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#editModal')->withInput();   
         
         // SALVANDO FABRICANTE
-        Fabricante::findOrFail($request->id_edit)->update([
-            'nome' => $request->nome,
-            'endereco' => mb_strtoupper($request->endereco),
-            'pais' => $request->pais,
-            'nome_contato' => $request->nome_contato,
-            'telefone' => $request->telefone,
-            'email' => mb_strtolower($request->email),
-            'site' => $request->site,
-            'cnpj' => $request->cnpj
-        ]);
+
+        if ($request->pais == "BRASIL"){
+            Fabricante::findOrFail($request->id_edit)->update([
+                'nome' => $request->nome,
+                'pais' => $request->pais,
+                'cnpj' => $request->cnpj,
+                'cep' => $request->cep,
+                'endereco' => mb_strtoupper($request->endereco),
+                'numero' => $request->numero,
+                'complemento' => mb_strtoupper($request->complemento),
+                'cidade' => mb_strtoupper($request->cidade),
+                'estado' => mb_strtoupper($request->estado),
+                'nome_contato' => $request->nome_contato,
+                'telefone' => $request->telefone,
+                'email' => mb_strtolower($request->email),
+                'site' => $request->site,
+            ]);
+        }
+        else{
+            Fabricante::findOrFail($request->id_edit)->update([
+                'nome' => $request->nome,
+                'pais' => $request->pais,
+                'cnpj' => null,
+                'cep' => null,
+                'endereco' => mb_strtoupper($request->endereco),
+                'numero' => null,
+                'complemento' => null,
+                'cidade' => null,
+                'estado' => null,
+                'nome_contato' => $request->nome_contato,
+                'telefone' => $request->telefone,
+                'email' => mb_strtolower($request->email),
+                'site' => $request->site,
+            ]);
+        }
+
+
         return redirect()->route('fabricantes')->with('alert-success', 'Fabricante editado com sucesso');
     }
 
