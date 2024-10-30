@@ -4,8 +4,8 @@
     @php
         $title = ['Produtos', 'Produto'];
         $path = 'produtos';
-        $columns = ['#', 'Nome', 'Descrição', 'Tipo', 'Fabricantes', 'Fornecedores', 'Quantidade Aceitável', 'Quantidade Mínima'];
-        $indexes = ['id', 'nome', 'descricao', 'tipo', 'fabricantes', 'fornecedores', 'qtd_aceitavel', 'qtd_minima'];
+        $columns = ['#', 'Nome', 'Descrição', 'Tipo', 'Quantidade Aceitável', 'Quantidade Mínima'];
+        $indexes = ['id', 'nome', 'descricao', 'tipo', 'qtd_aceitavel', 'qtd_minima'];
         $infos = $produtos;
     @endphp
 @endsection
@@ -13,8 +13,11 @@
 @section('content')
     @php
         $produto = Session::get('produto') ?? null;
-        $fabs = Session::get('fabricantes') ?? null;
-        $forns = Session::get('fornecedores') ?? null;
+        $fabricantes = Session::get('fabricantes') ?? [];
+        $fornecedores = Session::get('fornecedores') ?? [];
+        $fabSelected = Session::get('fabSelected') ?? null;
+        $fornSelected = Session::get('fornSelected') ?? null;
+        $tipos = Session::get('tipos') ?? [];
     @endphp
 
     <!-- Nome -->
@@ -45,7 +48,7 @@
         <x-input-label :value="__('Fabricantes')" />
         <select class="multiple-select block mt-1 w-full border rounded" name="fabricantes[]" multiple >
             @foreach ($fabricantes as $fabricante)
-                <option value="{{$fabricante['nome']}}" {{in_array($fabricante['nome'], $fabs ?? old('fabricantes') ?? []) ? "selected" : ""}} > {{$fabricante['nome']}} </option>
+                <option value="{{$fabricante['nome']}}" {{in_array($fabricante['nome'], $fabSelected ?? old('fabricantes') ?? []) ? "selected" : ""}} > {{$fabricante['nome']}} </option>
             @endforeach
         </select>
     </div>
@@ -55,7 +58,7 @@
         <x-input-label :value="__('Fornecedores')" />
         <select class="multiple-select block mt-1 w-full border rounded" name="fornecedores[]" multiple :value="old('fornecedores')">
             @foreach ($fornecedores as $fornecedor)
-                <option value="{{$fornecedor['nome']}}" {{in_array($fornecedor['nome'], $forns ?? old('fornecedores') ?? []) ? "selected" : ""}}> {{$fornecedor['nome']}} </option>
+                <option value="{{$fornecedor['nome']}}" {{in_array($fornecedor['nome'], $fornSelected ?? old('fornecedores') ?? []) ? "selected" : ""}}> {{$fornecedor['nome']}} </option>
             @endforeach
         </select>
     </div>

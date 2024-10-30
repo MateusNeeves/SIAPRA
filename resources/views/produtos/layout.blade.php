@@ -77,13 +77,34 @@
         </div>
     </div>
 
-    @if (Session::has('modal'))
-        <script>
-            $(window).on('load', function() {
-                $("{{Session::get('modal')}}").modal('show');
+@if (Session::has('modal'))
+    <script>
+        $(window).on('load', function() {
+            var modals = {!! json_encode(Session::get('modal')) !!}; // Converte o array de strings para JSON
+            var z = 1060 - (modals.length - 1) * 10; // Calcula o z-index inicial baseado no número de modais
+        
+            // Itera sobre os modais na ordem normal
+            modals.forEach(function(modalId) {
+                $(modalId).modal('show'); // Mostra cada modal
+                $(modalId).css('z-index', z); // Define o z-index do modal
+                z += 10; // Aumenta o z-index para o próximo modal
             });
-        </script>        
-    @endif
+        });
+    </script>
+@endif
+
+<script>
+    function closeModal() {
+    
+        var modals = {!! json_encode(Session::get('modal')) !!}; // Converte o array de strings para JSON
+        for (var i = modals.length - 1; i >= 0; i--) {
+            var modalId = modals[i];
+            var currentZ = parseInt($(modalId).css('z-index')); // Obtém o z-index atual e converte para número
+            
+            $(modalId).css('z-index', currentZ + 10); // Incrementa o z-index em 10
+        }
+    }
+</script>
 
     <!-- Modal NOVO-->
     <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -96,7 +117,7 @@
                 <form method="post" action="{{route($path. '.store')}}">
                     @csrf
                     <div class="modal-body">
-                        @if (Session::has('modal') && Session::get('modal') == '#newModal')
+                        @if (Session::has('modal') && Session::get('modal') == ['#newModal'])
                             <div class="flash-message">
                                 @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
                                     @if(Session::has('alert-' . $msg))
@@ -152,7 +173,7 @@
                     </div>
                 </div>
                 <div class="modal-body">
-                    @if (Session::has('modal')  && Session::get('modal') == '#viewModal')
+                    @if (Session::has('modal')  && Session::get('modal') == ['#viewModal'])
                         <div class="flash-message">
                             @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
                                 @if(Session::has('alert-' . $msg))
@@ -166,8 +187,6 @@
                         </div>
                     @endif
                     @yield('visualizar')
-                </div>
-                <div class="modal-footer">
                 </div>
             </div>
         </div>
@@ -185,7 +204,7 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
-                        @if (Session::has('modal')  && Session::get('modal') == '#editModal')
+                        @if (Session::has('modal')  && Session::get('modal') == ['#editModal'])
                             <div class="flash-message">
                                 @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
                                     @if(Session::has('alert-' . $msg))
@@ -221,7 +240,7 @@
                     @csrf
                     @method('DELETE')
                     <div class="modal-body">
-                        @if (Session::has('modal') && Session::get('modal') == '#deleteModal')
+                        @if (Session::has('modal') && Session::get('modal') == ['#deleteModal'])
                             <div class="flash-message">
                                 @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
                                     @if(Session::has('alert-' . $msg))
@@ -260,7 +279,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar Novo Lote</h1>
-                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" action="{{route($path. '.store_lote')}}">
                     @csrf
@@ -296,7 +315,7 @@
                     <div class="d-flex">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">{{Session::get('title_modal')}}</h1>
                         <div class="ms-auto">
-                            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                     </div>
                 </div>
@@ -316,6 +335,7 @@
                                 @endforeach
                             </div>
                         @endif
+                        <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
                         <input hidden name="id_lote" id="id_lote" value="{{old('id_lote')}}">
                         <input hidden name="qtd_estoque_lote" id="qtd_estoque_lote" value="{{old('qtd_estoque_lote')}}">
                             
@@ -346,7 +366,7 @@
                     <div class="d-flex">
                         <h1 class="modal-title fs-5" id="exampleModalLabel"> Retirada de Produto </h1>
                         <div class="ms-auto">
-                            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                     </div>
                 </div>
@@ -359,7 +379,7 @@
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-dark">Confirmar</button>
                     </div>
-
+                    <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
                 </form>
             </div>
         </div>
@@ -373,7 +393,7 @@
                     <div class="d-flex">
                         <h1 class="modal-title fs-5" id="exampleModalLabel"> Visualizar Movimentação </h1>
                         <div class="ms-auto">
-                            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                     </div>
                 </div>
