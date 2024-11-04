@@ -11,22 +11,31 @@
                 </div> --}}
 
                 <!-- Navigation Links -->
+
+                @php
+                    $route = \Request::route()->getName();
+
+                    if (in_array($route, ['fabricantes', 'fornecedores', 'tipos_produtos', 'produtos', 'dest_produtos']))
+                        $route = "almoxarifado";
+                    else if (in_array($route, ['fracionamentos', 'parametros', 'planejamentos']))
+                        $route = "producao";
+                    
+                @endphp
+                <style>
+                    #{{$route}}{
+                        border-bottom: solid 2px #f2714b;
+                    }
+                    #{{$route}} button{
+                        color: rgb(17 24 39);
+                    }
+                </style>
+
                 <div class="hidden sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link class=" text-decoration-none" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link id="dashboard" class=" text-decoration-none" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        <img class="pe-4" src="{{ asset('images/logo-crcn-ne-horizontal-principal.png') }}" alt="Logo" width="100">
                         {{ 'Início'}}
                     </x-nav-link>
                 </div>
-
-                @if (in_array(\Request::route()->getName(), ['fabricantes', 'fornecedores', 'tipos_produtos', 'produtos']))
-                    <style>
-                        #almoxarifado{
-                            border-bottom: solid 2px #7f9cf5;
-                        }
-                        #almoxarifado button{
-                            color: rgb(17 24 39);
-                        }
-                    </style>
-                @endif
 
                 <!-- Almoxarifado -->
                 <div class="hidden sm:flex sm:items-center sm:ms-10" id="almoxarifado">
@@ -64,29 +73,18 @@
                 </div>
 
                 <!-- Clientes -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
-                    <x-nav-link class=" text-decoration-none" :href="route('clientes')" :active="request()->routeIs('clientes')">
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link id="clientes" class=" text-decoration-none" :href="route('clientes')" :active="request()->routeIs('clientes')">
                         {{ __('Clientes') }}
                     </x-nav-link>
                 </div>
 
                 <!-- Pedidos -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
-                    <x-nav-link class=" text-decoration-none" :href="route('pedidos')" :active="request()->routeIs('pedidos')">
+                    <x-nav-link id="pedidos" class=" text-decoration-none" :href="route('pedidos')" :active="request()->routeIs('pedidos')">
                         {{ __('Pedidos') }}
                     </x-nav-link>
                 </div>
-
-                @if (in_array(\Request::route()->getName(), ['fracionamentos', 'parametros', 'planejamentos']))
-                    <style>
-                        #producao{
-                            border-bottom: solid 2px #7f9cf5;
-                        }
-                        #producao button{
-                            color: rgb(17 24 39);
-                        }
-                    </style>
-                @endif
             
                 <!-- Produção -->
                 <div class="hidden sm:flex sm:items-center sm:ms-10" id="producao">
@@ -120,7 +118,7 @@
 
                 <!-- Usuários -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
-                    <x-nav-link class=" text-decoration-none" :href="route('usuarios')" :active="request()->routeIs('usuarios')">
+                    <x-nav-link id="usuarios" class=" text-decoration-none" :href="route('usuarios')" :active="request()->routeIs('usuarios')">
                         {{ __('Usuários') }}
                     </x-nav-link>
                 </div>

@@ -273,17 +273,17 @@
     @endphp
     @if ($lotesP != [])
         <div>
-            <table id="myTableSelect" class="table table-bordered w-100">
+            <table id="myTableSelect" class="table table-bordered table-hover w-100">
                 <thead>
                     <tr>
-                        <th colspan="5" class="table-dark text-start" data-dt-order="disable"> Selecione um Lote </th>
+                        <th colspan="5" class="table-orange text-start" data-dt-order="disable"> Selecione um Lote </th>
                     </tr>
                     <tr class="text-sm">
-                        <th class="table-light text-start table-dark" scope="col"> # </th>
-                        <th class="table-light text-start table-dark" scope="col"> Fabricante </th>
-                        <th class="table-light text-start table-dark" scope="col"> Lote do Fabricante </th>
-                        <th class="table-light text-start table-dark" scope="col"> Qtd em Estoque </th>
-                        <th class="table-light text-start table-dark" scope="col"> Data de Validade </th>
+                        <th class="table-light text-start table-orange" scope="col"> # </th>
+                        <th class="table-light text-start table-orange" scope="col"> Fabricante </th>
+                        <th class="table-light text-start table-orange" scope="col"> Lote do Fabricante </th>
+                        <th class="table-light text-start table-orange" scope="col"> Qtd em Estoque </th>
+                        <th class="table-light text-start table-orange" scope="col"> Data de Validade </th>
                     </tr>
                 </thead>
                 <thead class="filters">
@@ -349,11 +349,11 @@
             <table class="table table-bordered w-100">
                 <thead>
                     <tr class="text-sm">
-                        <th class="text-start table-dark" scope="col"> # </th>
-                        <th class="text-start table-dark" scope="col"> Tipo </th>
-                        <th class="text-start table-dark" scope="col"> Data </th>
-                        <th class="text-start table-dark" scope="col"> Qtd Itens</th>
-                        <th class="text-start table-dark" scope="col"> Destino </th>
+                        <th class="text-start table-orange" scope="col"> # </th>
+                        <th class="text-start table-orange" scope="col"> Tipo </th>
+                        <th class="text-start table-orange" scope="col"> Data </th>
+                        <th class="text-start table-orange" scope="col"> Qtd Itens</th>
+                        <th class="text-start table-orange" scope="col"> Destino </th>
                     </tr>
                 </thead>
                 <tbody class="text-sm"> 

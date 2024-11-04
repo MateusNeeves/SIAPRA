@@ -1,4 +1,4 @@
-@extends('fabricantes.layout')
+@extends('layouts.visualizar')
 
 @section('variables')
     @php

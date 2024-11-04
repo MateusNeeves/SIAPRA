@@ -9,25 +9,25 @@
 
                 <div class="flex mb-2 justify-between">
                     <div class="flex">
-                        <a class="btn btn-dark bg-gradient me-2 ms-3" href="{{route($path. '.register')}}"> Novo </a>
+                        <a class="btn btn-orange bg-gradient me-2 ms-3" href="{{route($path. '.register')}}"> Novo </a>
     
                         <form method="post" action="{{route($path. '.view')}}">
                             @csrf
                             <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
-                            <button disabled id="view_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Visualizar </button>
+                            <button disabled id="view_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2" > Visualizar </button>
                         </form>
     
                         <form method="post" action="{{route($path. '.edit')}}">
                             @csrf
                             <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
-                            <button disabled id="edit_button" onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Editar </button>
+                            <button disabled id="edit_button" onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2" > Editar </button>
                         </form>
         
-                        <button disabled id="delete_button" onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-dark bg-gradient me-2"> Deletar </button>
+                        <button disabled id="delete_button" onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-orange bg-gradient me-2"> Deletar </button>
                     </div>
                     
                     <div class="flex">
-                        <a class="btn btn-dark bg-gradient me-2" href="{{route($path. '.view_expired')}}"> Ver Vencidos </a>
+                        <a class="btn btn-orange bg-gradient me-2" href="{{route($path. '.view_expired')}}"> Ver Vencidos </a>
                     </div>
                 </div>
 
@@ -51,7 +51,7 @@
                         <thead>
                             <tr>
                                 @foreach ($columns as $column)
-                                    <th class="table-dark text-start" scope="col"> {{$column}} </th>
+                                    <th class="table-orange text-start" scope="col"> {{$column}} </th>
                                 @endforeach
                             </tr>
                         </thead>
@@ -81,7 +81,7 @@
     <script>
         $(window).on('load', function() {
             var modals = {!! json_encode(Session::get('modal')) !!}; // Converte o array de strings para JSON
-            var z = 1060 - (modals.length - 1) * 10; // Calcula o z-index inicial baseado no número de modais
+            var z = 1051 - (modals.length - 1) * 10; // Calcula o z-index inicial baseado no número de modais
         
             // Itera sobre os modais na ordem normal
             modals.forEach(function(modalId) {
@@ -108,7 +108,7 @@
 
     <!-- Modal NOVO-->
     <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar {{$title[1]}}</h1>
@@ -133,7 +133,7 @@
                         @yield('content')
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-dark">Cadastrar</button>
+                        <button type="submit" class="btn btn-orange">Cadastrar</button>
                     </div>
                 </form>
             </div>
@@ -155,20 +155,20 @@
                         <form method="post" action="{{route($path. '.register_lote')}}">
                             @csrf
                             <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-                            <button id="lote_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2 text-nowrap"> Novo Lote </button>
+                            <button id="lote_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Novo Lote </button>
                         </form>
                         <form method="post" action="{{route($path. '.make_mov')}}">
                             @csrf
                             <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-                            <button id="mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2 text-nowrap"> Retirar Itens </button>
+                            <button id="mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Retirar Itens </button>
                         </form>
                         <form method="get" action="{{route($path. '.view_mov')}}">
                             <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-                            <button id="view_mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2 text-nowrap"> Visualizar Movimentação </button>
+                            <button id="view_mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Visualizar Movimentação </button>
                         </form>
                         <form method="get" action="{{route($path. '.view_print')}}">
                             <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-                            <button id="print_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2 text-nowrap"> Imprimir Rótulo </button>
+                            <button id="print_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Imprimir Rótulo </button>
                         </form>
                     </div>
                 </div>
@@ -194,7 +194,7 @@
 
     <!-- Modal EDITAR-->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Editar {{$title[1]}}</h1>
@@ -221,7 +221,7 @@
                         @yield('content')
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-dark">Atualizar</button>
+                        <button type="submit" class="btn btn-orange">Atualizar</button>
                     </div>
                 </form>
             </div>
@@ -230,7 +230,7 @@
 
     <!-- Modal DELETAR-->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmar Deleção</h1>
@@ -275,7 +275,7 @@
 
     <!-- Modal LOTE-->
     <div class="modal fade" id="loteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar Novo Lote</h1>
@@ -301,7 +301,7 @@
                         @yield('novo_lote')
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-secondary">Cadastrar</button>
+                        <button type="submit" class="btn btn-orange">Cadastrar</button>
                     </div>
                 </form>
             </div>
@@ -309,7 +309,7 @@
     </div>
     <!-- Modal SELECIONAR LOTE-->
     <div class="modal fade" id="selecLoteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header d-block">
                     <div class="d-flex">
@@ -342,7 +342,7 @@
                         @yield('selecionar_lote')
                     </div>
                     <div class="modal-footer">
-                        <button disabled onclick="$('#id_lote').val($('#myTableSelect .selected .id').text()); $('#qtd_estoque_lote').val($('#myTableSelect .selected .qtd').text())" id="selectButton" type="submit" class="btn btn-dark">Selecionar</button>
+                        <button disabled onclick="$('#id_lote').val($('#myTableSelect .selected .id').text()); $('#qtd_estoque_lote').val($('#myTableSelect .selected .qtd').text())" id="selectButton" type="submit" class="btn btn-orange">Selecionar</button>
                     </div>
 
                     <script>
@@ -360,7 +360,7 @@
 
     <!-- Modal MOVIMENTACAO -->
     <div class="modal fade" id="newMovModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header d-block">
                     <div class="d-flex">
@@ -377,7 +377,7 @@
                         @yield('novo_mov')
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-dark">Confirmar</button>
+                        <button type="submit" class="btn btn-orange">Confirmar</button>
                     </div>
                     <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
                 </form>

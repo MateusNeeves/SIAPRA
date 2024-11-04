@@ -8,15 +8,15 @@
                 </div>
 
                 <div class="flex mb-2">
-                    <a class="btn btn-dark bg-gradient me-2 ms-3" href="{{route($path. '.register')}}"> Novo </a>
+                    <a class="btn btn-orange bg-gradient me-2 ms-3" href="{{route($path. '.register')}}"> Novo </a>
 
                     <form method="post" action="{{route($path. '.edit')}}">
                         @csrf
                         <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
-                        <button disabled id="edit_button" onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-dark bg-gradient me-2" > Editar </button>
+                        <button disabled id="edit_button" onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2" > Editar </button>
                     </form>
     
-                    <button disabled id="delete_button" onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-dark bg-gradient me-2"> Deletar </button>
+                    <button disabled id="delete_button" onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-orange bg-gradient me-2"> Deletar </button>
                 </div>
 
                 <script>
@@ -37,7 +37,7 @@
                         <thead>
                             <tr>
                                 @foreach ($columns as $column)
-                                    <th class="table-dark text-start" scope="col"> {{$column}} </th>
+                                    <th class="table-orange text-start" scope="col"> {{$column}} </th>
                                 @endforeach
                             </tr>
                         </thead>
@@ -73,10 +73,10 @@
 
     <!-- Modal NOVO-->
     <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar {{$title[1]}}</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Novo {{$title[1]}}</h1>
                     <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" action="{{route($path. '.store')}}">
@@ -98,7 +98,7 @@
                         @yield('content')
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-dark">Cadastrar</button>
+                        <button type="submit" class="btn btn-orange">Confirmar</button>
                     </div>
                 </form>
             </div>
@@ -107,10 +107,10 @@
 
     <!-- Modal EDITAR-->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Editar {{$title[1]}}</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Editando {{$title[1]}}</h1>
                     <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" action="{{route($path. '.update')}}">
@@ -134,7 +134,7 @@
                         @yield('content')
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-dark">Atualizar</button>
+                        <button type="submit" class="btn btn-orange">Atualizar</button>
                     </div>
                 </form>
             </div>
@@ -143,7 +143,7 @@
 
     <!-- Modal DELETAR-->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmar Deleção</h1>

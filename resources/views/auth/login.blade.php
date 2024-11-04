@@ -32,7 +32,7 @@
             @endif --}}
             <div style="flex: 1;"></div>
 
-            <x-primary-button class="ms-3">
+            <x-primary-button class="btn-orange ms-3">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
