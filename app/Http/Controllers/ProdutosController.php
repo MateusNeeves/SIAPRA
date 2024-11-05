@@ -386,7 +386,7 @@ class ProdutosController extends Controller
     }
 
     public function mov_out(Request $request){
-        $dest_produtos = Dest_Produto::all();
+        $dest_produtos = Dest_Produto::where('nome', '!=', 'VENCIDO')->get();
 
         $register_movInfos = array_merge(get_infos_view($request), [
             'modal' => ['#viewModal', '#movOutModal'],
@@ -454,10 +454,10 @@ class ProdutosController extends Controller
             $mov = new Produto_Mov_Out;
     
             $mov->id_produtos_mov_in = $lote->id;
-            $mov->id_destino = Dest_Produto::where('nome', 'Vencido')->get()[0]->id;
+            $mov->id_destino = Dest_Produto::where('nome', 'VENCIDO')->get()[0]->id;
 
             $mov->qtd_itens_movidos = $lote->qtd_itens_estoque;
-            $mov->data_mov_out = $request->data_mov_out;
+            $mov->data_mov_out = now();
 
             $mov->save();
 

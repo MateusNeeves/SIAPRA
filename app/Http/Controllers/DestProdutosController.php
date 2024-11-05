@@ -41,10 +41,14 @@ class DestProdutosController extends Controller
 
         $dest_produto->save();
 
-        return redirect()->route('dest_produtos')->with('alert-success', 'Destino do Produto cadastrado com sucesso');
+        return redirect()->route('dest_produtos')->with('alert-success', 'Destino de Produto cadastrado com sucesso');
     }
 
     public function edit(Request $request){
+        if ($request->id_edit == 1){
+            return redirect()->back()->with('alert-danger', 'Você não tem permissão para editar esse Destino de Produto.');
+        }
+
         $dest_produto = Dest_Produto::where('id', $request->id_edit)->get()[0];
 
         return redirect()->back()->with(['dest_produto' => $dest_produto, 'modal' => '#editModal'])->withInput(); 
@@ -57,7 +61,7 @@ class DestProdutosController extends Controller
             
             ['nome' => Rule::unique('tipos_produtos')->ignore($request->id_edit)],
             
-            ['nome.unique' => 'Já existe um Destino do Produto com esse Nome']
+            ['nome.unique' => 'Já existe um Destino de Produto com esse Nome']
         );
 
         if ($validator->fails())
@@ -71,6 +75,10 @@ class DestProdutosController extends Controller
     }
 
     public function destroy(Request $request){
+        if ($request->id_delete == 1){
+            return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Destino de Produto.');
+        }
+
         DB::beginTransaction();
 
         Dest_Produto::find($request->id_delete)->delete();
@@ -83,11 +91,11 @@ class DestProdutosController extends Controller
             }
             catch(\Exception $exception){
                 DB::rollBack();
-                return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Destino do Produto, pois outras informações dependem dele. <br><br> Deseja Desativar esse Destino do Produto ao invés de Deletar? <br><br> Você pode restaurá-lo futuramente, caso necessário.')->with('modal', '#deleteModal')->withInput();
+                return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Destino de Produto, pois outras informações dependem dele. <br><br> Deseja Desativar esse Destino de Produto ao invés de Deletar? <br><br> Você pode restaurá-lo futuramente, caso necessário.')->with('modal', '#deleteModal')->withInput();
             } 
         }
 
         DB::commit();
-        return redirect()->back()->with('alert-success', 'Destino do Produto desativado com sucesso');
+        return redirect()->back()->with('alert-success', 'Destino de Produto desativado com sucesso');
     }
 }
