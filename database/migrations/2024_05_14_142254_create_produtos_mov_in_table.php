@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('produtos_lote', function (Blueprint $table) {
+        Schema::create('produtos_mov_in', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_produto');
             $table->unsignedBigInteger('id_fabricante');
@@ -34,7 +34,7 @@ return new class extends Migration
             $table->foreign('id_produto')->references('id')->on('produtos');
             $table->foreign('id_fabricante')->references('id')->on('fabricantes');
             $table->foreign('id_fornecedor')->references('id')->on('fornecedores');
-            $table->unique(['id_produto', 'id_fabricante', 'lote_fabricante']);
+            // $table->unique(['id_produto', 'id_fabricante', 'lote_fabricante']);
         });
     }
 
@@ -43,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('produtos_lote');
+        Schema::dropIfExists('produtos_mov_in');
     }
 };

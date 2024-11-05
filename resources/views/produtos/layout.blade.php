@@ -152,23 +152,13 @@
                         </div>
                     </div>
                     <div class="d-flex mt-3 flex-wrap"> <!-- flex-wrap para ajustar os botões em telas menores -->
-                        <form method="post" action="{{route($path. '.register_lote')}}">
-                            @csrf
+                        <form method="get" action="{{route($path. '.make_mov')}}">
                             <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-                            <button id="lote_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Novo Lote </button>
-                        </form>
-                        <form method="post" action="{{route($path. '.make_mov')}}">
-                            @csrf
-                            <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-                            <button id="mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Retirar Itens </button>
-                        </form>
+                            <button id="mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Realizar Movimentação </button>
+                        </form>                        
                         <form method="get" action="{{route($path. '.view_mov')}}">
                             <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
                             <button id="view_mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Visualizar Movimentação </button>
-                        </form>
-                        <form method="get" action="{{route($path. '.view_print')}}">
-                            <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-                            <button id="print_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Imprimir Rótulo </button>
                         </form>
                     </div>
                 </div>
@@ -273,15 +263,75 @@
         </div>
     </div>
 
-    <!-- Modal LOTE-->
-    <div class="modal fade" id="loteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <!-- Modal VIEW MOVIMENTACAO -->
+    <div class="modal fade" id="viewMovModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header d-block">
+                    <div class="d-flex">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel"> Visualizar Movimentação </h1>
+                        <div class="ms-auto">
+                            <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body flex-wrap">
+                    @yield('view_mov')
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal MAKE MOVIMENTACAO-->
+    <div class="modal fade" id="makeMovModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar Novo Lote</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione o Tipo de Movimentação</h1>
                     <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="post" action="{{route($path. '.store_lote')}}">
+                <form id="id_form" method="get" action="">
+                    <div class="modal-body">
+                        <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
+                        <div class="">
+                            <select onchange="changeRoute()" id="movType" class="block mt-1 w-full border rounded" required>
+                                <option value="" hidden></option>
+                                <option value="entrada"> Entrada</option>
+                                <option value="saida"> Saída</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-orange">Selecionar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changeRoute() {
+            const form = document.getElementById('id_form');
+            const movType = document.getElementById('movType').value;
+    
+            // Define as rotas de acordo com a seleção usando PHP Blade dentro de strings
+            if (movType === 'entrada') {
+                form.action = "{{ route($path . '.mov_in') }}";
+            } else if (movType === 'saida') {
+                form.action = "{{ route($path . '.mov_out_select') }}";
+            }
+        }
+    </script>
+
+    <!-- Modal MOV IN-->
+    <div class="modal fade" id="movInModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Realizando Movimentação - Entrada</h1>
+                    <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{{route($path. '.store_mov_in')}}">
                     @csrf
                     <div class="modal-body">
                         @if (Session::has('modal') && Session::get('modal') == '#loteModal')
@@ -298,22 +348,23 @@
                             </div>
                             @endif
                         <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
-                        @yield('novo_lote')
+                        @yield('mov_in')
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-orange">Cadastrar</button>
+                        <button type="submit" class="btn btn-orange">Confirmar</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <!-- Modal SELECIONAR LOTE-->
-    <div class="modal fade" id="selecLoteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+
+    <!-- Modal MOV OUT SELECT-->
+    <div class="modal fade" id="movOutSelectModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header d-block">
                     <div class="d-flex">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{Session::get('title_modal')}}</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Realizando Movimentação - Saída</h1>
                         <div class="ms-auto">
                             <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -339,7 +390,7 @@
                         <input hidden name="id_lote" id="id_lote" value="{{old('id_lote')}}">
                         <input hidden name="qtd_estoque_lote" id="qtd_estoque_lote" value="{{old('qtd_estoque_lote')}}">
                             
-                        @yield('selecionar_lote')
+                        @yield('mov_out_select')
                     </div>
                     <div class="modal-footer">
                         <button disabled onclick="$('#id_lote').val($('#myTableSelect .selected .id').text()); $('#qtd_estoque_lote').val($('#myTableSelect .selected .qtd').text())" id="selectButton" type="submit" class="btn btn-orange">Selecionar</button>
@@ -358,48 +409,29 @@
         </div>
     </div>
 
-    <!-- Modal MOVIMENTACAO -->
-    <div class="modal fade" id="newMovModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <!-- Modal MOV OUT -->
+    <div class="modal fade" id="movOutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header d-block">
                     <div class="d-flex">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel"> Retirada de Produto </h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel"> Realizando Movimentação - Saída </h1>
                         <div class="ms-auto">
                             <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                     </div>
                 </div>
-                <form method="post" action="{{route($path. '.store_mov')}}">
+                <form method="post" action="{{route($path. '.store_mov_out')}}">
                     @csrf
 
                     <div class="modal-body">
-                        @yield('novo_mov')
+                        @yield('mov_out')
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-orange">Confirmar</button>
                     </div>
                     <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal VIEW MOVIMENTACAO -->
-    <div class="modal fade" id="viewMovModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header d-block">
-                    <div class="d-flex">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel"> Visualizar Movimentação </h1>
-                        <div class="ms-auto">
-                            <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-body flex-wrap">
-                    @yield('view_mov')
-                </div>
             </div>
         </div>
     </div>

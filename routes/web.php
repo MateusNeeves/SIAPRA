@@ -104,17 +104,17 @@ Route::get('/', function () {
     Route::put('/produtos/editar', [ProdutosController::class, 'update'])->middleware(['auth'])->name('produtos.update');
     Route::delete('/produtos/deletar', [ProdutosController::class, 'destroy'])->middleware(['auth'])->name('produtos.destroy');
     
+    Route::get('/produtos/movimentacao', [ProdutosController::class, 'view_mov'])->middleware(['auth'])->name('produtos.view_mov');
+    Route::get('/produtos/movimentar', [ProdutosController::class, 'make_mov'])->middleware(['auth'])->name('produtos.make_mov');
+    Route::get('/produtos/movimentar/entrada', [ProdutosController::class, 'mov_in'])->middleware(['auth'])->name('produtos.mov_in');
+    Route::post('/produtos/movimentar/entrada', [ProdutosController::class, 'store_mov_in'])->middleware(['auth'])->name('produtos.store_mov_in');
+    Route::get('/produtos/movimentar/saida/selecionar_lote', [ProdutosController::class, 'mov_out_select'])->middleware(['auth'])->name('produtos.mov_out_select');
+    Route::get('/produtos/movimentar/saida', [ProdutosController::class, 'mov_out'])->middleware(['auth'])->name('produtos.mov_out');
+    Route::post('/produtos/movimentar/saida', [ProdutosController::class, 'store_mov_out'])->middleware(['auth'])->name('produtos.store_mov_out');
+
     Route::get('/produtos/vencidos', [ProdutosController::class, 'view_expired'])->middleware(['auth'])->name('produtos.view_expired');
     Route::post('/produtos/vencidos', [ProdutosController::class, 'destroy_expired'])->middleware(['auth'])->name('produtos.destroy_expired');
-
-    Route::post('/produtos/cadastrar_lote', [ProdutosController::class, 'register_lote'])->middleware(['auth'])->name('produtos.register_lote');
-    Route::post('/produtos/salvar_lote', [ProdutosController::class, 'store_lote'])->middleware(['auth'])->name('produtos.store_lote');
-    Route::get('/produtos/imprimir_rotulo', [ProdutosController::class, 'view_print'])->middleware(['auth'])->name('produtos.view_print');
     
-    Route::post('/produtos/movimentar/selecionar_lote', [ProdutosController::class, 'make_mov'])->middleware(['auth'])->name('produtos.make_mov');
-    Route::get('/produtos/movimentar/cadastrar', [ProdutosController::class, 'register_mov'])->middleware(['auth'])->name('produtos.register_mov');
-    Route::post('/produtos/movimentar/cadastrar', [ProdutosController::class, 'store_mov'])->middleware(['auth'])->name('produtos.store_mov');
-    Route::get('/produtos/movimentar', [ProdutosController::class, 'view_mov'])->middleware(['auth'])->name('produtos.view_mov');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -105,8 +105,8 @@
     </div>
 
     <!-- Fabricante -->
-    <div class="mt-4">
-        <table class="table table-bordered">
+    <div class="mt-4 div-scroll">
+        <table class="table table-bordered table-scroll">
             <thead>
                 <tr>
                     <th class="table-secondary text-start" scope="col"> Lista de Fabricantes </th>
@@ -123,8 +123,8 @@
     </div>
 
     <!-- Fornecedor -->
-    <div class="mt-4">
-        <table class="table table-bordered">
+    <div class="mt-4 div-scroll">
+        <table class="table table-bordered table-scroll">
             <thead>
                 <tr>
                     <th class="table-secondary text-start text-dark" scope="col"> Lista de Fornecedores </th>
@@ -153,8 +153,8 @@
     </div>
 
     <!-- Lista de QTD em Estoque -->
-    <div class="mt-4">
-        <table class="table table-bordered">
+    <div class="mt-4 div-scroll">
+        <table class="table table-bordered table-scroll">
             <thead>
                 <tr>
                     <th colspan="5" class="table-secondary text-start text-dark" scope="col"> Lista da Qtd em Estoque </th>
@@ -165,14 +165,13 @@
                     <th class="table-light text-center text-dark" scope="col"> Lote do Fabricante </th>
                     <th class="table-light text-center text-dark" scope="col"> Qtd em Estoque </th>
                     <th class="table-light text-center text-dark" scope="col"> Data de Validade </th>
-
                 </tr>
             </thead>
             <tbody class="text-sm text-center">
                @php $total = 0; @endphp
                 @foreach ($lotesV as $lote)
                     @php $total += $lote['qtd_itens_estoque']; @endphp
-
+    
                     <tr>
                         <td>{{$lote['id']}}</td>
                         <td>{{$lote['nome']}}</td>
@@ -189,18 +188,20 @@
             </tfoot>
         </table>
     </div>
+    
+    
 
 @endsection
 
 
-@section('novo_lote')
+@section('mov_in')
     @php
         $fabricantes_lote = Session::get('fabricantes_lote') ?? null;
         $fornecedores_lote = Session::get('fornecedores_lote') ?? null;
     @endphp
 
     <!-- Fabricante -->
-    <div class="mt-4">
+    <div class="">
         <x-input-label :value="__('Fabricante *')" />
         <select class="block mt-1 w-full border rounded" name="fabricante" required>
             <option></option>
@@ -267,7 +268,7 @@
 
 @endsection
 
-@section('selecionar_lote')
+@section('mov_out_select')
     @php
         $lotesP = Session::get('lotesP') ?? [];
     @endphp
@@ -311,12 +312,18 @@
     @endif
 @endsection
 
-@section('novo_mov')
+@section('mov_out')
     @php
         $id_lote = Session::get('id_lote') ?? null;
         $qtd_estoque_lote = Session::get('qtd_estoque_lote') ?? null;
         $destinos = Session::get('dest_produtos') ?? [];
     @endphp
+
+    <!-- Data Retirada -->
+    <div >
+        <x-input-label :value="__('Data Retirada *')" />
+        <x-text-input id="data_mov_out" class="block mt-1 w-full" type="datetime-local" name="data_mov_out" :value="old('data_mov_out')" required/>
+    </div>
 
     <!-- Destino do Produto -->
     <div class="mt-4">
@@ -369,7 +376,7 @@
                             <tr>
                                 <td class="text-center"></td>
                                 <td class="text-center">SAÍDA</td>      
-                                <td class="text-center">{{$lote_saida['hora_mov']}}</td>      
+                                <td class="text-center">{{$lote_saida['data_mov_out']}}</td>      
                                 <td class="text-center">{{$lote_saida['qtd_itens_movidos']}}</td>      
                                 <td class="text-center">{{$lote_saida['nome']}}</td>      
                             </tr>
