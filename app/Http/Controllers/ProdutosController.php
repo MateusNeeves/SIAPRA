@@ -291,11 +291,19 @@ class ProdutosController extends Controller
             $lotes_saida[$i] = json_decode(json_encode($lotes_saida[$i]), true);
         }
 
-        $view_movInfos = array_merge(get_infos_view($request), [
-            'modal' => ['#viewModal', '#viewMovModal'],
-            'lotes_saida' => $lotes_saida,
-            'lotes_entrada' => $lotes_entrada
-        ]);
+        if ($lotes_entrada == []){
+            $view_movInfos = array_merge(get_infos_view($request), [
+                'modal' => ['#viewModal'],
+                'alert-dark' => 'Não há movimentação desse produto.'
+            ]);
+        }
+        else{
+            $view_movInfos = array_merge(get_infos_view($request), [
+                'modal' => ['#viewModal', '#viewMovModal'],
+                'lotes_saida' => $lotes_saida,
+                'lotes_entrada' => $lotes_entrada
+            ]);
+        }
 
         return redirect()->back()->with($view_movInfos)->withInput();
     }
@@ -374,13 +382,22 @@ class ProdutosController extends Controller
         $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_MOV_IN L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? AND L.QTD_ITENS_ESTOQUE > 0 AND L.DATA_VALIDADE > ? ORDER BY L.DATA_VALIDADE ASC', [$request->id_view, $now]);
         $lotes = json_decode(json_encode($lotes), true);
 
-        $make_movInfos = array_merge(get_infos_view($request), [
-            'modal' => ['#viewModal', '#movOutSelectModal'],
-            'lotesP' => $lotes,
-            'title_modal' => 'Selecione o lote para retirada:',
-            'route_modal' => '.mov_out'
+        if ($lotes == []){
+            $make_movInfos = array_merge(get_infos_view($request), [
+                'modal' => ['#viewModal'],
+                'alert-dark' => 'Não há nenhum lote para realizar retirada.'
+            ]);
+        }
+        else{
+            $make_movInfos = array_merge(get_infos_view($request), [
+                'modal' => ['#viewModal', '#movOutSelectModal'],
+                'lotesP' => $lotes,
+                'title_modal' => 'Selecione o lote para retirada:',
+                'route_modal' => '.mov_out'
+    
+            ]);
+        }
 
-        ]);
 
         return redirect()->back()->with($make_movInfos)->withInput();
     }
@@ -441,6 +458,9 @@ class ProdutosController extends Controller
 
         $lotes_vencidos = DB::select('SELECT L.ID, P.NOME AS PRODUTO, F.NOME AS FABRICANTE, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, l.DATA_VALIDADE  FROM PRODUTOS P INNER JOIN PRODUTOS_MOV_IN L ON (P.ID = L.ID_PRODUTO) INNER JOIN FABRICANTES F ON (F.ID = L.ID_FABRICANTE) WHERE L.DATA_VALIDADE < ? AND L.QTD_ITENS_ESTOQUE > 0', [$now]);
         $lotes_vencidos = json_decode(json_encode($lotes_vencidos), true);
+        
+        if ($lotes_vencidos == [])
+            return redirect()->back()->with('alert-dark', 'Não há produtos vencidos no estoque!');
 
         return redirect()->back()->with(['lotes_vencidos' => $lotes_vencidos, 'modal' => ['#viewExpModal']])->withInput();
     }
@@ -464,7 +484,7 @@ class ProdutosController extends Controller
             $lote->update(['qtd_itens_estoque' => 0]);
 
             DB::commit();
-            return redirect()->back()->with('alert-success', 'Confirmação de Retirada realizada com sucesso com sucesso');
+            return redirect()->back()->with('alert-success', 'Confirmação de Retirada realizada com sucesso!');
         }
         catch (\Exception $exception) {
             DB::rollback();

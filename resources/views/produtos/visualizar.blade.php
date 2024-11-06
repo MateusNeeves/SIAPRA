@@ -157,7 +157,7 @@
         <table class="table table-bordered table-scroll">
             <thead>
                 <tr>
-                    <th colspan="5" class="table-secondary text-start text-dark" scope="col"> Lista da Qtd em Estoque </th>
+                    <th colspan="5" class="table-secondary text-start text-dark" scope="col"> Lista de Lotes </th>
                 </tr>
                 <tr class="text-sm">
                     <th class="table-light text-center text-dark" scope="col"> # </th>
@@ -168,18 +168,26 @@
                 </tr>
             </thead>
             <tbody class="text-sm text-center">
-               @php $total = 0; @endphp
-                @foreach ($lotesV as $lote)
-                    @php $total += $lote['qtd_itens_estoque']; @endphp
-    
+                @php $total = 0; @endphp
+
+                @if ($lotesV == [])
                     <tr>
-                        <td>{{$lote['id']}}</td>
-                        <td>{{$lote['nome']}}</td>
-                        <td>{{$lote['lote_fabricante']}}</td>      
-                        <td>{{$lote['qtd_itens_estoque']}}</td>      
-                        <td>{{$lote['data_validade']}}</td>      
+                        <td colspan="5"> Nenhum lote encontrado </td>
                     </tr>
-                @endforeach
+                @else
+                    @foreach ($lotesV as $lote)
+                        @php $total += $lote['qtd_itens_estoque']; @endphp
+        
+                        <tr>
+                            <td>{{$lote['id']}}</td>
+                            <td>{{$lote['nome']}}</td>
+                            <td>{{$lote['lote_fabricante']}}</td>      
+                            <td>{{$lote['qtd_itens_estoque']}}</td>      
+                            <td>{{$lote['data_validade']}}</td>      
+                        </tr>
+                    @endforeach
+                @endif
+               
             </tbody>
             <tfoot>
                 <tr>
@@ -397,12 +405,12 @@
             <table id="myTableSelect" class="table table-bordered table-hover text-sm w-100">
                 <thead>
                     <tr class="text-sm">
-                        <th class="text-start table-dark" scope="col"> Produto </th>
-                        <th class="text-start table-dark" scope="col"> # Lote </th>
-                        <th class="text-start table-dark" scope="col"> Fabricante </th>
-                        <th class="text-start table-dark" scope="col"> Lote Fabricante </th>
-                        <th class="text-start table-dark" scope="col"> Qtd Itens </th>
-                        <th class="text-start table-dark" scope="col"> Validade </th>
+                        <th class="text-start table-orange" scope="col"> Produto </th>
+                        <th class="text-start table-orange" scope="col"> # Lote </th>
+                        <th class="text-start table-orange" scope="col"> Fabricante </th>
+                        <th class="text-start table-orange" scope="col"> Lote Fabricante </th>
+                        <th class="text-start table-orange" scope="col"> Qtd Itens </th>
+                        <th class="text-start table-orange" scope="col"> Validade </th>
                     </tr>
                 </thead>
                 <tbody class="text-sm"> 
