@@ -16,7 +16,7 @@ class FornecedoresController extends Controller
         foreach ($fornecedores as $i => $forn) {
             if ($forn->pais == "BRASIL"){
                 // return response()->json($fab);
-                $fornecedores[$i]->endereco = $forn->endereco . ($forn->numero != null ? ", " . $forn->numero : "") . ($forn->complemento != null ? ", " . $forn->complemento : "") . ", " . $forn->cidade . " - " . $forn->estado . ($forn->cep != null ? ", " . $forn->cep : "");
+                $fornecedores[$i]->endereco = $forn->endereco . ", " . $forn->numero . ($forn->complemento != null ? ", " . $forn->complemento : "") . ", " . $forn->cidade . " - " . $forn->estado . ", " . $forn->cep;
             }
         }
         $paises = Pais::all();

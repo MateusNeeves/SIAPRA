@@ -77,124 +77,97 @@
         </div>
     </div>
 
-@if (Session::has('modal'))
-    <script>
-        $(window).on('load', function() {
-            var modals = {!! json_encode(Session::get('modal')) !!}; // Converte o array de strings para JSON
-            var z = 1051 - (modals.length - 1) * 10; // Calcula o z-index inicial baseado no número de modais
-        
-            // Itera sobre os modais na ordem normal
-            modals.forEach(function(modalId) {
-                $(modalId).modal('show'); // Mostra cada modal
-                $(modalId).css('z-index', z); // Define o z-index do modal
-                z += 10; // Aumenta o z-index para o próximo modal
-            });
-        });
-    </script>
-@endif
-
-<script>
-    function closeModal() {
-    
-        var modals = {!! json_encode(Session::get('modal')) !!}; // Converte o array de strings para JSON
-        for (var i = modals.length - 1; i >= 0; i--) {
-            var modalId = modals[i];
-            var currentZ = parseInt($(modalId).css('z-index')); // Obtém o z-index atual e converte para número
+    @if (Session::has('modal'))
+        <script>
+            $(window).on('load', function() {
+                var modals = {!! json_encode(Session::get('modal')) !!}; // Converte o array de strings para JSON
+                var z = 1051 - (modals.length - 1) * 10; // Calcula o z-index inicial baseado no número de modais
             
-            $(modalId).css('z-index', currentZ + 10); // Incrementa o z-index em 10
+                // Itera sobre os modais na ordem normal
+                modals.forEach(function(modalId) {
+                    $(modalId).modal('show'); // Mostra cada modal
+                    $(modalId).css('z-index', z); // Define o z-index do modal
+                    z += 10; // Aumenta o z-index para o próximo modal
+                });
+            });
+        </script>
+    @endif
+
+    <script>
+        function closeModal() {
+        
+            var modals = {!! json_encode(Session::get('modal')) !!}; // Converte o array de strings para JSON
+            for (var i = modals.length - 1; i >= 0; i--) {
+                var modalId = modals[i];
+                var currentZ = parseInt($(modalId).css('z-index')); // Obtém o z-index atual e converte para número
+                
+                $(modalId).css('z-index', currentZ + 10); // Incrementa o z-index em 10
+            }
         }
-    }
-</script>
+    </script>
 
     <!-- Modal NOVO-->
-    <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar {{$title[1]}}</h1>
-                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    @if (Session::has('modal') && in_array("#newModal", Session::get('modal')))
+        <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar {{$title[1]}}</h1>
+                        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" action="{{route($path. '.store')}}">
+                        @csrf
+                        <div class="modal-body">
+                            @if (Session::has('modal') && Session::get('modal') == ['#newModal'])
+                                <div class="flash-message">
+                                    @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
+                                        @if(Session::has('alert-' . $msg))
+                                            <div class="w-100">
+                                                <p class="alert alert-{{ $msg }}">
+                                                    {!! Session::get('alert-' . $msg) !!}
+                                                </p>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                            @yield('content')
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-orange">Cadastrar</button>
+                        </div>
+                    </form>
                 </div>
-                <form method="post" action="{{route($path. '.store')}}">
-                    @csrf
-                    <div class="modal-body">
-                        @if (Session::has('modal') && Session::get('modal') == ['#newModal'])
-                            <div class="flash-message">
-                                @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
-                                    @if(Session::has('alert-' . $msg))
-                                        <div class="w-100">
-                                            <p class="alert alert-{{ $msg }}">
-                                                {!! Session::get('alert-' . $msg) !!}
-                                            </p>
-                                        </div>
-                                    @endif
-                                @endforeach
-                            </div>
-                        @endif
-                        @yield('content')
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-orange">Cadastrar</button>
-                    </div>
-                </form>
             </div>
         </div>
-    </div>
+    @endif
+
 
     <!-- Modal VISUALIZAR-->
-    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- modal-lg para ajustar largura -->
-            <div class="modal-content">
-                <div class="modal-header d-block">
-                    <div class="d-flex">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Visualizar {{$title[1]}}</h1>
-                        <div class="ms-auto">
-                            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    @if (Session::has('modal') && in_array("#viewModal", Session::get('modal')))
+        <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- modal-lg para ajustar largura -->
+                <div class="modal-content">
+                    <div class="modal-header d-block">
+                        <div class="d-flex">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Visualizar {{$title[1]}}</h1>
+                            <div class="ms-auto">
+                                <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        </div>
+                        <div class="d-flex mt-3 flex-wrap"> <!-- flex-wrap para ajustar os botões em telas menores -->
+                            <form method="get" action="{{route($path. '.make_mov')}}">
+                                <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
+                                <button id="mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Realizar Movimentação </button>
+                            </form>                        
+                            <form method="get" action="{{route($path. '.view_mov')}}">
+                                <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
+                                <button id="view_mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Visualizar Movimentação </button>
+                            </form>
                         </div>
                     </div>
-                    <div class="d-flex mt-3 flex-wrap"> <!-- flex-wrap para ajustar os botões em telas menores -->
-                        <form method="get" action="{{route($path. '.make_mov')}}">
-                            <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-                            <button id="mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Realizar Movimentação </button>
-                        </form>                        
-                        <form method="get" action="{{route($path. '.view_mov')}}">
-                            <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-                            <button id="view_mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Visualizar Movimentação </button>
-                        </form>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    @if (Session::has('modal')  && Session::get('modal') == ['#viewModal'])
-                        <div class="flash-message">
-                            @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
-                                @if(Session::has('alert-' . $msg))
-                                    <div class="w-100">
-                                        <p class="alert alert-{{ $msg }}">
-                                            {!! Session::get('alert-' . $msg) !!}
-                                        </p>
-                                    </div>
-                                @endif
-                            @endforeach
-                        </div>
-                    @endif
-                    @yield('visualizar')
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal EDITAR-->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Editar {{$title[1]}}</h1>
-                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="post" action="{{route($path. '.update')}}">
-                    @csrf
-                    @method('PUT')
                     <div class="modal-body">
-                        @if (Session::has('modal')  && Session::get('modal') == ['#editModal'])
+                        @if (Session::has('modal')  && Session::get('modal') == ['#viewModal'])
                             <div class="flash-message">
                                 @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
                                     @if(Session::has('alert-' . $msg))
@@ -207,16 +180,50 @@
                                 @endforeach
                             </div>
                         @endif
-                        <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
-                        @yield('content')
+                        @yield('visualizar')
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-orange">Atualizar</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
+    @endif
+
+    <!-- Modal EDITAR-->
+    @if (Session::has('modal') && in_array("#editModal", Session::get('modal')))
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Editar {{$title[1]}}</h1>
+                        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" action="{{route($path. '.update')}}">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body">
+                            @if (Session::has('modal')  && Session::get('modal') == ['#editModal'])
+                                <div class="flash-message">
+                                    @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
+                                        @if(Session::has('alert-' . $msg))
+                                            <div class="w-100">
+                                                <p class="alert alert-{{ $msg }}">
+                                                    {!! Session::get('alert-' . $msg) !!}
+                                                </p>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                            <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
+                            @yield('content')
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-orange">Atualizar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <!-- Modal DELETAR-->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -264,50 +271,54 @@
     </div>
 
     <!-- Modal VIEW MOVIMENTACAO -->
-    <div class="modal fade" id="viewMovModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header d-block">
-                    <div class="d-flex">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel"> Visualizar Movimentação </h1>
-                        <div class="ms-auto">
-                            <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    @if (Session::has('modal') && in_array("#viewMovModal", Session::get('modal')))
+        <div class="modal fade" id="viewMovModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header d-block">
+                        <div class="d-flex">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel"> Visualizar Movimentação </h1>
+                            <div class="ms-auto">
+                                <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-body flex-wrap">
-                    @yield('view_mov')
+                    <div class="modal-body flex-wrap">
+                        @yield('view_mov')
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endif
 
     <!-- Modal MAKE MOVIMENTACAO-->
-    <div class="modal fade" id="makeMovModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione o Tipo de Movimentação</h1>
-                    <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="id_form" method="get" action="">
-                    <div class="modal-body">
-                        <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
-                        <div class="">
-                            <select onchange="changeRoute()" id="movType" class="block mt-1 w-full border rounded" required>
-                                <option value="" hidden></option>
-                                <option value="entrada"> Entrada</option>
-                                <option value="saida"> Saída</option>
-                            </select>
+    @if (Session::has('modal') && in_array("#makeMovModal", Session::get('modal')))
+        <div class="modal fade" id="makeMovModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione o Tipo de Movimentação</h1>
+                        <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="id_form" method="get" action="">
+                        <div class="modal-body">
+                            <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
+                            <div class="">
+                                <select onchange="changeRoute()" id="movType" class="block mt-1 w-full border rounded" required>
+                                    <option value="" hidden></option>
+                                    <option value="entrada"> Entrada</option>
+                                    <option value="saida"> Saída</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-orange">Selecionar</button>
-                    </div>
-                </form>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-orange">Selecionar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+    @endif
 
     <script>
         function changeRoute() {
@@ -324,152 +335,160 @@
     </script>
 
     <!-- Modal MOV IN-->
-    <div class="modal fade" id="movInModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Realizando Movimentação - Entrada</h1>
-                    <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    @if (Session::has('modal') && in_array("#movInModal", Session::get('modal')))
+        <div class="modal fade" id="movInModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Realizando Movimentação - Entrada</h1>
+                        <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" action="{{route($path. '.store_mov_in')}}">
+                        @csrf
+                        <div class="modal-body">
+                            @if (Session::has('modal') && Session::get('modal') == '#loteModal')
+                                <div class="flash-message">
+                                    @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
+                                        @if(Session::has('alert-' . $msg))
+                                            <div class="w-100">
+                                                <p class="alert alert-{{ $msg }}">
+                                                    {!! Session::get('alert-' . $msg) !!}
+                                                </p>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                                @endif
+                            <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
+                            @yield('mov_in')
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-orange">Confirmar</button>
+                        </div>
+                    </form>
                 </div>
-                <form method="post" action="{{route($path. '.store_mov_in')}}">
-                    @csrf
-                    <div class="modal-body">
-                        @if (Session::has('modal') && Session::get('modal') == '#loteModal')
-                            <div class="flash-message">
-                                @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
-                                    @if(Session::has('alert-' . $msg))
-                                        <div class="w-100">
-                                            <p class="alert alert-{{ $msg }}">
-                                                {!! Session::get('alert-' . $msg) !!}
-                                            </p>
-                                        </div>
-                                    @endif
-                                @endforeach
-                            </div>
-                            @endif
-                        <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
-                        @yield('mov_in')
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-orange">Confirmar</button>
-                    </div>
-                </form>
             </div>
         </div>
-    </div>
+    @endif
 
     <!-- Modal MOV OUT SELECT-->
-    <div class="modal fade" id="movOutSelectModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header d-block">
-                    <div class="d-flex">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Realizando Movimentação - Saída</h1>
-                        <div class="ms-auto">
-                            <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    @if (Session::has('modal') && in_array("#movOutSelectModal", Session::get('modal')))
+        <div class="modal fade" id="movOutSelectModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header d-block">
+                        <div class="d-flex">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Realizando Movimentação - Saída</h1>
+                            <div class="ms-auto">
+                                <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <form method="get" action="{{route($path. Session::get('route_modal'))}}">
+                    <form method="get" action="{{route($path. Session::get('route_modal'))}}">
 
-                    <div class="modal-body">
-                        @if (Session::has('modal')  && Session::get('modal') == '#selecLoteModal')
-                            <div class="flash-message">
-                                @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
-                                    @if(Session::has('alert-' . $msg))
-                                        <div class="w-100">
-                                            <p class="alert alert-{{ $msg }}">
-                                                {!! Session::get('alert-' . $msg) !!}
-                                            </p>
-                                        </div>
-                                    @endif
-                                @endforeach
+                        <div class="modal-body">
+                            @if (Session::has('modal')  && Session::get('modal') == '#selecLoteModal')
+                                <div class="flash-message">
+                                    @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
+                                        @if(Session::has('alert-' . $msg))
+                                            <div class="w-100">
+                                                <p class="alert alert-{{ $msg }}">
+                                                    {!! Session::get('alert-' . $msg) !!}
+                                                </p>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                            <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
+                            <input hidden name="id_lote" id="id_lote" value="{{old('id_lote')}}">
+                            <input hidden name="qtd_estoque_lote" id="qtd_estoque_lote" value="{{old('qtd_estoque_lote')}}">
+                                
+                            @yield('mov_out_select')
+                        </div>
+                        <div class="modal-footer">
+                            <button disabled onclick="$('#id_lote').val($('#myTableSelect .selected .id').text()); $('#qtd_estoque_lote').val($('#myTableSelect .selected .qtd').text())" id="selectButton" type="submit" class="btn btn-orange">Selecionar</button>
+                        </div>
+
+                        <script>
+                            $(document).on('click', function() {
+                                if ($('#myTableSelect .selected').length)
+                                    $('#selectButton').prop('disabled', false);
+                                else
+                                    $('#selectButton').prop('disabled', true);
+                            });
+                        </script>
+                    </form>
+                </div>
+            </div>
+        </div>
+     @endif
+
+    <!-- Modal MOV OUT -->
+    @if (Session::has('modal') && in_array("#movOutModal", Session::get('modal')))
+        <div class="modal fade" id="movOutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header d-block">
+                        <div class="d-flex">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel"> Realizando Movimentação - Saída </h1>
+                            <div class="ms-auto">
+                                <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                        @endif
+                        </div>
+                    </div>
+                    <form method="post" action="{{route($path. '.store_mov_out')}}">
+                        @csrf
+
+                        <div class="modal-body">
+                            @yield('mov_out')
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-orange">Confirmar</button>
+                        </div>
                         <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
-                        <input hidden name="id_lote" id="id_lote" value="{{old('id_lote')}}">
-                        <input hidden name="qtd_estoque_lote" id="qtd_estoque_lote" value="{{old('qtd_estoque_lote')}}">
-                            
-                        @yield('mov_out_select')
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
+
+     <!-- Modal VIEW VENCIDOS -->
+     @if (Session::has('modal') && in_array("#viewExpModal", Session::get('modal')))
+        <div class="modal fade" id="viewExpModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header d-block">
+                        <div class="d-flex">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel"> Produtos Vencidos </h1>
+                            <div class="ms-auto">
+                                <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body flex-wrap">
+                        @yield('view_exp')
                     </div>
                     <div class="modal-footer">
-                        <button disabled onclick="$('#id_lote').val($('#myTableSelect .selected .id').text()); $('#qtd_estoque_lote').val($('#myTableSelect .selected .qtd').text())" id="selectButton" type="submit" class="btn btn-orange">Selecionar</button>
+                        <form method="post" action="{{route($path. '.destroy_expired')}}">
+                            @csrf
+                            <input hidden name="id_exp" id="id_exp" value="{{old('id_view')}}">
+                            <button disabled id="exp_button" onclick="$('#id_exp').val($('#myTableSelect .selected .id').text())" type="submit" class="btn btn-danger">Confirmar Retirada do Estoque</button>
+                        </form>
                     </div>
 
                     <script>
                         $(document).on('click', function() {
-                            if ($('#myTableSelect .selected').length)
-                                $('#selectButton').prop('disabled', false);
-                            else
-                                $('#selectButton').prop('disabled', true);
+                            if ($('#myTableSelect .selected').length){
+                                $('#exp_button').prop('disabled', false);
+                            }
+                            else{
+                                $('#exp_button').prop('disabled', true);
+                            }
                         });
                     </script>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Modal MOV OUT -->
-    <div class="modal fade" id="movOutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header d-block">
-                    <div class="d-flex">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel"> Realizando Movimentação - Saída </h1>
-                        <div class="ms-auto">
-                            <button onclick="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                    </div>
-                </div>
-                <form method="post" action="{{route($path. '.store_mov_out')}}">
-                    @csrf
-
-                    <div class="modal-body">
-                        @yield('mov_out')
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-orange">Confirmar</button>
-                    </div>
-                    <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
-                </form>
-            </div>
-        </div>
-    </div>
-
-     <!-- Modal VIEW VENCIDOS -->
-     <div class="modal fade" id="viewExpModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header d-block">
-                    <div class="d-flex">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel"> Produtos Vencidos </h1>
-                        <div class="ms-auto">
-                            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-body flex-wrap">
-                    @yield('view_exp')
-                </div>
-                <div class="modal-footer">
-                    <form method="post" action="{{route($path. '.destroy_expired')}}">
-                        @csrf
-                        <input hidden name="id_exp" id="id_exp" value="{{old('id_view')}}">
-                        <button disabled id="exp_button" onclick="$('#id_exp').val($('#myTableSelect .selected .id').text())" type="submit" class="btn btn-danger">Confirmar Retirada do Estoque</button>
-                    </form>
-                </div>
-
-                <script>
-                    $(document).on('click', function() {
-                        if ($('#myTableSelect .selected').length){
-                            $('#exp_button').prop('disabled', false);
-                        }
-                        else{
-                            $('#exp_button').prop('disabled', true);
-                        }
-                    });
-                </script>
-            </div>
-        </div>
-    </div>
+    @endif
 </x-app-layout>

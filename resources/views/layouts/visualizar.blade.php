@@ -72,74 +72,78 @@
     @endif
 
     <!-- Modal NOVO-->
-    <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Novo {{$title[1]}}</h1>
-                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    @if (Session::has('modal') && Session::get('modal') == "#newModal")
+        <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Novo {{$title[1]}}</h1>
+                        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" action="{{route($path. '.store')}}">
+                        @csrf
+                        <div class="modal-body">
+                            @if (Session::has('modal') && Session::get('modal') == '#newModal')
+                                <div class="flash-message">
+                                    @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
+                                        @if(Session::has('alert-' . $msg))
+                                            <div class="w-100">
+                                                <p class="alert alert-{{ $msg }}">
+                                                    {!! Session::get('alert-' . $msg) !!}
+                                                </p>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                            @yield('content')
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-orange">Confirmar</button>
+                        </div>
+                    </form>
                 </div>
-                <form method="post" action="{{route($path. '.store')}}">
-                    @csrf
-                    <div class="modal-body">
-                        @if (Session::has('modal') && Session::get('modal') == '#newModal')
-                            <div class="flash-message">
-                                @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
-                                    @if(Session::has('alert-' . $msg))
-                                        <div class="w-100">
-                                            <p class="alert alert-{{ $msg }}">
-                                                {!! Session::get('alert-' . $msg) !!}
-                                            </p>
-                                        </div>
-                                    @endif
-                                @endforeach
-                            </div>
-                        @endif
-                        @yield('content')
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-orange">Confirmar</button>
-                    </div>
-                </form>
             </div>
         </div>
-    </div>
+    @endif
 
     <!-- Modal EDITAR-->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Editando {{$title[1]}}</h1>
-                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    @if (Session::has('modal') && Session::get('modal') == "#editModal")
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Editando {{$title[1]}}</h1>
+                        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" action="{{route($path. '.update')}}">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body">
+                            @if (Session::has('modal')  && Session::get('modal') == '#editModal')
+                                <div class="flash-message">
+                                    @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
+                                        @if(Session::has('alert-' . $msg))
+                                            <div class="w-100">
+                                                <p class="alert alert-{{ $msg }}">
+                                                    {!! Session::get('alert-' . $msg) !!}
+                                                </p>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                            <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
+                            @yield('content')
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-orange">Atualizar</button>
+                        </div>
+                    </form>
                 </div>
-                <form method="post" action="{{route($path. '.update')}}">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        @if (Session::has('modal')  && Session::get('modal') == '#editModal')
-                            <div class="flash-message">
-                                @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
-                                    @if(Session::has('alert-' . $msg))
-                                        <div class="w-100">
-                                            <p class="alert alert-{{ $msg }}">
-                                                {!! Session::get('alert-' . $msg) !!}
-                                            </p>
-                                        </div>
-                                    @endif
-                                @endforeach
-                            </div>
-                        @endif
-                        <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
-                        @yield('content')
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-orange">Atualizar</button>
-                    </div>
-                </form>
             </div>
         </div>
-    </div>
+    @endif
 
     <!-- Modal DELETAR-->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">

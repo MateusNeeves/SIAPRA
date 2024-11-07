@@ -16,7 +16,7 @@ class FabricantesController extends Controller
         foreach ($fabricantes as $i => $fab) {
             if ($fab->pais == "BRASIL"){
                 // return response()->json($fab);
-                $fabricantes[$i]->endereco = $fab->endereco . ($fab->numero != null ? ", " . $fab->numero : "") . ($fab->complemento != null ? ", " . $fab->complemento : "") . ", " . $fab->cidade . " - " . $fab->estado . ($fab->cep != null ? ", " . $fab->cep : "");
+                $fabricantes[$i]->endereco = $fab->endereco . ", " . $fab->numero . ($fab->complemento != null ? ", " . $fab->complemento : "") . ", " . $fab->cidade . " - " . $fab->estado . ", " . $fab->cep;
             }
         }
         $paises = Pais::all();

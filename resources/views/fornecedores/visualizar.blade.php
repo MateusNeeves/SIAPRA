@@ -49,7 +49,6 @@
             var cnpjInput = document.getElementById('cnpj');
             var cepInput = document.getElementById('cep');
             var numeroInput = document.getElementById('numero');
-            var complementoInput = document.getElementById('complemento');
             var cidadeInput = document.getElementById('cidade');
             var estadoInput = document.getElementById('estado');
             
@@ -65,7 +64,6 @@
                 cnpjInput.setAttribute('required', 'required');
                 cepInput.setAttribute('required', 'required');
                 numeroInput.setAttribute('required', 'required');
-                complementoInput.setAttribute('required', 'required');
                 cidadeInput.setAttribute('required', 'required');
                 estadoInput.setAttribute('required', 'required');
             } else {
@@ -79,7 +77,6 @@
                 cnpjInput.removeAttribute('required');
                 cepInput.removeAttribute('required');
                 numeroInput.removeAttribute('required');
-                complementoInput.removeAttribute('required');
                 cidadeInput.removeAttribute('required');
                 estadoInput.removeAttribute('required');
             }
@@ -117,7 +114,7 @@
 
     <!-- Complemento -->
     <div id="complemento-field" class="mt-4" style="display:none;">
-        <x-input-label :value="__('Complemento *')" />
+        <x-input-label :value="__('Complemento')" />
         <x-text-input id="complemento" class="block mt-1 w-full" type="text" name="complemento" :value="old('complemento', $fornecedor->complemento ?? '')"/>
     </div>
 

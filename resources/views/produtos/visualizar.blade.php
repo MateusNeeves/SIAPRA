@@ -265,13 +265,13 @@
     <!-- Data Entrega -->
     <div class="mt-4">
         <x-input-label :value="__('Data Entrega *')" />
-        <x-text-input id="data_entrega" class="block mt-1 w-full" type="datetime-local" name="data_entrega" :value="old('data_entrega')" required/>
+        <x-text-input id="data_entrega" class="block mt-1 w-full" type="date" name="data_entrega" :value="old('data_entrega')" required/>
     </div>
     
     <!-- Data Validade -->
     <div class="mt-4">
         <x-input-label :value="__('Data Validade *')" />
-        <x-text-input id="data_validade" class="block mt-1 w-full" type="datetime-local" name="data_validade" :value="old('data_validade')" required/>
+        <x-text-input id="data_validade" class="block mt-1 w-full" type="date" name="data_validade" :value="old('data_validade')" required/>
     </div>
 
 @endsection
@@ -330,7 +330,7 @@
     <!-- Data Retirada -->
     <div >
         <x-input-label :value="__('Data Retirada *')" />
-        <x-text-input id="data_mov_out" class="block mt-1 w-full" type="datetime-local" name="data_mov_out" :value="old('data_mov_out')" required/>
+        <x-text-input id="data_mov_out" class="block mt-1 w-full" type="date" name="data_mov_out" :value="old('data_mov_out')" required/>
     </div>
 
     <!-- Destino do Produto -->
