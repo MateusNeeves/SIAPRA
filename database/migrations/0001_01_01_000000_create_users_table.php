@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('password');
             $table->string('name');
-            // $table->integer('accessLevel');
+            $table->string('cpf')->unique();
+            $table->string('email');
+            $table->string('phone');
             
             $table->softDeletes();
             $table->rememberToken();
@@ -25,7 +27,7 @@ return new class extends Migration
         });
 
         DB::table('users')->insert(
-            ['username' => 'admin', 'password' => bcrypt('admin'), 'name' => 'admin']
+            ['username' => 'admin', 'password' => bcrypt('admin'), 'name' => 'admin', 'cpf' => '000.000.000-00', 'email' => 'admin@admin.com', 'phone' => '(00) 00000-0000']
         );
 
         // Schema::create('password_reset_tokens', function (Blueprint $table) {

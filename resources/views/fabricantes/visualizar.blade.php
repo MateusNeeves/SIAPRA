@@ -90,14 +90,20 @@
 
     <!-- CNPJ -->
     <div id="cnpj-field" class="mt-4" style="display:none;">
-        <x-input-label :value="__('CNPJ *')" />
-        <x-text-input id="cnpj" class="block mt-1 w-full" type="text" name="cnpj" :value="old('cnpj', $fabricante->cnpj ?? '')" />
+        <div class="flex justify-between">
+            <x-input-label :value="__('CNPJ *')" />
+            <x-input-label :value="__('(Apenas Números)')" />
+        </div>
+        <x-text-input id="cnpj" class="block mt-1 w-full" type="text" maxlength="14" name="cnpj" :value="old('cnpj', $fabricante->cnpj ?? '')" />
     </div>
 
     <!-- CEP -->
     <div id="cep-field" class="mt-4" style="display:none;">
-        <x-input-label :value="__('CEP *')" />
-        <x-text-input id="cep" class="block mt-1 w-full" type="text" name="cep" :value="old('cep', $fabricante->cep ?? '')" />
+        <div class="flex justify-between">
+            <x-input-label :value="__('CEP *')" />
+            <x-input-label :value="__('(Apenas Números)')" />
+        </div>
+        <x-text-input id="cep" class="block mt-1 w-full" type="text" maxlength="8" name="cep" :value="old('cep', $fabricante->cep ?? '')" />
     </div>
 
     <!-- Endereço -->
@@ -146,8 +152,11 @@
 
     <!-- Telefone -->
     <div class="mt-4">
-        <x-input-label :value="__('Telefone *')" />
-        <x-text-input id="telefone" class="block mt-1 w-full" type="text" name="telefone" :value="old('telefone', $fabricante->telefone ?? '')" required/>
+        <div class="flex justify-between">
+            <x-input-label :value="__('Telefone *')" />
+            <x-input-label :value="__('(Apenas Números)')" />
+        </div>
+        <x-text-input id="telefone" class="block mt-1 w-full" type="text" maxlength="11" name="telefone" :value="old('telefone', $fabricante->telefone ?? '')" required/>
     </div>
 
     <!-- Email -->

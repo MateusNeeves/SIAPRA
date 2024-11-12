@@ -14,8 +14,12 @@ class FabricantesController extends Controller
     public function index(){
         $fabricantes = Fabricante::all();
         foreach ($fabricantes as $i => $fab) {
+            $fabricantes[$i]->telefone = formatPhone($fabricantes[$i]->telefone);
+
             if ($fab->pais == "BRASIL"){
-                // return response()->json($fab);
+                $fabricantes[$i]->cep = formatCep($fabricantes[$i]->cep);
+                $fabricantes[$i]->cnpj = formatCnpj($fabricantes[$i]->cnpj);
+                
                 $fabricantes[$i]->endereco = $fab->endereco . ", " . $fab->numero . ($fab->complemento != null ? ", " . $fab->complemento : "") . ", " . $fab->cidade . " - " . $fab->estado . ", " . $fab->cep;
             }
         }

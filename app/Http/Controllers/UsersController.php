@@ -11,7 +11,13 @@ use Illuminate\Support\Facades\Validator;
 class UsersController extends Controller
 {
     public function index(){
-        $usuarios = User::select('id', 'username', 'name')->where('username', '!=', 'admin')->get();
+        $usuarios = User::where('username', '!=', 'admin')->get();
+        
+        foreach ($usuarios as $i => $usuario) {
+            $usuarios[$i]->cpf = formatCpf($usuarios[$i]->cpf);
+            $usuarios[$i]->phone = formatPhone($usuarios[$i]->phone);
+        }
+
         return view('usuarios/visualizar', ['usuarios' => $usuarios]);
     }
 
@@ -24,9 +30,11 @@ class UsersController extends Controller
         $validator = Validator::make(
             $request->all(),
             
-            ['username' => 'unique:users'],
+            ['username' => 'unique:users',
+            'cpf' => 'unique:users'],
             
-            ['username.unique' => 'Já existe um Usuário com esse Username']
+            ['username.unique' => 'Já existe um Usuário com esse Username',
+            'cpf.unique' => 'Já existe um Usuário com esse CPF']
         );
 
         if ($validator->fails())
@@ -38,6 +46,9 @@ class UsersController extends Controller
         $usuario->username = mb_strtolower($request->username);
         $usuario->name = $request->name;
         $usuario->password = bcrypt($request->password);
+        $usuario->cpf = $request->cpf;
+        $usuario->email = $request->email;
+        $usuario->phone = $request->phone;
 
         $usuario->save();
 
@@ -55,9 +66,11 @@ class UsersController extends Controller
         $validator = Validator::make(
             ['username' => mb_strtolower($request->username)],
             
-            ['username' => Rule::unique('users')->ignore($request->id_edit)],
+            ['username' => Rule::unique('users')->ignore($request->id_edit),
+            'cpf' => Rule::unique('users')->ignore($request->id_edit)],
             
-            ['username.unique' => 'Já existe um Usuário com esse Username']
+            ['username.unique' => 'Já existe um Usuário com esse Username',
+            'cpf.unique' => 'Já existe um Usuário com esse CPF']
         );
 
         if ($validator->fails())
@@ -67,7 +80,10 @@ class UsersController extends Controller
         User::findOrFail($request->id_edit)->update([
             'username' => mb_strtolower($request->username),
             'name' => $request->name,
-            'password' => bcrypt($request->password)
+            'password' => bcrypt($request->password),
+            'cpf' => $request->cpf,
+            'email' => $request->email,
+            'phone' => $request->phone,
         ]);
         return redirect()->route('usuarios')->with('alert-success', 'Usuário editado com sucesso');
     }

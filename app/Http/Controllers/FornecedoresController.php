@@ -14,8 +14,11 @@ class FornecedoresController extends Controller
     public function index(){
         $fornecedores = Fornecedor::all();
         foreach ($fornecedores as $i => $forn) {
+            $fornecedores[$i]->telefone = formatPhone($fornecedores[$i]->telefone);
             if ($forn->pais == "BRASIL"){
-                // return response()->json($fab);
+                $fornecedores[$i]->cep = formatCep($fornecedores[$i]->cep);
+                $fornecedores[$i]->cnpj = formatCnpj($fornecedores[$i]->cnpj);
+
                 $fornecedores[$i]->endereco = $forn->endereco . ", " . $forn->numero . ($forn->complemento != null ? ", " . $forn->complemento : "") . ", " . $forn->cidade . " - " . $forn->estado . ", " . $forn->cep;
             }
         }
