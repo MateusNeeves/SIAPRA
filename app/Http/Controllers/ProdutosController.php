@@ -333,39 +333,21 @@ class ProdutosController extends Controller
         return redirect()->back()->with($make_mov_inInfos)->withInput();
     }
 
-    public function store_mov_in(Request $request){
-        // VERIFICANDO UNICIDADE
-         
-        $id_fabricante = Fabricante::where('nome', $request->fabricante)->get()[0]->id;
-        $id_fornecedor = Fornecedor::where('nome', $request->fornecedor)->get()[0]->id;
+    public function store_mov_in(Request $request){         
+        // ADICIONANDO LOTE DO PRODUTO
+        $lote = new Produto_Mov_In;
 
-        $lote = Produto_Mov_In::where('id_produto', $request->id_view)->where('id_fabricante', $id_fabricante)->where('lote_fabricante', $request->lote_fabricante)->first();
+        $lote->id_produto = $request->id_view;
+        $lote->id_fabricante = Fabricante::where('nome', $request->fabricante)->get()[0]->id;
+        $lote->lote_fabricante = $request->lote_fabricante;
+        $lote->id_fornecedor = Fornecedor::where('nome', $request->fornecedor)->get()[0]->id;
+        $lote->qtd_itens_recebidos = $request->qtd_itens_recebidos;
+        $lote->qtd_itens_estoque = $request->qtd_itens_recebidos;
+        $lote->preco = $request->preco;
+        $lote->data_entrega = $request->data_entrega;
+        $lote->data_validade = $request->data_validade;
         
-        if ($lote){
-            // ATUALIZANDO QTD LOTE DO PRODUTO
-            Produto_Mov_In::findOrFail($lote->id)->update([
-                'qtd_itens_recebidos' => $lote->qtd_itens_recebidos + $request->qtd_itens_recebidos,
-                'qtd_itens_estoque' => $lote->qtd_itens_estoque + $request->qtd_itens_recebidos,
-                'preco' => $lote->preco + $request->preco
-            ]);
-        }
-        else{
-            // ADICIONANDO LOTE DO PRODUTO
-
-            $lote = new Produto_Mov_In;
-    
-            $lote->id_produto = $request->id_view;
-            $lote->id_fabricante = $id_fabricante;
-            $lote->lote_fabricante = $request->lote_fabricante;
-            $lote->id_fornecedor = $id_fornecedor;
-            $lote->qtd_itens_recebidos = $request->qtd_itens_recebidos;
-            $lote->qtd_itens_estoque = $request->qtd_itens_recebidos;
-            $lote->preco = $request->preco;
-            $lote->data_entrega = $request->data_entrega;
-            $lote->data_validade = $request->data_validade;
-            
-            $lote->save();
-        }
+        $lote->save();
 
         $store_loteInfos = array_merge(get_infos_view($request), [
             'modal' => ['#viewModal'],

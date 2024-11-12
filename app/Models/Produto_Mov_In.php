@@ -18,8 +18,7 @@ class Produto_Mov_In extends Model
         'id_fornecedor',
         'qtd_itens_recebidos',
         'qtd_itens_estoque',
-        'preco_unitario',
-        'preco_total',
+        'preco',
         'data_entrega',
         'data_validade'
     ];

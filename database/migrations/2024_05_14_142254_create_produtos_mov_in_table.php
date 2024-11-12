@@ -20,9 +20,6 @@ return new class extends Migration
 
             $table->integer('qtd_itens_recebidos');
             $table->integer('qtd_itens_estoque');
-            
-            // $table->integer('preco_unitario');
-            // $table->integer('preco_total');
 
             $table->decimal('preco', 9, 2);
             
@@ -34,7 +31,6 @@ return new class extends Migration
             $table->foreign('id_produto')->references('id')->on('produtos');
             $table->foreign('id_fabricante')->references('id')->on('fabricantes');
             $table->foreign('id_fornecedor')->references('id')->on('fornecedores');
-            // $table->unique(['id_produto', 'id_fabricante', 'lote_fabricante']);
         });
     }
 

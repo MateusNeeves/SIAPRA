@@ -241,24 +241,10 @@
         <x-input-label :value="__('Quantidade de Itens Recebidos *')" />
         <x-text-input id="qtd_itens_recebidos" class="block mt-1 w-full" type="number" name="qtd_itens_recebidos" :value="old('qtd_itens_recebidos')" min="1" required/>
     </div>
-
-    {{-- 
-    <!-- Preço Unitário -->
-    <div class="mt-4">
-        <x-input-label :value="__('Preço Unitário *')" />
-        <x-text-input id="preco_unitario" class="block mt-1 w-full" type="number" name="preco_unitario" :value="old('preco_unitario')" required/>
-    </div>
-
-    <!-- Preço Total -->
-    <div class="mt-4">
-        <x-input-label :value="__('Preço Total *')" />
-        <x-text-input id="preco_total" class="block mt-1 w-full" type="number" name="preco_total" :value="old('preco_total')" required/>
-    </div>
-     --}}
      
     <!-- Preço -->
     <div class="mt-4">
-        <x-input-label :value="__('Preço *')" />
+        <x-input-label :value="__('Preço Total*')" />
         <x-text-input id="preco" class="block mt-1 w-full" type="number" name="preco" :value="old('preco')" step="0.01" required/>
     </div>
     
