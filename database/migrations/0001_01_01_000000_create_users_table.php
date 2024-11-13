@@ -26,10 +26,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        DB::table('users')->insert(
-            ['username' => 'admin', 'password' => bcrypt('admin'), 'name' => 'admin', 'cpf' => '000.000.000-00', 'email' => 'admin@admin.com', 'phone' => '(00) 00000-0000']
-        );
-
         // Schema::create('password_reset_tokens', function (Blueprint $table) {
         //     $table->string('email')->primary();
         //     $table->string('token');

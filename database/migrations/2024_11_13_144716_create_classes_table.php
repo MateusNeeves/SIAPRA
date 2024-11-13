@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('dest_produtos', function (Blueprint $table) {
+        Schema::create('classes', function (Blueprint $table) {
             $table->id();
-            $table->string('nome')->unique();
-            
-            $table->softDeletes();
-            $table->timestamps();
+            $table->string('nome');
+            $table->string('descricao');
         });
     }
 
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dest_produtos');
+        Schema::dropIfExists('classes');
     }
 };
