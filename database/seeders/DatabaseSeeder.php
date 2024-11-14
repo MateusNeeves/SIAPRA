@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('users')->insert(
-            ['username' => 'admin', 'password' => bcrypt('admin'), 'name' => 'admin', 'cpf' => '000.000.000-00', 'email' => 'admin@admin.com', 'phone' => '(00) 00000-0000']
+            ['username' => 'admin', 'password' => bcrypt('admin'), 'name' => 'admin', 'cpf' => '00000000000', 'email' => 'admin@admin.com', 'phone' => '00000000000']
         );
 
         DB::table('users_classes')->insert(
