@@ -8,7 +8,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+
 
 class User extends Authenticatable
 {
@@ -31,10 +33,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function pedidos(): HasMany{
-        return $this->hasMany(Pedido::class);
+    public function classes(): BelongsToMany{
+        return $this->belongsToMany(Classe::class, 'users_classes', 'id_user', 'id_classe');
     }
 
+    public function getClassNamesAttribute(){
+        $this->load('classes');
+        return $this->classes->pluck('nome')->toArray();
+    }
 
     protected function casts(): array{
         return [
@@ -42,3 +48,4 @@ class User extends Authenticatable
         ];
     }
 }
+

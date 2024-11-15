@@ -7,30 +7,33 @@
                     {{$title[0]}}
                 </div>
 
-                <div class="flex mb-2">
-                    <a class="btn btn-orange bg-gradient me-2 ms-3" href="{{route($path. '.register')}}"> Novo </a>
+                @if (array_intersect(['Admin', 'Almoxarife'], Auth::user()->getClassNamesAttribute()))
+                    <div class="flex mb-2">
+                        <a class="btn btn-orange bg-gradient me-2 ms-3" href="{{route($path. '.register')}}"> Novo </a>
 
-                    <form method="post" action="{{route($path. '.edit')}}">
-                        @csrf
-                        <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
-                        <button disabled id="edit_button" onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2" > Editar </button>
-                    </form>
-    
-                    <button disabled id="delete_button" onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-orange bg-gradient me-2"> Deletar </button>
-                </div>
+                        <form method="post" action="{{route($path. '.edit')}}">
+                            @csrf
+                            <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
+                            <button disabled id="edit_button" onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2" > Editar </button>
+                        </form>
+        
+                        <button disabled id="delete_button" onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-orange bg-gradient me-2"> Deletar </button>
+                    </div>
 
-                <script>
-                    $(document).on('click', function() {
-                        if ($('.selected').length){
-                            $('#edit_button').prop('disabled', false);
-                            $('#delete_button').prop('disabled', false);
-                        }
-                        else{
-                            $('#edit_button').prop('disabled', true);
-                            $('#delete_button').prop('disabled', true);
-                        }
-                    });
-                </script>
+                    <script>
+                        $(document).on('click', function() {
+                            if ($('.selected').length){
+                                $('#edit_button').prop('disabled', false);
+                                $('#delete_button').prop('disabled', false);
+                            }
+                            else{
+                                $('#edit_button').prop('disabled', true);
+                                $('#delete_button').prop('disabled', true);
+                            }
+                        });
+                    </script>
+                @endif
+
 
                 <div class="container overflow-auto mb-4">
                     <table id="myTable" class="table table-bordered table-hover text-sm">

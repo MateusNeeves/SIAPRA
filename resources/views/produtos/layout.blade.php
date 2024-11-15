@@ -7,27 +7,37 @@
                     {{$title[0]}}
                 </div>
 
+                
+
                 <div class="flex mb-2 justify-between">
                     <div class="flex">
-                        <a class="btn btn-orange bg-gradient me-2 ms-3" href="{{route($path. '.register')}}"> Novo </a>
+                        @if (array_intersect(['Admin', 'Almoxarife'], Auth::user()->getClassNamesAttribute()))
+                            <a class="btn btn-orange bg-gradient me-2 ms-3" href="{{route($path. '.register')}}"> Novo </a>
+                        @endif
+        
     
                         <form method="post" action="{{route($path. '.view')}}">
                             @csrf
                             <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
                             <button disabled id="view_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2" > Visualizar </button>
                         </form>
-    
-                        <form method="post" action="{{route($path. '.edit')}}">
-                            @csrf
-                            <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
-                            <button disabled id="edit_button" onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2" > Editar </button>
-                        </form>
+
+                        @if (array_intersect(['Admin', 'Almoxarife'], Auth::user()->getClassNamesAttribute()))
+                            <form method="post" action="{{route($path. '.edit')}}">
+                                @csrf
+                                <input hidden name="id_edit" id="id_edit" value="{{old('id_edit')}}">
+                                <button disabled id="edit_button" onclick="$('#id_edit').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2" > Editar </button>
+                            </form>
+            
+                            <button disabled id="delete_button" onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-orange bg-gradient me-2"> Deletar </button>
+                        @endif
         
-                        <button disabled id="delete_button" onclick="$('#id_delete').val($('#myTable .selected .id').text()); $('#deleteModal').modal('show')" class="btn btn-orange bg-gradient me-2"> Deletar </button>
                     </div>
                     
                     <div class="flex">
-                        <a class="btn btn-orange bg-gradient me-2" href="{{route($path. '.view_expired')}}"> Ver Vencidos </a>
+                        @if (array_intersect(['Admin', 'Almoxarife'], Auth::user()->getClassNamesAttribute()))
+                            <a class="btn btn-orange bg-gradient me-2" href="{{route($path. '.view_expired')}}"> Ver Vencidos </a>
+                        @endif
                     </div>
                 </div>
 
@@ -155,16 +165,18 @@
                                 <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                         </div>
-                        <div class="d-flex mt-3 flex-wrap"> <!-- flex-wrap para ajustar os botões em telas menores -->
-                            <form method="get" action="{{route($path. '.make_mov')}}">
-                                <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-                                <button id="mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Realizar Movimentação </button>
-                            </form>                        
-                            <form method="get" action="{{route($path. '.view_mov')}}">
-                                <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
-                                <button id="view_mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Visualizar Movimentação </button>
-                            </form>
-                        </div>
+                        @if (array_intersect(['Admin', 'Almoxarife'], Auth::user()->getClassNamesAttribute()))
+                            <div class="d-flex mt-3 flex-wrap"> <!-- flex-wrap para ajustar os botões em telas menores -->
+                                <form method="get" action="{{route($path. '.make_mov')}}">
+                                    <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
+                                    <button id="mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Realizar Movimentação </button>
+                                </form>                        
+                                <form method="get" action="{{route($path. '.view_mov')}}">
+                                    <input hidden name="id_view" id="id_view" value="{{old('id_view', Session::get('id_view_backup') ?? '')}}">
+                                    <button id="view_mov_button" onclick="$('#id_view').val($('#myTable .selected .id').text())" class="btn btn-orange bg-gradient me-2 text-nowrap"> Visualizar Movimentação </button>
+                                </form>
+                            </div>
+                        @endif
                     </div>
                     <div class="modal-body">
                         @if (Session::has('modal')  && Session::get('modal') == ['#viewModal'])

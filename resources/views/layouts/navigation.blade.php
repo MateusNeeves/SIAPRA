@@ -38,90 +38,101 @@
                 </div>
 
                 <!-- Almoxarifado -->
-                <div class="hidden sm:flex sm:items-center sm:ms-10" id="almoxarifado">
-                    <x-dropdown align="left" width="48">
-                        <x-slot name="trigger" class="h-100">
-                            <button class="inline-flex items-center text-sm font-medium text-gray-500 bg-white hover:text-gray-700">
-                                <div>{{ __('Almoxarifado') }}</div>
-                                <div class="ms-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </button>
+                @if (array_intersect(['Admin', 'Almoxarife', 'Visualizador'], Auth::user()->getClassNamesAttribute()))
+                    <div class="hidden sm:flex sm:items-center sm:ms-10" id="almoxarifado">
+                        <x-dropdown align="left" width="48">
+                            <x-slot name="trigger" class="h-100">
+                                <button class="inline-flex items-center text-sm font-medium text-gray-500 bg-white hover:text-gray-700">
+                                    <div>{{ __('Almoxarifado') }}</div>
+                                    <div class="ms-1">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
 
-                        </x-slot>
+                            </x-slot>
 
-                        <x-slot name="content">
-                            <x-dropdown-link class=" text-decoration-none" :href="route('fabricantes')">
-                                {{ __('Fabricantes') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link class=" text-decoration-none" :href="route('fornecedores')">
-                                {{ __('Fornecedores') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link class=" text-decoration-none" :href="route('produtos')">
-                                {{ __('Produtos') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link class=" text-decoration-none" :href="route('tipos_produtos')">
-                                {{ __('Tipos de Produtos') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link class=" text-decoration-none" :href="route('dest_produtos')">
-                                {{ __('Destinos dos Produtos') }}
-                            </x-dropdown-link>
-                        </x-slot>
-                    </x-dropdown>
-                </div>
+                            <x-slot name="content">
+                                <x-dropdown-link class=" text-decoration-none" :href="route('fabricantes')">
+                                    {{ __('Fabricantes') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link class=" text-decoration-none" :href="route('fornecedores')">
+                                    {{ __('Fornecedores') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link class=" text-decoration-none" :href="route('produtos')">
+                                    {{ __('Produtos') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link class=" text-decoration-none" :href="route('tipos_produtos')">
+                                    {{ __('Tipos de Produtos') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link class=" text-decoration-none" :href="route('dest_produtos')">
+                                    {{ __('Destinos dos Produtos') }}
+                                </x-dropdown-link>
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
+                @endif
 
                 <!-- Clientes -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link id="clientes" class=" text-decoration-none" :href="route('clientes')" :active="request()->routeIs('clientes')">
-                        {{ __('Clientes') }}
-                    </x-nav-link>
-                </div>
+                @if (array_intersect(['Admin', 'Visualizador', 'Produção'], Auth::user()->getClassNamesAttribute()))
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link id="clientes" class=" text-decoration-none" :href="route('clientes')" :active="request()->routeIs('clientes')">
+                            {{ __('Clientes') }}
+                        </x-nav-link>
+                    </div>
+                @endif
 
                 <!-- Pedidos -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
-                    <x-nav-link id="pedidos" class=" text-decoration-none" :href="route('pedidos')" :active="request()->routeIs('pedidos')">
-                        {{ __('Pedidos') }}
-                    </x-nav-link>
-                </div>
-            
+                @if (array_intersect(['Admin', 'Visualizador', 'Produção'], Auth::user()->getClassNamesAttribute()))
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
+                        <x-nav-link id="pedidos" class=" text-decoration-none" :href="route('pedidos')" :active="request()->routeIs('pedidos')">
+                            {{ __('Pedidos') }}
+                        </x-nav-link>
+                    </div>
+                @endif
+
                 <!-- Produção -->
-                <div class="hidden sm:flex sm:items-center sm:ms-10" id="producao">
-                    <x-dropdown align="left" width="48">
-                        <x-slot name="trigger" class="h-100">
-                            <button class="inline-flex items-center text-sm font-medium text-gray-500 bg-white hover:text-gray-700">
-                                <div>{{ __('Produção') }}</div>
-                                <div class="ms-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </button>
+                @if (array_intersect(['Admin', 'Visualizador', 'Produção'], Auth::user()->getClassNamesAttribute()))
+                    <div class="hidden sm:flex sm:items-center sm:ms-10" id="producao">
+                        <x-dropdown align="left" width="48">
+                            <x-slot name="trigger" class="h-100">
+                                <button class="inline-flex items-center text-sm font-medium text-gray-500 bg-white hover:text-gray-700">
+                                    <div>{{ __('Produção') }}</div>
+                                    <div class="ms-1">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
 
-                        </x-slot>
+                            </x-slot>
 
-                        <x-slot name="content" >
-                            <x-dropdown-link class=" text-decoration-none" :href="route('fracionamentos')">
-                                {{ __('Fracionamento') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link class=" text-decoration-none" :href="route('parametros')">
-                                {{ __('Parâmetros') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link class=" text-decoration-none" :href="route('planejamentos')">
-                                {{ __('Planejamento') }}
-                            </x-dropdown-link>
-                        </x-slot>
+                            <x-slot name="content" >
+                                <x-dropdown-link class=" text-decoration-none" :href="route('fracionamentos')">
+                                    {{ __('Fracionamento') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link class=" text-decoration-none" :href="route('parametros')">
+                                    {{ __('Parâmetros') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link class=" text-decoration-none" :href="route('planejamentos')">
+                                    {{ __('Planejamento') }}
+                                </x-dropdown-link>
+                            </x-slot>
 
-                    </x-dropdown>
-                </div>
+                        </x-dropdown>
+                    </div>
+                @endif
 
                 <!-- Usuários -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
-                    <x-nav-link id="usuarios" class=" text-decoration-none" :href="route('usuarios')" :active="request()->routeIs('usuarios')">
-                        {{ __('Usuários') }}
-                    </x-nav-link>
-                </div>
+                @if (array_intersect(['Admin', 'Visualizador'], Auth::user()->getClassNamesAttribute()))
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
+                        <x-nav-link id="usuarios" class=" text-decoration-none" :href="route('usuarios')" :active="request()->routeIs('usuarios')">
+                            {{ __('Usuários') }}
+                        </x-nav-link>
+                    </div>
+                @endif
+
             </div>
 
 

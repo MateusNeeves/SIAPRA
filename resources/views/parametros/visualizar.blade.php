@@ -14,7 +14,7 @@
                         <thead>
                             <tr>
                                 @foreach ($columns as $column)
-                                    <th class="table-dark text-start" scope="col"> {{$column}} </th>
+                                    <th class="table-orange text-start" scope="col"> {{$column}} </th>
                                 @endforeach
                             </tr>
                         </thead>

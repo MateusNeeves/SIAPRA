@@ -8,11 +8,13 @@
 
                 <form method="POST" action="{{route('planejamentos.show')}}">
                     @csrf
-                    <div class="flex justify-content-center mb-5">
-                        <a class="btn btn-dark" href="{{route('planejamentos.register')}}">
-                            {{ __('Novo Planejamento') }}
-                        </a>
-                    </div>
+                    @if (array_intersect(['Admin', 'Almoxarife'], Auth::user()->getClassNamesAttribute()))
+                        <div class="flex justify-content-center mb-5">
+                            <a class="btn btn-dark" href="{{route('planejamentos.register')}}">
+                                {{ __('Novo Planejamento') }}
+                            </a>
+                        </div>
+                    @endif
                     <div class="flex justify-content-center mb-5">
                         <div class="position-relative" style="width: 220px">
                             <input class="btn btn-secondary border rounded border-dark placeholder-visible pe-3"  type="text" id="datePicker" name="data_producao" value="{{old('data_producao')}}" placeholder="Selecionar Data" readonly required>
