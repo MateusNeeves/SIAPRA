@@ -25,7 +25,6 @@ return new class extends Migration
             $table->string('tempo_transp');
             
             $table->softDeletes();
-            $table->timestamps();
         });
     }
 

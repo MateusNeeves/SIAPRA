@@ -28,7 +28,6 @@ return new class extends Migration
             $table->string('site')->nullable();
 
             $table->softDeletes();
-            $table->timestamps();
         });
     }
 

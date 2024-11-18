@@ -26,8 +26,6 @@ return new class extends Migration
             $table->date('data_entrega');
             $table->date('data_validade');
 
-            $table->timestamps();
-
             $table->foreign('id_produto')->references('id')->on('produtos');
             $table->foreign('id_fabricante')->references('id')->on('fabricantes');
             $table->foreign('id_fornecedor')->references('id')->on('fornecedores');

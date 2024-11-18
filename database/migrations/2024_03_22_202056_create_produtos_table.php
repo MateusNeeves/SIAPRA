@@ -20,8 +20,6 @@ return new class extends Migration
             $table->integer('qtd_minima');
 
             $table->foreign('id_tipo')->references('id')->on('tipos_produtos');
-            
-            $table->timestamps();
         });
     }
 

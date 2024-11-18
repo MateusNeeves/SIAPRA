@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('sigla')->unique();
 
             $table->softDeletes();
-            $table->timestamps();
         });
     }
 

@@ -23,8 +23,6 @@ return new class extends Migration
             $table->foreign('id_pedido')->references('id')->on('pedidos');
             $table->foreign('id_fracionamento')->references('id')->on('fracionamentos');
             $table->unique(['id_pedido', 'id_fracionamento']);
-
-            $table->timestamps();
         });
     }
 

@@ -24,8 +24,6 @@ return new class extends Migration
             $table->integer('tempo_sintese');
             $table->integer('vol_eos');
             $table->time('hora_saida');
-            
-            $table->timestamps();
         });
 
         DB::table('parametros')->insert(

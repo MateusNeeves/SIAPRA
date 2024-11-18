@@ -22,8 +22,6 @@ return new class extends Migration
             $table->foreign('id_cliente')->references('id')->on('clientes');
             $table->foreign('id_usuario')->references('id')->on('users');
             $table->unique(['id_cliente', 'data_entrega']);
-
-            $table->timestamps();
         });
     }
 

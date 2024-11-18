@@ -38,8 +38,6 @@ return new class extends Migration
             $table->float('ativ_esp');
 
             $table->foreign('id_usuario')->references('id')->on('users');
-
-            $table->timestamps();
         });
     }
 

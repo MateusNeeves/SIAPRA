@@ -22,8 +22,6 @@ return new class extends Migration
             $table->foreign('id_pedido')->references('id')->on('pedidos');
             $table->foreign('id_planejamento')->references('id')->on('planejamentos');
             $table->unique(['id_pedido', 'id_planejamento']);
-
-            $table->timestamps();
         });
     }
 

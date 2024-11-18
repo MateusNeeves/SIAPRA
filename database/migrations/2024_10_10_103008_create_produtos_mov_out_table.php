@@ -21,8 +21,6 @@ return new class extends Migration
             
             $table->date('data_mov_out');
 
-            $table->timestamps();
-
             $table->foreign('id_produtos_mov_in')->references('id')->on('produtos_mov_in');
             $table->foreign('id_destino')->references('id')->on('dest_produtos');
         });
