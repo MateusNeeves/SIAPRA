@@ -106,34 +106,39 @@ class ProdutosController extends Controller
 
             $fabricantesLog = "";
 
-            foreach ((array) $request->fabricantes as $i => $fabricante) {
-                $id_fabricante = Fabricante::where('nome', $fabricante)->first()->id;
+            if (!empty($request->fabricantes)){
+                $fabricantes = Fabricante::select('id', 'nome')->whereIn('nome', $request->fabricantes)->get()->toArray();
+    
+                foreach ($fabricantes as $i => $fabricante) {                    
+                    $produto_fab[$i] = new Produto_Fab;
                     
-                $produto_fab[$i] = new Produto_Fab;
-                
-                $produto_fab[$i]->id_produto = $produto->id;
-                $produto_fab[$i]->id_fabricante = $id_fabricante;
-                
-                $produto_fab[$i]->save();
-
-                $fabricantesLog .= "   ID: {$id_fabricante}, Nome: {$fabricante}\n";
+                    $produto_fab[$i]->id_produto = $produto->id;
+                    $produto_fab[$i]->id_fabricante = $fabricante['id'];
+                    
+                    $produto_fab[$i]->save();
+    
+                    $fabricantesLog .= "   ID: {$fabricante['id']}, Nome: {$fabricante['nome']}\n";
+                }
             }
+
 
             // ADICIONANDO FORNECEDORES
 
             $fornecedoresLog = "";
 
-            foreach ((array) $request->fornecedores as $i => $fornecedor) {
-                $id_fornecedor = Fornecedor::where('nome', $fornecedor)->first()->id;
-                    
-                $produto_forn[$i] = new Produto_Forn;
-                
-                $produto_forn[$i]->id_produto = $produto->id;
-                $produto_forn[$i]->id_fornecedor = $id_fornecedor;
-                
-                $produto_forn[$i]->save();
+            if (!empty($request->fornecedores)){
+                $fornecedores = Fornecedor::select('id', 'nome')->whereIn('nome', $request->fornecedores ?? [])->get()->toArray();
 
-                $fornecedoresLog .= "   ID: {$id_fornecedor}, Nome: {$fornecedor}\n";
+                foreach ($fornecedores as $fornecedor) {                   
+                    $produto_forn[$i] = new Produto_Forn;
+                    
+                    $produto_forn[$i]->id_produto = $produto->id;
+                    $produto_forn[$i]->id_fornecedor = $fornecedor['id'];
+                    
+                    $produto_forn[$i]->save();
+
+                    $fornecedoresLog .= "   ID: {$fornecedor['id']}, Nome: {$fornecedor['nome']}\n";
+                }
             }
 
             $log = new Log();
@@ -146,7 +151,7 @@ class ProdutosController extends Controller
                 "Produto adicionado:\n" .
                 "- Nome: {$produto->nome}\n" .
                 "- Descrição: {$produto->descricao}\n" .
-                "- Tipo: {$request->tipo} (ID: {$produto->tipo})\n" .
+                "- Tipo: ID: {$produto->id_tipo}, nome: {$request->tipo}\n" .
                 "- Qtd. Aceitável: {$produto->qtd_aceitavel}\n" .
                 "- Qtd. Mínima: {$produto->qtd_minima}\n" .
                 "- Fabricantes: " . ($fabricantesLog === "" ? '(não informado)' : "\n".$fabricantesLog) .
@@ -250,13 +255,15 @@ class ProdutosController extends Controller
                 Produto_Forn::join('fornecedores', 'produtos_forn.id_fornecedor', '=', 'fornecedores.id')->where('produtos_forn.id_produto', $produto->id)->whereIn('fornecedores.nome', $removed_forns)->delete();
 
                 // ADICIONANDO FORNECEDORES
+
+                $new_forns = Fornecedor::select('id', 'nome')->whereIn('nome', $new_forns)->get()->toArray();
+                $removed_forns = Fornecedor::select('id', 'nome')->whereIn('nome', $removed_forns)->get()->toArray();
+
                 foreach ($new_forns as $i => $fornecedor) {
-                    $id_fornecedor = Fornecedor::where('nome', $fornecedor)->first()->id;
-                        
                     $produto_forn[$i] = new Produto_Forn;
                     
                     $produto_forn[$i]->id_produto = $produto->id;
-                    $produto_forn[$i]->id_fornecedor = $id_fornecedor;
+                    $produto_forn[$i]->id_fornecedor = $fornecedor->id;
                     
                     $produto_forn[$i]->save();
                 }
@@ -271,20 +278,22 @@ class ProdutosController extends Controller
             
                 $new_fabs = array_diff($request->fabricantes ?? [], $old_fabs ?? []);
                 $removed_fabs = array_diff($old_fabs ?? [], $request->fabricantes ?? []);
-            
+
                 // REMOVENDO FABRICANTES
                 Produto_Fab::join('fabricantes', 'produtos_fab.id_fabricante', '=', 'fabricantes.id')->where('produtos_fab.id_produto', $produto->id)->whereIn('fabricantes.nome', $removed_fabs)->delete();
 
                 // ADICIONANDO FABRICANTES
-                foreach ($new_fabs as $i => $fabricante) {
-                    $id_fabricante = Fabricante::where('nome', $fabricante)->first()->id;
-                        
-                    $produto_fab[$i] = new Produto_Fab;
+
+                $new_fabs = Fabricante::select('id', 'nome')->whereIn('fabricantes.nome', $new_fabs)->get()->toArray();
+                $removed_fabs = Fabricante::select('id', 'nome')->whereIn('nome', $removed_fabs)->get()->toArray();
+
+                foreach ($new_fabs as $fabricante) {                     
+                    $produto_fab = new Produto_Fab;
                     
-                    $produto_fab[$i]->id_produto = $produto->id;
-                    $produto_fab[$i]->id_fabricante = $id_fabricante;
+                    $produto_fab->id_produto = $produto->id;
+                    $produto_fab->id_fabricante = $fabricante->id;
                     
-                    $produto_fab[$i]->save();
+                    $produto_fab->save();
                 }
 
             // CADASTRANDO LOG
@@ -309,36 +318,39 @@ class ProdutosController extends Controller
                     }
                 }
 
-                if ($new_fabs != [])
+                // Fabricantes Adicionados
+                if (!empty($new_fabs)) {
                     $log->descricao .= "- Fabricantes Adicionados:\n";
-                foreach ($new_fabs as $i => $new_fab) {
-                    $id_fabricante = Fabricante::where('nome', $new_fab)->first()->id;
-                    $log->descricao .= "   ID: {$id_fabricante}, Nome: {$new_fab}\n";
+                    foreach ($new_fabs as $new_fab) {
+                        $log->descricao .= "   ID: {$new_fab['id']}, Nome: {$new_fab['nome']}\n";
+                    }
                 }
 
-                if ($removed_fabs != [])
+                // Fabricantes Removidos
+                if (!empty($removed_fabs)) {
                     $log->descricao .= "- Fabricantes Removidos:\n";
-                foreach ($removed_fabs as $i => $removed_fab) {
-                    $id_fabricante = Fabricante::where('nome', $removed_fabs)->first()->id;
-                    $log->descricao .= "   ID: {$id_fabricante}, Nome: {$removed_fab}\n";
+                    foreach ($removed_fabs as $removed_fab) {
+                        $log->descricao .= "   ID: {$removed_fab['id']}, Nome: {$removed_fab['nome']}\n";
+                    }
                 }
 
-                if ($new_forns != [])
+                // Fornecedores Adicionados
+                if (!empty($new_forns)) {
                     $log->descricao .= "- Fornecedores Adicionados:\n";
-                foreach ($new_forns as $i => $new_forn) {
-                    $id_fornecedor = Fornecedor::where('nome', $new_forn)->first()->id;
-                    $log->descricao .= "   ID: {$id_fornecedor}, Nome: {$new_forn}\n";
+                    foreach ($new_forns as $new_forn) {
+                        $log->descricao .= "   ID: {$new_forn['id']}, Nome: {$new_forn['nome']}\n";
+                    }
                 }
 
-                if ($removed_forns != [])
-                $log->descricao .= "- Fornecedores Removidos:\n";
-                foreach ($removed_forns as $i => $removed_forn) {
-                    $id_fornecedor = Fornecedor::where('nome', $removed_forns)->first()->id;
-                    $log->descricao .= "   ID: {$id_fornecedor}, Nome: {$removed_forn}\n";
+                // Fornecedores Removidos
+                if (!empty($removed_forns)) {
+                    $log->descricao .= "- Fornecedores Removidos:\n";
+                    foreach ($removed_forns as $removed_forn) {
+                        $log->descricao .= "   ID: {$removed_forn['id']}, Nome: {$removed_forn['nome']}\n";
+                    }
                 }
                 
                 $log->save();
-
 
             DB::commit();
             return redirect()->back()->with('alert-success', 'Produto editado com sucesso');
