@@ -222,6 +222,8 @@ class ProdutosController extends Controller
             // ATUALIZANDO PRODUTO
             
                 $produto = Produto::findOrFail($request->id_edit);
+
+                $produtoAntes = $produto->toArray();
                 
                 $produto->update([
                     'nome' => $request->nome,
@@ -230,6 +232,8 @@ class ProdutosController extends Controller
                     'qtd_aceitavel' => $request->qtd_aceitavel,
                     'qtd_minima' => $request->qtd_minima
                 ]);
+
+                $produtoDepois = $produto->refresh()->toArray();
 
             // ATUALIZANDO FORNECEDORES
             
@@ -283,6 +287,59 @@ class ProdutosController extends Controller
                     $produto_fab[$i]->save();
                 }
 
+            // CADASTRANDO LOG
+                $log = new Log();
+
+                $log->id_user = Auth::user()->id;
+                $log->id_acao = Acao::where('descricao', 'Editar Produto')->first()["id"];
+                $log->tipo = "Info";
+                $log->data_hora = now();
+                $log->descricao = 
+                    "Produto editado:\n" .
+                    "- ID do Produto: {$produtoAntes['id']}\n" .
+                    "- Nome do Produto: {$produtoAntes['nome']}\n\n" .
+                    "Campos alterados:\n";
+
+                foreach ($produtoDepois as $campo => $valor) {
+                    if ($valor != ($produtoAntes[$campo] ?? null)) {
+                        $log->descricao .= "- {$campo}: " .
+                            ($produtoAntes[$campo] === null || $produtoAntes[$campo] === '' ? '(não informado)' : $produtoAntes[$campo]) . 
+                            " -> " . 
+                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                    }
+                }
+
+                if ($new_fabs != [])
+                    $log->descricao .= "- Fabricantes Adicionados:\n";
+                foreach ($new_fabs as $i => $new_fab) {
+                    $id_fabricante = Fabricante::where('nome', $new_fab)->first()->id;
+                    $log->descricao .= "   ID: {$id_fabricante}, Nome: {$new_fab}\n";
+                }
+
+                if ($removed_fabs != [])
+                    $log->descricao .= "- Fabricantes Removidos:\n";
+                foreach ($removed_fabs as $i => $removed_fab) {
+                    $id_fabricante = Fabricante::where('nome', $removed_fabs)->first()->id;
+                    $log->descricao .= "   ID: {$id_fabricante}, Nome: {$removed_fab}\n";
+                }
+
+                if ($new_forns != [])
+                    $log->descricao .= "- Fornecedores Adicionados:\n";
+                foreach ($new_forns as $i => $new_forn) {
+                    $id_fornecedor = Fornecedor::where('nome', $new_forn)->first()->id;
+                    $log->descricao .= "   ID: {$id_fornecedor}, Nome: {$new_forn}\n";
+                }
+
+                if ($removed_forns != [])
+                $log->descricao .= "- Fornecedores Removidos:\n";
+                foreach ($removed_forns as $i => $removed_forn) {
+                    $id_fornecedor = Fornecedor::where('nome', $removed_forns)->first()->id;
+                    $log->descricao .= "   ID: {$id_fornecedor}, Nome: {$removed_forn}\n";
+                }
+                
+                $log->save();
+
+
             DB::commit();
             return redirect()->back()->with('alert-success', 'Produto editado com sucesso');
         }
@@ -330,7 +387,8 @@ class ProdutosController extends Controller
                 "- Qtd. Mínima: {$produto->qtd_minima}\n" . 
                 "- Fabricantes: " . ($fabricantesLog === "" ? '(não informado)' : "\n".$fabricantesLog) .
                 "- Fornecedores: " . ($fornecedoresLog === "" ? '(não informado)' : "\n".$fornecedoresLog);
-            $log->save();
+            
+                $log->save();
 
             DB::commit();
             return redirect()->back()->with('alert-success', 'Produto excluído com sucesso');
