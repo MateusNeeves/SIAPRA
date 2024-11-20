@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Pedido_Plan extends Model
@@ -11,6 +10,8 @@ class Pedido_Plan extends Model
     use HasFactory;
 
     protected $table = 'pedidos_plan';
+    
+    public $timestamps = false;
 
     protected $fillable = [
         'id_pedido',

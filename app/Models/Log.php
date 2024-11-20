@@ -9,11 +9,13 @@ class Log extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'id_user',
         'id_acao',
         'tipo',
         'descricao',
-        'data-hora'
+        'data_hora'
     ];
 }

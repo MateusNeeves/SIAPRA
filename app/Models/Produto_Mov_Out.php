@@ -10,6 +10,8 @@ class Produto_Mov_Out extends Model
     use HasFactory;
 
     protected $table = 'produtos_mov_out';
+    
+    public $timestamps = false;
 
     protected $fillable = [
         'id_produtos_mov_in',

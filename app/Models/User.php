@@ -15,7 +15,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-    use SoftDeletes;
+    
+    public $timestamps = false;
 
     protected $username = 'username';
 

@@ -10,6 +10,8 @@ class Produto_Forn extends Model
     use HasFactory;
 
     protected $table = 'produtos_forn';
+    
+    public $timestamps = false;
 
     protected $fillable = [
         'id_produto',

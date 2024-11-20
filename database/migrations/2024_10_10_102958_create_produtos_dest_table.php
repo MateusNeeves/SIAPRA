@@ -15,8 +15,6 @@ return new class extends Migration
         Schema::create('dest_produtos', function (Blueprint $table) {
             $table->id();
             $table->string('nome')->unique();
-            
-            $table->softDeletes();
         });
     }
 

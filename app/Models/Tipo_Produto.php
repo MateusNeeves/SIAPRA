@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Tipo_Produto extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+    
+    public $timestamps = false;
 
     protected $table = 'tipos_produtos';
 

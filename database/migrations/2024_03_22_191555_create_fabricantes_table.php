@@ -26,8 +26,6 @@ return new class extends Migration
             $table->string('telefone');
             $table->string('email')->nullable();
             $table->string('site')->nullable();
-
-            $table->softDeletes();
         });
     }
 

@@ -11,6 +11,8 @@ class User_Classe extends Model
     use HasFactory;
 
     protected $table = 'users_classes';
+    
+    public $timestamps = false;
 
     protected $fillable = [
         'id_user',
