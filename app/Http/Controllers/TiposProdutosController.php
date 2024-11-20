@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Log;
+use App\Models\Acao;
 use App\Models\Tipo_Produto;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TiposProdutosController extends Controller
@@ -36,16 +39,41 @@ class TiposProdutosController extends Controller
         if ($validator->fails())
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#newModal')->withInput();     
         
-        // SALVANDO TIPO DE PRODUTO
-        $tipo_produto = new Tipo_Produto;
+        try{
+            DB::beginTransaction();
 
-        $tipo_produto->nome = $request->nome;
-        $tipo_produto->descricao = $request->descricao;
-        $tipo_produto->sigla = mb_strtoupper($request->sigla);
+            // SALVANDO TIPO DE PRODUTO
+            $tipo_produto = new Tipo_Produto;
 
-        $tipo_produto->save();
+            $tipo_produto->nome = $request->nome;
+            $tipo_produto->descricao = $request->descricao;
+            $tipo_produto->sigla = mb_strtoupper($request->sigla);
 
-        return redirect()->route('tipos_produtos')->with('alert-success', 'Tipo de Produto cadastrado com sucesso');
+            $tipo_produto->save();
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Adicionar Tipo de Produto')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Tipo de Produto adicionado:\n" .
+                "- Nome: {$tipo_produto->nome}\n" .
+                "- Descrição: " . ($tipo_produto->descricao ?: '(não informado)') . "\n" . 
+                "- Sigla: {$tipo_produto->sigla}\n";
+
+            $log->save();
+
+            DB::commit();
+            return redirect()->back()->with('alert-success', 'Tipo de Produto cadastrado com sucesso');
+
+        }
+        catch (\Exception $exception) {
+            DB::rollback();
+
+            return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput();
+        }
     }
 
     public function edit(Request $request){
@@ -70,33 +98,98 @@ class TiposProdutosController extends Controller
         if ($validator->fails())
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#editModal')->withInput();     
         
-        // SALVANDO TIPO DE PRODUTO
-        Tipo_Produto::findOrFail($request->id_edit)->update([
-            'nome' => $request->nome,
-            'descricao' => $request->descricao,
-            'sigla' => mb_strtoupper($request->sigla),
-        ]);
-        return redirect()->route('tipos_produtos')->with('alert-success', 'Tipo de Produto editado com sucesso');
+        try{
+            DB::beginTransaction();
+
+            $tipo_produto = Tipo_Produto::findOrFail($request->id_edit);
+
+            $tipo_produtoAntes = $tipo_produto->toArray();
+
+            // SALVANDO TIPO DE PRODUTO
+            $tipo_produto->update([
+                'nome' => $request->nome,
+                'descricao' => $request->descricao,
+                'sigla' => mb_strtoupper($request->sigla),
+            ]);
+
+            $tipo_produtoDepois = $tipo_produto->refresh()->toArray();
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Editar Tipo de Produto')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Tipo de Produto editado:\n" .
+                "- ID do Tipo de Produto: {$tipo_produtoAntes['id']}\n" .
+                "- Nome do Tipo de Produto: {$tipo_produtoAntes['nome']}\n\n" .
+                "Campos alterados:\n";
+
+                foreach ($tipo_produtoDepois as $campo => $valor) {
+                    if ($valor != ($tipo_produtoAntes[$campo] ?? null)) {
+                        $log->descricao .= "- {$campo}: " .
+                            ($tipo_produtoAntes[$campo] === null || $tipo_produtoAntes[$campo] === '' ? '(não informado)' : $tipo_produtoAntes[$campo]) . 
+                            " -> " . 
+                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                    }
+                }
+
+            $log->save();
+
+            DB::commit();
+            
+            return redirect()->back()->with('alert-success', 'Tipo de Produto editado com sucesso');
+        }
+
+        catch (\Exception $exception) {
+            DB::rollback();
+            return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput();
+        }
     }
 
     public function destroy(Request $request){
-        DB::beginTransaction();
+        $tipo_produto = Tipo_Produto::find($request->id_delete);
+        $tipo_produtoAntes = $tipo_produto->toArray();
 
-        Tipo_Produto::find($request->id_delete)->delete();
+        try{
+            DB::beginTransaction();
+            
+            $tipo_produto->delete();
 
-        if ($request->soft == 'false'){
-            try{
-                Tipo_Produto::withTrashed()->find($request->id_delete)->forceDelete();
-                DB::commit();
-                return redirect()->back()->with('alert-success', 'Tipo de Produto excluído com sucesso');
-            }
-            catch(\Exception $exception){
-                DB::rollBack();
-                return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Tipo de Produto, pois outras informações dependem dele. <br><br> Deseja Desativar esse Tipo de Produto ao invés de Deletar? <br><br> Você pode restaurá-lo futuramente, caso necessário.')->with('modal', '#deleteModal')->withInput();
-            } 
+            $log = new Log();
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Deletar Tipo de Produto')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Tipo de Produto deletado:\n" . 
+                "- Nome: {$tipo_produto->nome}\n" .
+                "- Descrição: " . ($tipo_produto->descricao ?: '(não informado)') . "\n" .
+                "- Sigla: {$tipo_produto->sigla}\n";
+
+            $log->save();
+
+            DB::commit();
+            
+            return redirect()->back()->with('alert-success', 'Tipo de Produto deletado com sucesso');
         }
+        catch(\Exception $exception){
+            DB::rollBack();
+        
+            $log = new Log();
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Tentativa de Deletar Tipo de Produto')->first()["id"];
+            $log->tipo = "Erro";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Tentativa falha de deletar tipo de produto:\n" . 
+                "- ID do Tipo de Produto: {$tipo_produtoAntes['id']}\n" . 
+                "- Nome do Fabricante: {$tipo_produtoAntes['nome']}\n" . 
+                "- Erro: {$exception->getMessage()}";
+            $log->save();
 
-        DB::commit();
-        return redirect()->back()->with('alert-success', 'Tipo de Produto desativado com sucesso');
+            return redirect()->back()->with('alert-danger', 'Você não tem permissão para deletar esse Tipo de Produto, pois outras informações dependem dele.')->withInput();
+        } 
     }
 }

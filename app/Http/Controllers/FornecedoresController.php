@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Log;
+use App\Models\Acao;
 use App\Models\Pais;
 use App\Models\Fornecedor;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class FornecedoresController extends Controller
@@ -46,29 +49,64 @@ class FornecedoresController extends Controller
 
         if ($validator->fails())
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#newModal')->withInput();       
-    
-        $fornecedor = new Fornecedor();
         
-        $fornecedor->nome = $request->nome;
-        $fornecedor->pais = $request->pais;
-        $fornecedor->endereco = mb_strtoupper($request->endereco);
-        $fornecedor->nome_contato = $request->nome_contato;
-        $fornecedor->telefone = $request->telefone;
-        $fornecedor->email = mb_strtolower($request->email);
-        $fornecedor->site = $request->site;
+        try{
+            DB::beginTransaction();
+            
+            $fornecedor = new Fornecedor();
+        
+            $fornecedor->nome = $request->nome;
+            $fornecedor->pais = $request->pais;
+            $fornecedor->endereco = mb_strtoupper($request->endereco);
+            $fornecedor->nome_contato = $request->nome_contato;
+            $fornecedor->telefone = $request->telefone;
+            $fornecedor->email = mb_strtolower($request->email);
+            $fornecedor->site = $request->site;
+    
+            if ($request->pais == "BRASIL"){
+                $fornecedor->cnpj = $request->cnpj;
+                $fornecedor->cep = $request->cep;
+                $fornecedor->numero = $request->numero;
+                $fornecedor->complemento = mb_strtoupper($request->complemento);
+                $fornecedor->cidade = mb_strtoupper($request->cidade);
+                $fornecedor->estado = mb_strtoupper($request->estado);
+            }
+    
+            $fornecedor->save();
 
-        if ($request->pais == "BRASIL"){
-            $fornecedor->cnpj = $request->cnpj;
-            $fornecedor->cep = $request->cep;
-            $fornecedor->numero = $request->numero;
-            $fornecedor->complemento = mb_strtoupper($request->complemento);
-            $fornecedor->cidade = mb_strtoupper($request->cidade);
-            $fornecedor->estado = mb_strtoupper($request->estado);
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Adicionar Fornecedor')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Fornecedor adicionado:\n" .
+                "- ID: {$fornecedor->id}\n" .
+                "- Nome: {$fornecedor->nome}\n" .
+                "- País: {$fornecedor->pais}\n" .
+                "- CNPJ: " . ($fornecedor->cnpj ?: '(não informado)') . "\n" .
+                "- CEP: " . ($fornecedor->cep ?: '(não informado)') . "\n" .
+                "- Endereço: {$fornecedor->endereco}\n" .
+                "- Número: " . ($fornecedor->numero ?: '(não informado)') . "\n" .
+                "- Complemento: " . ($fornecedor->complemento ?: '(não informado)') . "\n" .
+                "- Cidade: " . ($fornecedor->cidade ?: '(não informado)') . "\n" .
+                "- Estado: " . ($fornecedor->estado ?: '(não informado)') . "\n" .
+                "- Nome do Contato: " . ($fornecedor->nome_contato ?: '(não informado)') . "\n" .
+                "- Telefone: {$fornecedor->telefone}\n" .
+                "- Email: " . ($fornecedor->email ?: '(não informado)') . "\n" .
+                "- Site: " . ($fornecedor->site ?: '(não informado)');
+
+            $log->save();
+            
+            DB::commit();
+            
+            return redirect()->route('fornecedores')->with('alert-success', 'Fornecedor cadastrado com sucesso');
         }
-
-        $fornecedor->save();
-        return redirect()->route('fornecedores')->with('alert-success', 'Fornecedor cadastrado com sucesso');
-
+        catch (\Exception $exception) {
+            DB::rollback();
+            return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput();
+        }
     }
 
     public function edit(Request $request){
@@ -93,62 +131,138 @@ class FornecedoresController extends Controller
         if ($validator->fails())
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#editModal')->withInput(); 
         
-        // SALVANDO FABRICANTE
-        if ($request->pais == "BRASIL"){
-            Fornecedor::findOrFail($request->id_edit)->update([
-                'nome' => $request->nome,
-                'pais' => $request->pais,
-                'cnpj' => $request->cnpj,
-                'cep' => $request->cep,
-                'endereco' => mb_strtoupper($request->endereco),
-                'numero' => $request->numero,
-                'complemento' => mb_strtoupper($request->complemento),
-                'cidade' => mb_strtoupper($request->cidade),
-                'estado' => mb_strtoupper($request->estado),
-                'nome_contato' => $request->nome_contato,
-                'telefone' => $request->telefone,
-                'email' => mb_strtolower($request->email),
-                'site' => $request->site,
-            ]);
+        try{
+            DB::beginTransaction();
+
+            $fornecedor = Fornecedor::findOrFail($request->id_edit);
+
+            $fornecedorAntes = $fornecedor->toArray();
+
+            // SALVANDO FABRICANTE
+            if ($request->pais == "BRASIL"){
+                $fornecedor->update([
+                    'nome' => $request->nome,
+                    'pais' => $request->pais,
+                    'cnpj' => $request->cnpj,
+                    'cep' => $request->cep,
+                    'endereco' => mb_strtoupper($request->endereco),
+                    'numero' => $request->numero,
+                    'complemento' => mb_strtoupper($request->complemento),
+                    'cidade' => mb_strtoupper($request->cidade),
+                    'estado' => mb_strtoupper($request->estado),
+                    'nome_contato' => $request->nome_contato,
+                    'telefone' => $request->telefone,
+                    'email' => mb_strtolower($request->email),
+                    'site' => $request->site,
+                ]);
+            }
+            else{
+                $fornecedor->update([
+                    'nome' => $request->nome,
+                    'pais' => $request->pais,
+                    'cnpj' => null,
+                    'cep' => null,
+                    'endereco' => mb_strtoupper($request->endereco),
+                    'numero' => null,
+                    'complemento' => null,
+                    'cidade' => null,
+                    'estado' => null,
+                    'nome_contato' => $request->nome_contato,
+                    'telefone' => $request->telefone,
+                    'email' => mb_strtolower($request->email),
+                    'site' => $request->site,
+                ]);
+            }
+
+            $fornecedorDepois = $fornecedor->refresh()->toArray();
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Editar Fornecedor')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Fornecedor editado:\n" .
+                "- ID do Fornecedor: {$fornecedorAntes['id']}\n" .
+                "- Nome do Fornecedor: {$fornecedorAntes['nome']}\n\n" .
+                "Campos alterados:\n";
+
+                foreach ($fornecedorDepois as $campo => $valor) {
+                    if ($valor != ($fornecedorAntes[$campo] ?? null)) {
+                        $log->descricao .= "- {$campo}: " .
+                            ($fornecedorAntes[$campo] === null || $fornecedorAntes[$campo] === '' ? '(não informado)' : $fornecedorAntes[$campo]) . 
+                            " -> " . 
+                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                    }
+                }
+
+            $log->save();
+
+            
+            DB::commit();
+            return redirect()->back()->with('alert-success', 'Fornecedor editado com sucesso');
         }
-        else{
-            Fornecedor::findOrFail($request->id_edit)->update([
-                'nome' => $request->nome,
-                'pais' => $request->pais,
-                'cnpj' => null,
-                'cep' => null,
-                'endereco' => mb_strtoupper($request->endereco),
-                'numero' => null,
-                'complemento' => null,
-                'cidade' => null,
-                'estado' => null,
-                'nome_contato' => $request->nome_contato,
-                'telefone' => $request->telefone,
-                'email' => mb_strtolower($request->email),
-                'site' => $request->site,
-            ]);
+
+        catch (\Exception $exception) {
+            DB::rollback();
+            return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput();
         }
-        return redirect()->route('fornecedores')->with('alert-success', 'Fornecedor editado com sucesso');
+
     }
 
     public function destroy(Request $request){
-        DB::beginTransaction();
+        $fornecedor = Fornecedor::find($request->id_delete);
+        $fornecedorAntes = $fornecedor->toArray();
 
-        Fornecedor::find($request->id_delete)->delete();
+        try{
+            DB::beginTransaction();
+            
+            $fornecedor->delete();
 
-        if ($request->soft == 'false'){
-            try{
-                Fornecedor::withTrashed()->find($request->id_delete)->forceDelete();
-                DB::commit();
-                return redirect()->back()->with('alert-success', 'Fornecedor excluído com sucesso');
-            }
-            catch(\Exception $exception){
-                DB::rollBack();
-                return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Fornecedor, pois outras informações dependem dele. <br><br> Deseja Desativar esse Fornecedor ao invés de Deletar? <br><br> Você pode restaurá-lo futuramente, caso necessário.')->with('modal', '#deleteModal')->withInput();
-            } 
+            $log = new Log();
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Deletar Fornecedor')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Fornecedor deletado:\n" . 
+                "- ID: {$fornecedor->id}\n" .
+                "- Nome: {$fornecedor->nome}\n" .
+                "- País: {$fornecedor->pais}\n" .
+                "- CNPJ: " . ($fornecedor->cnpj ?: '(não informado)') . "\n" .
+                "- CEP: " . ($fornecedor->cep ?: '(não informado)') . "\n" .
+                "- Endereço: {$fornecedor->endereco}\n" .
+                "- Número: " . ($fornecedor->numero ?: '(não informado)') . "\n" .
+                "- Complemento: " . ($fornecedor->complemento ?: '(não informado)') . "\n" .
+                "- Cidade: " . ($fornecedor->cidade ?: '(não informado)') . "\n" .
+                "- Estado: " . ($fornecedor->estado ?: '(não informado)') . "\n" .
+                "- Nome do Contato: " . ($fornecedor->nome_contato ?: '(não informado)') . "\n" .
+                "- Telefone: {$fornecedor->telefone}\n" .
+                "- Email: " . ($fornecedor->email ?: '(não informado)') . "\n" .
+                "- Site: " . ($fornecedor->site ?: '(não informado)');
+            $log->save();
+
+            DB::commit();
+            
+            return redirect()->back()->with('alert-success', 'Fornecedor deletado com sucesso');
         }
+        catch(\Exception $exception){
+            DB::rollBack();
+        
+            $log = new Log();
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Tentativa de Deletar Fornecedor')->first()["id"];
+            $log->tipo = "Erro";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Tentativa falha de deletar fornecedor:\n" . 
+                "- ID do Fornecedor: {$fornecedorAntes['id']}\n" . 
+                "- Nome do Fornecedor: {$fornecedorAntes['nome']}\n" . 
+                "- Erro: {$exception->getMessage()}";
+            $log->save();
 
-        DB::commit();
-        return redirect()->back()->with('alert-success', 'Fornecedor desativado com sucesso');
+            return redirect()->back()->with('alert-danger', 'Você não tem permissão para deletar esse Fornecedor, pois outras informações dependem dele.')->withInput();
+        } 
     }
 }

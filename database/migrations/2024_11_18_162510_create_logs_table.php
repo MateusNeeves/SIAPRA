@@ -16,8 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_acao');
             $table->string('tipo');
-            $table->string('descricao');
-            $table->timestamp('data-hora');
+            $table->text('descricao');
+            $table->timestamp('data_hora');
 
             $table->foreign('id_user')->references('id')->on('users');
             $table->foreign('id_acao')->references('id')->on('acoes');

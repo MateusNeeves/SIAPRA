@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Log;
+use App\Models\Acao;
 use App\Models\Dest_Produto;
 use App\Models\Tipo_Produto;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class DestProdutosController extends Controller
@@ -34,14 +37,37 @@ class DestProdutosController extends Controller
         if ($validator->fails())
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#newModal')->withInput();     
         
-        // SALVANDO TIPO DE PRODUTO
-        $dest_produto = new Dest_Produto;
+        try{
+            DB::beginTransaction();
 
-        $dest_produto->nome = $request->nome;
+            // SALVANDO TIPO DE PRODUTO
+            $dest_produto = new Dest_Produto;
 
-        $dest_produto->save();
+            $dest_produto->nome = $request->nome;
 
-        return redirect()->route('dest_produtos')->with('alert-success', 'Destino de Produto cadastrado com sucesso');
+            $dest_produto->save();
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Adicionar Destino de Produto')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Destino de Produto adicionado:\n" .
+                "- Nome: {$dest_produto->nome}\n";
+
+            $log->save();
+
+            DB::commit();
+            return redirect()->back()->with('alert-success', 'Destino de Produto cadastrado com sucesso');
+
+        }
+        catch (\Exception $exception) {
+            DB::rollback();
+
+            return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput();
+        }
     }
 
     public function edit(Request $request){
@@ -67,35 +93,94 @@ class DestProdutosController extends Controller
         if ($validator->fails())
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#editModal')->withInput();     
         
-        // SALVANDO TIPO DE PRODUTO
-        Dest_Produto::findOrFail($request->id_edit)->update([
-            'nome' => $request->nome
-        ]);
-        return redirect()->route('dest_produtos')->with('alert-success', 'Destino do Produto editado com sucesso');
+        try{
+            DB::beginTransaction();
+
+            $dest_produto = Dest_Produto::findOrFail($request->id_edit);
+
+            $dest_produtoAntes = $dest_produto->toArray();
+
+            // SALVANDO TIPO DE PRODUTO
+            $dest_produto->update([
+                'nome' => $request->nome
+            ]);
+
+            $dest_produtoDepois = $dest_produto->refresh()->toArray();
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Editar Destino de Produto')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Destino de Produto editado:\n" .
+                "- ID do Destino de Produto: {$dest_produtoAntes['id']}\n" .
+                "- Nome do Destino de Produto: {$dest_produtoAntes['nome']}\n\n" .
+                "Campos alterados:\n";
+
+                foreach ($dest_produtoDepois as $campo => $valor) {
+                    if ($valor != ($tipo_produtoAntes[$campo] ?? null)) {
+                        $log->descricao .= "- {$campo}: " .
+                            ($dest_produtoAntes[$campo] === null || $dest_produtoAntes[$campo] === '' ? '(não informado)' : $dest_produtoAntes[$campo]) . 
+                            " -> " . 
+                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                    }
+                }
+
+            $log->save();
+
+            DB::commit();
+            
+            return redirect()->back()->with('alert-success', 'Destino do Produto editado com sucesso');
+        }
+
+        catch (\Exception $exception) {
+            DB::rollback();
+            return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput();
+        }
     }
 
     public function destroy(Request $request){
-        if ($request->id_delete == 1){
-            return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Destino de Produto.');
+        $dest_produto = Dest_Produto::find($request->id_delete);
+        $dest_produtoAntes = $dest_produto->toArray();
+
+        try{
+            DB::beginTransaction();
+            
+            $dest_produto->delete();
+
+            $log = new Log();
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Deletar Destino de Produto')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Destino de Produto deletado:\n" . 
+                "- Nome: {$dest_produto->nome}\n";
+
+            $log->save();
+
+            DB::commit();
+            
+            return redirect()->back()->with('alert-success', 'Destino de Produto deletado com sucesso');
         }
+        catch(\Exception $exception){
+            DB::rollBack();
+        
+            $log = new Log();
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Tentativa de Deletar Destino de Produto')->first()["id"];
+            $log->tipo = "Erro";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Tentativa falha de deletar destino de produto:\n" . 
+                "- ID do Tipo de Produto: {$dest_produtoAntes['id']}\n" . 
+                "- Nome do Fabricante: {$dest_produtoAntes['nome']}\n" . 
+                "- Erro: {$exception->getMessage()}";
+            $log->save();
 
-        DB::beginTransaction();
-
-        Dest_Produto::find($request->id_delete)->delete();
-
-        if ($request->soft == 'false'){
-            try{
-                Dest_Produto::withTrashed()->find($request->id_delete)->forceDelete();
-                DB::commit();
-                return redirect()->back()->with('alert-success', 'Destino do Produto excluído com sucesso');
-            }
-            catch(\Exception $exception){
-                DB::rollBack();
-                return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Destino de Produto, pois outras informações dependem dele. <br><br> Deseja Desativar esse Destino de Produto ao invés de Deletar? <br><br> Você pode restaurá-lo futuramente, caso necessário.')->with('modal', '#deleteModal')->withInput();
-            } 
-        }
-
-        DB::commit();
-        return redirect()->back()->with('alert-success', 'Destino de Produto desativado com sucesso');
+            return redirect()->back()->with('alert-danger', 'Você não tem permissão para deletar esse Destino de Produto, pois outras informações dependem dele.')->withInput();
+        } 
     }
 }

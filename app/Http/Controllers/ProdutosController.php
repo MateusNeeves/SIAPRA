@@ -3,18 +3,21 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\Dest_Produto;
-use App\Models\Produto_Fab;
-use App\Models\Produto_Mov_In;
-use App\Models\Produto_Forn;
+use App\Models\Log;
+use App\Models\Acao;
 use App\Models\Produto;
 use App\Models\Fabricante;
 use App\Models\Fornecedor;
-use App\Models\Produto_Mov_Out;
+use App\Models\Produto_Fab;
+use App\Models\Dest_Produto;
+use App\Models\Produto_Forn;
 use App\Models\Tipo_Produto;
 use Illuminate\Http\Request;
+use App\Models\Produto_Mov_In;
+use App\Models\Produto_Mov_Out;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 function get_infos_store(){
@@ -101,6 +104,8 @@ class ProdutosController extends Controller
 
             // ADICIONANDO FABRICANTES
 
+            $fabricantesLog = "";
+
             foreach ((array) $request->fabricantes as $i => $fabricante) {
                 $id_fabricante = Fabricante::where('nome', $fabricante)->first()->id;
                     
@@ -110,12 +115,16 @@ class ProdutosController extends Controller
                 $produto_fab[$i]->id_fabricante = $id_fabricante;
                 
                 $produto_fab[$i]->save();
+
+                $fabricantesLog .= "   ID: {$id_fabricante}, Nome: {$fabricante}\n";
             }
 
             // ADICIONANDO FORNECEDORES
 
+            $fornecedoresLog = "";
+
             foreach ((array) $request->fornecedores as $i => $fornecedor) {
-                $id_fornecedor = Fornecedor::where('nome', $request->fornecedores[$i])->first()->id;
+                $id_fornecedor = Fornecedor::where('nome', $fornecedor)->first()->id;
                     
                 $produto_forn[$i] = new Produto_Forn;
                 
@@ -123,7 +132,27 @@ class ProdutosController extends Controller
                 $produto_forn[$i]->id_fornecedor = $id_fornecedor;
                 
                 $produto_forn[$i]->save();
+
+                $fornecedoresLog .= "   ID: {$id_fornecedor}, Nome: {$fornecedor}\n";
             }
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Adicionar Produto')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Produto adicionado:\n" .
+                "- Nome: {$produto->nome}\n" .
+                "- Descrição: {$produto->descricao}\n" .
+                "- Tipo: {$request->tipo} (ID: {$produto->tipo})\n" .
+                "- Qtd. Aceitável: {$produto->qtd_aceitavel}\n" .
+                "- Qtd. Mínima: {$produto->qtd_minima}\n" .
+                "- Fabricantes: " . ($fabricantesLog === "" ? '(não informado)' : "\n".$fabricantesLog) .
+                "- Fornecedores: " . ($fornecedoresLog === "" ? '(não informado)' : "\n".$fornecedoresLog);
+
+            $log->save();
             
             DB::commit();
             return redirect()->back()->with('alert-success', 'Produto cadastrado com sucesso');
@@ -264,18 +293,62 @@ class ProdutosController extends Controller
     }
 
     public function destroy(Request $request){
+        $produto = Produto::find($request->id_delete);
+        $produtoAntes = $produto->toArray();
+
         try{
             DB::beginTransaction();
-
+            $fabricantes = DB::select('SELECT ID, NOME FROM FABRICANTES WHERE ID IN (SELECT ID_FABRICANTE FROM PRODUTOs_FAB WHERE ID_PRODUTO = ?)', [$request->id_delete]);
             Produto_Fab::where('id_produto', $request->id_delete)->delete();
+
+            $fornecedores = DB::select('SELECT ID, NOME FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOs_FORN WHERE ID_PRODUTO = ?)', [$request->id_delete]);
             Produto_Forn::where('id_produto', $request->id_delete)->delete();
-            Produto::find($request->id_delete)->delete();
+
+            $fabricantesLog = "";
+            foreach ($fabricantes as $i => $fabricante) {
+                $fabricantesLog .= "   ID: {$fabricante->id}, Nome: {$fabricante->nome}\n";
+            }
+
+            $fornecedoresLog = "";
+            foreach ($fornecedores as $i => $fornecedor) {
+                $fornecedoresLog .= "   ID: {$fornecedor->id}, Nome: {$fornecedor->nome}\n";
+            }
+
+            $produto->delete();
+
+            $log = new Log();
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Deletar Produto')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Produto deletado:\n" .
+                "- Nome: {$produto->nome}\n" .
+                "- Descrição: {$produto->descricao}\n" .
+                "- Tipo: {$request->tipo} (ID: {$produto->tipo})\n" .
+                "- Qtd. Aceitável: {$produto->qtd_aceitavel}\n" .
+                "- Qtd. Mínima: {$produto->qtd_minima}\n" . 
+                "- Fabricantes: " . ($fabricantesLog === "" ? '(não informado)' : "\n".$fabricantesLog) .
+                "- Fornecedores: " . ($fornecedoresLog === "" ? '(não informado)' : "\n".$fornecedoresLog);
+            $log->save();
 
             DB::commit();
             return redirect()->back()->with('alert-success', 'Produto excluído com sucesso');
         }
         catch(\Exception $exception){
             DB::rollBack();
+
+            $log = new Log();
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Tentativa de Deletar Produto')->first()["id"];
+            $log->tipo = "Erro";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Tentativa falha de deletar produto:\n" . 
+                "- ID do Produto: {$produtoAntes['id']}\n" . 
+                "- Nome do Produto: {$produtoAntes['nome']}\n" . 
+                "- Erro: {$exception->getMessage()}";
+            $log->save();
 
             return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Produto, pois outras informações dependem dele.')->withInput();
         } 
