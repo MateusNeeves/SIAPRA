@@ -263,7 +263,7 @@ class ProdutosController extends Controller
                     $produto_forn[$i] = new Produto_Forn;
                     
                     $produto_forn[$i]->id_produto = $produto->id;
-                    $produto_forn[$i]->id_fornecedor = $fornecedor->id;
+                    $produto_forn[$i]->id_fornecedor = $fornecedor['id'];
                     
                     $produto_forn[$i]->save();
                 }
@@ -291,7 +291,7 @@ class ProdutosController extends Controller
                     $produto_fab = new Produto_Fab;
                     
                     $produto_fab->id_produto = $produto->id;
-                    $produto_fab->id_fabricante = $fabricante->id;
+                    $produto_fab->id_fabricante = $fabricante['id'];
                     
                     $produto_fab->save();
                 }
@@ -362,11 +362,9 @@ class ProdutosController extends Controller
     }
 
     public function destroy(Request $request){
-        $produto = Produto::find($request->id_delete);
-        $produtoAntes = $produto->toArray();
-
         try{
             DB::beginTransaction();
+
             $fabricantes = DB::select('SELECT ID, NOME FROM FABRICANTES WHERE ID IN (SELECT ID_FABRICANTE FROM PRODUTOs_FAB WHERE ID_PRODUTO = ?)', [$request->id_delete]);
             Produto_Fab::where('id_produto', $request->id_delete)->delete();
 
@@ -374,15 +372,17 @@ class ProdutosController extends Controller
             Produto_Forn::where('id_produto', $request->id_delete)->delete();
 
             $fabricantesLog = "";
-            foreach ($fabricantes as $i => $fabricante) {
+            foreach ($fabricantes as $fabricante) {
                 $fabricantesLog .= "   ID: {$fabricante->id}, Nome: {$fabricante->nome}\n";
             }
 
             $fornecedoresLog = "";
-            foreach ($fornecedores as $i => $fornecedor) {
+            foreach ($fornecedores as $fornecedor) {
                 $fornecedoresLog .= "   ID: {$fornecedor->id}, Nome: {$fornecedor->nome}\n";
             }
 
+            $produto = Produto::find($request->id_delete);
+            $produtoAntes = $produto->toArray();
             $produto->delete();
 
             $log = new Log();
@@ -392,13 +392,13 @@ class ProdutosController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Produto deletado:\n" .
-                "- Nome: {$produto->nome}\n" .
-                "- Descrição: {$produto->descricao}\n" .
-                "- Tipo: {$request->tipo} (ID: {$produto->tipo})\n" .
-                "- Qtd. Aceitável: {$produto->qtd_aceitavel}\n" .
-                "- Qtd. Mínima: {$produto->qtd_minima}\n" . 
-                "- Fabricantes: " . ($fabricantesLog === "" ? '(não informado)' : "\n".$fabricantesLog) .
-                "- Fornecedores: " . ($fornecedoresLog === "" ? '(não informado)' : "\n".$fornecedoresLog);
+                "- Nome: {$produtoAntes['nome']}\n" .
+                "- Descrição: {$produtoAntes['descricao']}\n" .
+                "- Tipo: {$request->tipo} (ID: {$produtoAntes['id_tipo']})\n" .
+                "- Qtd. Aceitável: {$produtoAntes['qtd_aceitavel']}\n" .
+                "- Qtd. Mínima: {$produtoAntes['qtd_minima']}\n" . 
+                "- Fabricantes: " . ($fabricantesLog === "" ? "(não informado)\n" : "\n".$fabricantesLog) .
+                "- Fornecedores: " . ($fornecedoresLog === "" ? "(não informado)\n" : "\n".$fornecedoresLog);
             
                 $log->save();
 
@@ -407,20 +407,7 @@ class ProdutosController extends Controller
         }
         catch(\Exception $exception){
             DB::rollBack();
-
-            $log = new Log();
-            $log->id_user = Auth::user()->id;
-            $log->id_acao = Acao::where('descricao', 'Tentativa de Deletar Produto')->first()["id"];
-            $log->tipo = "Erro";
-            $log->data_hora = now();
-            $log->descricao = 
-                "Tentativa falha de deletar produto:\n" . 
-                "- ID do Produto: {$produtoAntes['id']}\n" . 
-                "- Nome do Produto: {$produtoAntes['nome']}\n" . 
-                "- Erro: {$exception->getMessage()}";
-            $log->save();
-
-            return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Produto, pois outras informações dependem dele.')->withInput();
+            return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Produto, pois outras informações dependem dele.' . $exception->getMessage())->withInput();
         } 
     }
 
@@ -476,30 +463,65 @@ class ProdutosController extends Controller
         return redirect()->back()->with($make_mov_inInfos)->withInput();
     }
 
-    public function store_mov_in(Request $request){         
-        // ADICIONANDO LOTE DO PRODUTO
-        $lote = new Produto_Mov_In;
-
-        $lote->id_produto = $request->id_view;
-        $lote->id_fabricante = Fabricante::where('nome', $request->fabricante)->get()[0]->id;
-        $lote->lote_fabricante = $request->lote_fabricante;
-        $lote->id_fornecedor = Fornecedor::where('nome', $request->fornecedor)->get()[0]->id;
-        $lote->qtd_itens_recebidos = $request->qtd_itens_recebidos;
-        $lote->qtd_itens_estoque = $request->qtd_itens_recebidos;
-        $lote->preco = $request->preco;
-        $lote->data_entrega = $request->data_entrega;
-        $lote->data_validade = $request->data_validade;
+    public function store_mov_in(Request $request){  
         
-        $lote->save();
+        try{
+            DB::beginTransaction();
 
-        $store_loteInfos = array_merge(get_infos_view($request), [
-            'modal' => ['#viewModal'],
-            'id_view_backup' => $request->id_view,
-            'alert-success' => 'Lote do Produto Adicionado com Sucesso'
-        ]);
+            // ADICIONANDO LOTE DO PRODUTO
+            $lote = new Produto_Mov_In;
 
-        
-        return redirect()->back()->with($store_loteInfos);
+            $lote->id_produto = $request->id_view;
+            $lote->id_fabricante = Fabricante::where('nome', $request->fabricante)->get()[0]->id;
+            $lote->lote_fabricante = $request->lote_fabricante;
+            $lote->id_fornecedor = Fornecedor::where('nome', $request->fornecedor)->get()[0]->id;
+            $lote->qtd_itens_recebidos = $request->qtd_itens_recebidos;
+            $lote->qtd_itens_estoque = $request->qtd_itens_recebidos;
+            $lote->preco = $request->preco;
+            $lote->data_entrega = $request->data_entrega;
+            $lote->data_validade = $request->data_validade;
+            
+            $lote->save();
+
+            $nome_produto = Produto::findOrFail($lote->id_produto)->nome;
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Movimentação (Entrada) de Produto')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Movimentação (Entrada) de Produto adicionada:\n" .
+                "- Produto: ID: {$lote->id_produto}, nome: {$nome_produto}\n" .
+                "- Fabricante: ID: {$lote->id_fabricante}, nome: {$request->fabricante}\n" .
+                "- Lote do Fabricante: {$lote->lote_fabricante}\n" .
+                "- Fornecedor: ID: {$lote->id_fornecedor}, nome: {$request->fornecedor}\n" .
+                "- Qtd. de Itens Recebidos: {$lote->qtd_itens_recebidos}\n" .
+                "- Data de Entrega: {$lote->data_entrega}\n" . 
+                "- Data de Validade: {$lote->data_validade}\n"; 
+
+            $log->save();
+
+            $store_loteInfos = array_merge(get_infos_view($request), [
+                'modal' => ['#viewModal'],
+                'id_view_backup' => $request->id_view,
+                'alert-success' => 'Movimentaçao de Entrada realizada com Sucesso'
+            ]);
+
+            DB::commit();
+            return redirect()->back()->with($store_loteInfos);
+        }
+        catch (\Exception $exception) {
+            DB::rollback();
+            $store_movInfos = array_merge(get_infos_view($request), [
+                'modal' => ['#viewModal'],
+                'id_view_backup' => $request->id_view,
+                'alert-danger' => 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage()
+            ]);
+
+            return redirect()->back()->with($store_movInfos)->withInput();
+        }        
     }
 
     public function mov_out_select(Request $request){
@@ -554,15 +576,35 @@ class ProdutosController extends Controller
             $mov->save();
 
             Produto_Mov_In::findOrFail($request->id_lote)->decrement('qtd_itens_estoque', $request->qtd_itens_movidos);
-            
-            DB::commit();
 
+            $produto = DB::select('SELECT P.ID, P.NOME FROM PRODUTOS P WHERE P.ID = (SELECT L.ID_PRODUTO FROM PRODUTOS_MOV_IN L WHERE L.ID = ?)', [$mov->id_produtos_mov_in])[0];
+            $produto = json_decode(json_encode($produto), true);
+            
+            $nome_destino = Dest_Produto::findOrFail($mov->id_destino)->nome;
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Movimentação (Saída) de Produto')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Movimentação (Entrada) de Produto adicionada:\n" .
+                "- Produto: ID: {$produto['id']}, nome: {$produto['nome']}\n" .
+                "- Movimentação (Entrada): ID: {$mov->id_produtos_mov_in}\n" .
+                "- Destino: ID: {$mov->id_destino}, nome: {$nome_destino}\n" .
+                "- Qtd. de Itens Movidos: {$mov->qtd_itens_movidos}\n" .
+                "- Data da Movimentação de Saída: {$mov->data_mov_out}\n"; 
+
+            $log->save();
+            
             $store_movInfos = array_merge(get_infos_view($request), [
                 'modal' => ['#viewModal'],
                 'id_view_backup' => $request->id_view,
                 'alert-success' => 'Retirada realizada com sucesso com sucesso'
             ]);
-
+            
+            DB::commit();
             return redirect()->back()->with($store_movInfos);
         }
         catch (\Exception $exception) {
@@ -594,7 +636,8 @@ class ProdutosController extends Controller
         try{
             DB::beginTransaction();
 
-            $lote = Produto_Mov_In::findOrFail($request->id_exp);
+            $lote = Produto_Mov_In::findOrFail($request->id_exp)->nome;
+
 
             $mov = new Produto_Mov_Out;
     
