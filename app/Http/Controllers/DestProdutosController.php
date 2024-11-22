@@ -142,12 +142,11 @@ class DestProdutosController extends Controller
     }
 
     public function destroy(Request $request){
-        $dest_produto = Dest_Produto::find($request->id_delete);
-        $dest_produtoAntes = $dest_produto->toArray();
-
         try{
             DB::beginTransaction();
             
+            $dest_produto = Dest_Produto::find($request->id_delete);
+            $dest_produtoAntes = $dest_produto->toArray();
             $dest_produto->delete();
 
             $log = new Log();
@@ -167,19 +166,6 @@ class DestProdutosController extends Controller
         }
         catch(\Exception $exception){
             DB::rollBack();
-        
-            $log = new Log();
-            $log->id_user = Auth::user()->id;
-            $log->id_acao = Acao::where('descricao', 'Tentativa de Deletar Destino de Produto')->first()["id"];
-            $log->tipo = "Erro";
-            $log->data_hora = now();
-            $log->descricao = 
-                "Tentativa falha de deletar destino de produto:\n" . 
-                "- ID do Tipo de Produto: {$dest_produtoAntes['id']}\n" . 
-                "- Nome do Fabricante: {$dest_produtoAntes['nome']}\n" . 
-                "- Erro: {$exception->getMessage()}";
-            $log->save();
-
             return redirect()->back()->with('alert-danger', 'Você não tem permissão para deletar esse Destino de Produto, pois outras informações dependem dele.')->withInput();
         } 
     }

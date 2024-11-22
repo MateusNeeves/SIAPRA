@@ -37,27 +37,22 @@ class DatabaseSeeder extends Seeder
             ['descricao' => 'Adicionar Fabricante'],
             ['descricao' => 'Editar Fabricante'],
             ['descricao' => 'Deletar Fabricante'],
-            ['descricao' => 'Tentativa de Deletar Fabricante'],
 
             ['descricao' => 'Adicionar Fornecedor'],
             ['descricao' => 'Editar Fornecedor'],
             ['descricao' => 'Deletar Fornecedor'],
-            ['descricao' => 'Tentativa de Deletar Fornecedor'],
 
             ['descricao' => 'Adicionar Tipo de Produto'],
             ['descricao' => 'Editar Tipo de Produto'],
             ['descricao' => 'Deletar Tipo de Produto'],
-            ['descricao' => 'Tentativa de Deletar Tipo de Produto'],
 
             ['descricao' => 'Adicionar Destino de Produto'],
             ['descricao' => 'Editar Destino de Produto'],
             ['descricao' => 'Deletar Destino de Produto'],
-            ['descricao' => 'Tentativa de Deletar Destino de Produto'],
 
             ['descricao' => 'Adicionar Produto'],
             ['descricao' => 'Editar Produto'],
             ['descricao' => 'Deletar Produto'],
-            ['descricao' => 'Tentativa de Deletar Produto'],
 
             ['descricao' => 'Movimentação (Entrada) de Produto'],
             ['descricao' => 'Movimentação (Saída) de Produto'],

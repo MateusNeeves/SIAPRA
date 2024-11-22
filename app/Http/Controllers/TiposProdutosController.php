@@ -149,12 +149,11 @@ class TiposProdutosController extends Controller
     }
 
     public function destroy(Request $request){
-        $tipo_produto = Tipo_Produto::find($request->id_delete);
-        $tipo_produtoAntes = $tipo_produto->toArray();
-
         try{
             DB::beginTransaction();
             
+            $tipo_produto = Tipo_Produto::find($request->id_delete);
+            $tipo_produtoAntes = $tipo_produto->toArray();
             $tipo_produto->delete();
 
             $log = new Log();
@@ -176,19 +175,6 @@ class TiposProdutosController extends Controller
         }
         catch(\Exception $exception){
             DB::rollBack();
-        
-            $log = new Log();
-            $log->id_user = Auth::user()->id;
-            $log->id_acao = Acao::where('descricao', 'Tentativa de Deletar Tipo de Produto')->first()["id"];
-            $log->tipo = "Erro";
-            $log->data_hora = now();
-            $log->descricao = 
-                "Tentativa falha de deletar tipo de produto:\n" . 
-                "- ID do Tipo de Produto: {$tipo_produtoAntes['id']}\n" . 
-                "- Nome do Fabricante: {$tipo_produtoAntes['nome']}\n" . 
-                "- Erro: {$exception->getMessage()}";
-            $log->save();
-
             return redirect()->back()->with('alert-danger', 'Você não tem permissão para deletar esse Tipo de Produto, pois outras informações dependem dele.')->withInput();
         } 
     }

@@ -212,12 +212,11 @@ class FornecedoresController extends Controller
     }
 
     public function destroy(Request $request){
-        $fornecedor = Fornecedor::find($request->id_delete);
-        $fornecedorAntes = $fornecedor->toArray();
-
         try{
             DB::beginTransaction();
             
+            $fornecedor = Fornecedor::find($request->id_delete);
+            $fornecedorAntes = $fornecedor->toArray();
             $fornecedor->delete();
 
             $log = new Log();
@@ -249,19 +248,6 @@ class FornecedoresController extends Controller
         }
         catch(\Exception $exception){
             DB::rollBack();
-        
-            $log = new Log();
-            $log->id_user = Auth::user()->id;
-            $log->id_acao = Acao::where('descricao', 'Tentativa de Deletar Fornecedor')->first()["id"];
-            $log->tipo = "Erro";
-            $log->data_hora = now();
-            $log->descricao = 
-                "Tentativa falha de deletar fornecedor:\n" . 
-                "- ID do Fornecedor: {$fornecedorAntes['id']}\n" . 
-                "- Nome do Fornecedor: {$fornecedorAntes['nome']}\n" . 
-                "- Erro: {$exception->getMessage()}";
-            $log->save();
-
             return redirect()->back()->with('alert-danger', 'Você não tem permissão para deletar esse Fornecedor, pois outras informações dependem dele.')->withInput();
         } 
     }

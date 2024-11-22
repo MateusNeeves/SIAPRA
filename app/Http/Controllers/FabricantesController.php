@@ -214,12 +214,11 @@ class FabricantesController extends Controller
     }
 
     public function destroy(Request $request){
-        $fabricante = Fabricante::find($request->id_delete);
-        $fabricanteAntes = $fabricante->toArray();
-
         try{
             DB::beginTransaction();
             
+            $fabricante = Fabricante::find($request->id_delete);
+            $fabricanteAntes = $fabricante->toArray();
             $fabricante->delete();
 
             $log = new Log();
@@ -250,19 +249,6 @@ class FabricantesController extends Controller
         }
         catch(\Exception $exception){
             DB::rollBack();
-        
-            $log = new Log();
-            $log->id_user = Auth::user()->id;
-            $log->id_acao = Acao::where('descricao', 'Tentativa de Deletar Fabricante')->first()["id"];
-            $log->tipo = "Erro";
-            $log->data_hora = now();
-            $log->descricao = 
-                "Tentativa falha de deletar fabricante:\n" . 
-                "- ID do Fabricante: {$fabricanteAntes['id']}\n" . 
-                "- Nome do Fabricante: {$fabricanteAntes['nome']}\n" . 
-                "- Erro: {$exception->getMessage()}";
-            $log->save();
-
             return redirect()->back()->with('alert-danger', 'Você não tem permissão para deletar esse Fabricante, pois outras informações dependem dele.')->withInput();
         } 
     }
