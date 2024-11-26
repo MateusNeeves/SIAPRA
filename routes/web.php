@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LogsController;
 use App\Http\Controllers\UsersController;
+use App\Http\Middleware\CheckUserClasses;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClientesController;
@@ -13,7 +15,6 @@ use App\Http\Controllers\FornecedoresController;
 use App\Http\Controllers\PlanejamentosController;
 use App\Http\Controllers\TiposProdutosController;
 use App\Http\Controllers\FracionamentosController;
-use App\Http\Middleware\CheckUserClasses;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -21,6 +22,14 @@ Route::get('/', function () {
 
 // Início
     Route::get('/dashboard', function(){return view('dashboard');})->middleware(['auth'])->name('dashboard');
+
+// Logs
+    Route::middleware(CheckUserClasses::class.':Admin,Visualizador,Produção')->group(function () {
+        Route::get('/logs', [LogsController::class, 'search'])->middleware(['auth'])->name('logs');
+        Route::get('/logs/visualizar', [LogsController::class, 'view'])->middleware(['auth'])->name('logs.view');
+
+    });
+
     
 // Produção
     Route::middleware(CheckUserClasses::class.':Admin,Visualizador,Produção')->group(function () {
@@ -120,6 +129,7 @@ Route::get('/', function () {
             Route::get('/produtos/vencidos', [ProdutosController::class, 'view_expired'])->middleware(['auth'])->name('produtos.view_expired');
             Route::post('/produtos/vencidos', [ProdutosController::class, 'destroy_expired'])->middleware(['auth'])->name('produtos.destroy_expired'); 
     });
+
 
 
 

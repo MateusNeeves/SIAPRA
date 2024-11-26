@@ -133,7 +133,16 @@
                     </div>
                 @endif
 
+                <!-- Logs -->
+                @if (array_intersect(['Admin'], Auth::user()->getClassNamesAttribute()))
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link id="logs" class=" text-decoration-none" :href="route('logs')" :active="request()->routeIs('logs')">
+                            {{ __('Logs') }}
+                        </x-nav-link>
+                    </div>
+                @endif
             </div>
+
 
 
             <!-- Settings Dropdown -->
