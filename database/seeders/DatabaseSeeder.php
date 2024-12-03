@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             ['nome' => 'Admin', 'descricao' => 'Administrador do sistema.'],
             ['nome' => 'Almoxarife', 'descricao' => 'Responsável pelo gerenciamento do Almoxarifado.'],
             ['nome' => 'Visualizador', 'descricao' => 'Permite apenas visualização.'],
+            ['nome' => 'Farmacêutico', 'descricao' => 'Responsável pelo Garantia de Qualidade.'],
             ['nome' => 'Produção', 'descricao' => 'Responsável pela Produção.'],
         ]);
 
@@ -56,6 +57,8 @@ class DatabaseSeeder extends Seeder
 
             ['descricao' => 'Movimentação (Entrada) de Produto'],
             ['descricao' => 'Movimentação (Saída) de Produto'],
+
+            ['descricao' => 'Retirada de Lote da Quarentena'],
         ]);
     }
 }

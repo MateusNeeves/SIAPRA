@@ -38,7 +38,7 @@
                 </div>
 
                 <!-- Almoxarifado -->
-                @if (array_intersect(['Admin', 'Almoxarife', 'Visualizador'], Auth::user()->getClassNamesAttribute()))
+                @if (array_intersect(['Admin', 'Almoxarife', 'Visualizador', 'Farmacêutico'], Auth::user()->getClassNamesAttribute()))
                     <div class="hidden sm:flex sm:items-center sm:ms-10" id="almoxarifado">
                         <x-dropdown align="left" width="48">
                             <x-slot name="trigger" class="h-100">
@@ -54,21 +54,29 @@
                             </x-slot>
 
                             <x-slot name="content">
-                                <x-dropdown-link class=" text-decoration-none" :href="route('fabricantes')">
-                                    {{ __('Fabricantes') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link class=" text-decoration-none" :href="route('fornecedores')">
-                                    {{ __('Fornecedores') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link class=" text-decoration-none" :href="route('produtos')">
-                                    {{ __('Produtos') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link class=" text-decoration-none" :href="route('tipos_produtos')">
-                                    {{ __('Tipos de Produtos') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link class=" text-decoration-none" :href="route('dest_produtos')">
-                                    {{ __('Destinos dos Produtos') }}
-                                </x-dropdown-link>
+                                @if (array_intersect(['Admin', 'Almoxarife', 'Visualizador'], Auth::user()->getClassNamesAttribute()))
+                                    <x-dropdown-link class=" text-decoration-none" :href="route('fabricantes')">
+                                        {{ __('Fabricantes') }}
+                                    </x-dropdown-link>
+                                    <x-dropdown-link class=" text-decoration-none" :href="route('fornecedores')">
+                                        {{ __('Fornecedores') }}
+                                    </x-dropdown-link>
+                                    <x-dropdown-link class=" text-decoration-none" :href="route('produtos')">
+                                        {{ __('Produtos') }}
+                                    </x-dropdown-link>
+                                    <x-dropdown-link class=" text-decoration-none" :href="route('tipos_produtos')">
+                                        {{ __('Tipos de Produtos') }}
+                                    </x-dropdown-link>
+                                    <x-dropdown-link class=" text-decoration-none" :href="route('dest_produtos')">
+                                        {{ __('Destinos dos Produtos') }}
+                                    </x-dropdown-link>
+                                @if (array_intersect(['Admin', 'Visualizador', 'Farmacêutico'], Auth::user()->getClassNamesAttribute()))
+                                    <x-dropdown-link class=" text-decoration-none" :href="route('quarentena')">
+                                        {{ __('Quarentena') }}
+                                    </x-dropdown-link>
+                                @endif
+                                @endif
+                                
                             </x-slot>
                         </x-dropdown>
                     </div>

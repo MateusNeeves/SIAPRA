@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\ParametrosController;
+use App\Http\Controllers\QuarentenaController;
 use App\Http\Controllers\FabricantesController;
 use App\Http\Controllers\DestProdutosController;
 use App\Http\Controllers\FornecedoresController;
@@ -128,6 +129,13 @@ Route::get('/', function () {
         
             Route::get('/produtos/vencidos', [ProdutosController::class, 'view_expired'])->middleware(['auth'])->name('produtos.view_expired');
             Route::post('/produtos/vencidos', [ProdutosController::class, 'destroy_expired'])->middleware(['auth'])->name('produtos.destroy_expired'); 
+        
+        });
+
+    Route::middleware(CheckUserClasses::class.':Admin, Visualizador, Farmacêutico')->group(function () {
+        // Quarentena
+            Route::get('/quarentena', [QuarentenaController::class, 'index'])->middleware(['auth'])->name('quarentena');
+            Route::post('/quarentena', [QuarentenaController::class, 'remove'])->middleware(['auth'])->name('quarentena.remove');
     });
 
 
