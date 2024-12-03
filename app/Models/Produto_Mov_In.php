@@ -22,6 +22,7 @@ class Produto_Mov_In extends Model
         'qtd_itens_estoque',
         'preco',
         'data_entrega',
-        'data_validade'
+        'data_validade',
+        'quarentena',
     ];
 }

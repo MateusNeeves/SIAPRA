@@ -19,6 +19,7 @@ class Produto extends Model
         'data_emissao',
         'qtd_aceitavel',
         'qtd_minima',
+        'quarentena',
     ];
 
     public function tipos_clientes(): BelongsTo{

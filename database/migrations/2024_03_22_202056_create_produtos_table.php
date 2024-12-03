@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_tipo');
             $table->integer('qtd_aceitavel');
             $table->integer('qtd_minima');
+            $table->string('quarentena');
 
             $table->foreign('id_tipo')->references('id')->on('tipos_produtos');
         });

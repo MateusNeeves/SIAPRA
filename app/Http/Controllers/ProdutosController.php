@@ -29,7 +29,7 @@ function get_infos_store(){
 }
 
 function get_infos_view(Request $request){
-    $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) WHERE P.ID = ?', [$request->id_view])[0];
+    $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) WHERE P.ID = ?', [$request->id_view])[0];
             
     $forns = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
     $fornecedores = [];
@@ -42,7 +42,7 @@ function get_infos_view(Request $request){
         $fabricantes[] = $fabricante->nome;
 
 
-    $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_MOV_IN L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? ORDER BY L.ID ASC', [$produto->id]);
+    $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE, L.QUARENTENA FROM PRODUTOS_MOV_IN L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? ORDER BY L.ID ASC', [$produto->id]);
     
     $lotes = json_decode(json_encode($lotes), true);
     
@@ -52,7 +52,7 @@ function get_infos_view(Request $request){
 class ProdutosController extends Controller
 {
     public function index(){
-        $produtos = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID)');
+        $produtos = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID)');
         
         $produtos = json_decode(json_encode($produtos), true);
         return view('produtos/visualizar', ['produtos' => $produtos]);
@@ -99,6 +99,7 @@ class ProdutosController extends Controller
             $produto->id_tipo = Tipo_Produto::where('nome', $request->tipo)->first()->id;
             $produto->qtd_aceitavel = $request->qtd_aceitavel;
             $produto->qtd_minima = $request->qtd_minima;
+            $produto->quarentena = $request->quarentena;
     
             $produto->save();
 
@@ -154,8 +155,9 @@ class ProdutosController extends Controller
                 "- Tipo: ID: {$produto->id_tipo}, nome: {$request->tipo}\n" .
                 "- Qtd. Aceitável: {$produto->qtd_aceitavel}\n" .
                 "- Qtd. Mínima: {$produto->qtd_minima}\n" .
-                "- Fabricantes: " . ($fabricantesLog === "" ? '(não informado)' : "\n".$fabricantesLog) .
-                "- Fornecedores: " . ($fornecedoresLog === "" ? '(não informado)' : "\n".$fornecedoresLog);
+                "- Fabricantes: " . ($fabricantesLog === "" ? "(não informado)\n" : "\n".$fabricantesLog) .
+                "- Fornecedores: " . ($fornecedoresLog === "" ? "(não informado)\n" : "\n".$fornecedoresLog) .
+                "- Quarentena: {$produto->quarentena}\n";
 
             $log->save();
             
@@ -178,7 +180,7 @@ class ProdutosController extends Controller
     }
 
     public function edit(Request $request){
-        $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) WHERE P.ID = ?', [$request->id_edit])[0];
+        $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) WHERE P.ID = ?', [$request->id_edit])[0];
                 
         $fornecedores = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
         $fornSelected = [];
@@ -235,7 +237,8 @@ class ProdutosController extends Controller
                     'descricao' => $request->descricao,
                     'id_tipo' => Tipo_Produto::where('nome', $request->tipo)->get()[0]->id,
                     'qtd_aceitavel' => $request->qtd_aceitavel,
-                    'qtd_minima' => $request->qtd_minima
+                    'qtd_minima' => $request->qtd_minima,
+                    'quarentena' => $request->quarentena
                 ]);
 
                 $produtoDepois = $produto->refresh()->toArray();
@@ -398,7 +401,8 @@ class ProdutosController extends Controller
                 "- Qtd. Aceitável: {$produtoAntes['qtd_aceitavel']}\n" .
                 "- Qtd. Mínima: {$produtoAntes['qtd_minima']}\n" . 
                 "- Fabricantes: " . ($fabricantesLog === "" ? "(não informado)\n" : "\n".$fabricantesLog) .
-                "- Fornecedores: " . ($fornecedoresLog === "" ? "(não informado)\n" : "\n".$fornecedoresLog);
+                "- Fornecedores: " . ($fornecedoresLog === "" ? "(não informado)\n" : "\n".$fornecedoresLog) .
+                "- Quarentena: {$produtoAntes['quarentena']}\n";
             
                 $log->save();
 
@@ -480,6 +484,7 @@ class ProdutosController extends Controller
             $lote->preco = $request->preco;
             $lote->data_entrega = $request->data_entrega;
             $lote->data_validade = $request->data_validade;
+            $lote->quarentena = Produto::where('id', $lote->id_produto)->get()[0]->quarentena;
             
             $lote->save();
 
@@ -499,7 +504,8 @@ class ProdutosController extends Controller
                 "- Fornecedor: ID: {$lote->id_fornecedor}, nome: {$request->fornecedor}\n" .
                 "- Qtd. de Itens Recebidos: {$lote->qtd_itens_recebidos}\n" .
                 "- Data de Entrega: {$lote->data_entrega}\n" . 
-                "- Data de Validade: {$lote->data_validade}\n"; 
+                "- Data de Validade: {$lote->data_validade}\n" .
+                "- Quarentena: {$lote->quarentena}\n"; 
 
             $log->save();
 
@@ -526,7 +532,7 @@ class ProdutosController extends Controller
 
     public function mov_out_select(Request $request){
         $now = Carbon::createFromFormat("H:i:s", date('H:i:s'));
-        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_MOV_IN L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? AND L.QTD_ITENS_ESTOQUE > 0 AND L.DATA_VALIDADE > ? ORDER BY L.DATA_VALIDADE ASC', [$request->id_view, $now]);
+        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_MOV_IN L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? AND L.QTD_ITENS_ESTOQUE > 0 AND L.DATA_VALIDADE > ? AND L.QUARENTENA = ? ORDER BY L.DATA_VALIDADE ASC', [$request->id_view, $now, 'Não']);
         $lotes = json_decode(json_encode($lotes), true);
 
         if ($lotes == []){

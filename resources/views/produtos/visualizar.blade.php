@@ -4,8 +4,8 @@
     @php
         $title = ['Produtos', 'Produto'];
         $path = 'produtos';
-        $columns = ['#', 'Nome', 'Descrição', 'Tipo', 'Quantidade Aceitável', 'Quantidade Mínima'];
-        $indexes = ['id', 'nome', 'descricao', 'tipo', 'qtd_aceitavel', 'qtd_minima'];
+        $columns = ['#', 'Nome', 'Descrição', 'Tipo', 'Quantidade Aceitável', 'Quantidade Mínima', 'Quarentena?'];
+        $indexes = ['id', 'nome', 'descricao', 'tipo', 'qtd_aceitavel', 'qtd_minima', 'quarentena'];
         $infos = $produtos;
     @endphp
 @endsection
@@ -75,6 +75,16 @@
         <x-text-input id="qtd_minima" class="block mt-1 w-full" type="number" name="qtd_minima" :value="old('qtd_minima', $produto->qtd_minima ?? '')" required/>
     </div>
 
+    <!-- Quarentena -->
+    <div class="mt-4">
+        <x-input-label :value="__('Vai para Quarentena? *')" />
+        <select id="quarentena" class="block mt-1 w-full border rounded" name="quarentena" required>
+            <option value="" hidden></option>
+            <option value="Sim" {{"Sim" == (old('quarentena') ?? $produto->quarentena ?? "") ? "selected" : ""}}> Sim </option>
+            <option value="Não" {{"Não" == (old('quarentena') ?? $produto->quarentena ?? "") ? "selected" : ""}}> Não </option>
+        </select>
+    </div>
+
 @endsection
 
 
@@ -113,11 +123,17 @@
                 </tr>
             </thead>
             <tbody class="text-sm">
-                @foreach ($fabsV as $fabV)
+                @if ($fabsV == [])
                     <tr>
-                        <td class="text-start">{{$fabV}}</td>   
+                        <td colspan="5"> Nenhum fabricante relacionado </td>
                     </tr>
-                @endforeach
+                @else
+                    @foreach ($fabsV as $fabV)
+                        <tr>
+                            <td class="text-start">{{$fabV}}</td>   
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
     </div>
@@ -131,11 +147,17 @@
                 </tr>
             </thead>
             <tbody class="text-sm">
-                @foreach ($fornsV as $fornV)
+                @if ($fornsV == [])
                     <tr>
-                        <td class="text-start">{{$fornV}}</td>   
+                        <td colspan="5"> Nenhum fornecedor relacionado </td>
                     </tr>
-                @endforeach
+                @else
+                    @foreach ($fornsV as $fornV)
+                        <tr>
+                            <td class="text-start">{{$fornV}}</td>   
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
     </div>
@@ -152,12 +174,18 @@
         <x-input-label class="mt-2 text-secondary" :value="__($produtoV->qtd_minima ?? '')" />
     </div>
 
+    <!-- Quarentena? -->
+    <div class="mt-4">
+        <x-input-label class="h6" :value="__('Quarentena?')" />
+        <x-input-label class="mt-2 text-secondary" :value="__($produtoV->quarentena ?? '')" />
+    </div>
+
     <!-- Lista de QTD em Estoque -->
     <div class="mt-4 div-scroll">
         <table class="table table-bordered table-scroll">
             <thead>
                 <tr>
-                    <th colspan="5" class="table-secondary text-start text-dark" scope="col"> Lista de Lotes </th>
+                    <th colspan="6" class="table-secondary text-start text-dark" scope="col"> Lista de Lotes </th>
                 </tr>
                 <tr class="text-sm">
                     <th class="table-light text-center text-dark" scope="col"> # </th>
@@ -165,33 +193,37 @@
                     <th class="table-light text-center text-dark" scope="col"> Lote do Fabricante </th>
                     <th class="table-light text-center text-dark" scope="col"> Qtd em Estoque </th>
                     <th class="table-light text-center text-dark" scope="col"> Data de Validade </th>
+                    <th class="table-light text-center text-dark" scope="col"> Em Quarentena? </th>
                 </tr>
             </thead>
             <tbody class="text-sm text-center">
                 @php $total = 0; @endphp
-
+            
                 @if ($lotesV == [])
                     <tr>
-                        <td colspan="5"> Nenhum lote encontrado </td>
+                        <td colspan="6"> Nenhum lote encontrado </td>
                     </tr>
                 @else
                     @foreach ($lotesV as $lote)
-                        @php $total += $lote['qtd_itens_estoque']; @endphp
-        
-                        <tr>
+                        @php 
+                            if ($lote['quarentena'] == "Não")
+                                $total += $lote['qtd_itens_estoque']; 
+                        @endphp
+                
+                        <tr class="{{ $lote['quarentena'] == 'Sim' ? 'table-danger' : '' }}">
                             <td>{{$lote['id']}}</td>
                             <td>{{$lote['nome']}}</td>
                             <td>{{$lote['lote_fabricante']}}</td>      
                             <td>{{$lote['qtd_itens_estoque']}}</td>      
                             <td>{{$lote['data_validade']}}</td>      
+                            <td>{{$lote['quarentena']}}</td>      
                         </tr>
                     @endforeach
                 @endif
-               
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="5" class="table-light text-end text-danger" scope="col"> Total: {{$total}}</th>
+                    <th colspan="6" class="table-light text-end text-danger" scope="col"> Total: {{$total}}</th>
                 </tr>
             </tfoot>
         </table>
