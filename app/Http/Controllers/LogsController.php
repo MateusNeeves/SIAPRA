@@ -14,8 +14,7 @@ class LogsController extends Controller
     }
 
     public function view(Request $request){
-        // return response()->json($request);
-        $allWhere = "WHERE L.DATA_HORA >= '{$request->startDate}' AND L.DATA_HORA < '{$request->endDate}'";
+        $allWhere = "WHERE L.DATA_HORA >= '{$request->startDate} 00:00:00'  AND L.DATA_HORA <= '{$request->endDate} 23:59:59' ";
 
         if ($request->user)
             $allWhere .= " AND U.USERNAME = '{$request->user}'";
