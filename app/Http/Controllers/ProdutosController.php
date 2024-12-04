@@ -73,9 +73,11 @@ class ProdutosController extends Controller
         $validator = Validator::make(
             $request->all(),
             
-            ['nome' => 'unique:produtos'],
+            ['nome' => 'unique:produtos',
+            'quarentena' => 'in:Sim,Não',],
             
-            ['nome.unique' => 'Já existe um Produto com esse Nome']
+            ['nome.unique' => 'Já existe um Produto com esse Nome',
+            'quarentena.in' => 'Opção inválida para Quarentena.']
         );
 
         if ($validator->fails()){
@@ -208,9 +210,11 @@ class ProdutosController extends Controller
         $validator = Validator::make(
             $request->all(),
             
-            ['nome' => Rule::unique('produtos')->ignore($request->id_edit)],
+            ['nome' => Rule::unique('produtos')->ignore($request->id_edit),
+            'quarentena' => 'in:Sim,Não',],
             
-            ['nome.unique' => 'Já existe um Produto com esse Nome']
+            ['nome.unique' => 'Já existe um Produto com esse Nome',
+            'quarentena.in' => 'Opção inválida para Quarentena.']
         );
         
         if ($validator->fails()){
