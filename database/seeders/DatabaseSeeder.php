@@ -35,6 +35,8 @@ class DatabaseSeeder extends Seeder
         );
 
         DB::table('acoes')->insert([
+        
+        // ALMOXARIFADO
             ['descricao' => 'Adicionar Fabricante'],
             ['descricao' => 'Editar Fabricante'],
             ['descricao' => 'Deletar Fabricante'],
@@ -59,6 +61,21 @@ class DatabaseSeeder extends Seeder
             ['descricao' => 'Movimentação (Saída) de Produto'],
 
             ['descricao' => 'Retirada de Lote da Quarentena'],
+
+        // CLIENTE
+            ['descricao' => 'Adicionar Cliente'],
+            ['descricao' => 'Editar Cliente'],
+            ['descricao' => 'Deletar Cliente'],
+
+        //PEDIDO
+            ['descricao' => 'Adicionar Pedido'],
+            ['descricao' => 'Editar Pedido'],
+            ['descricao' => 'Deletar Pedido'],
+
+        // USUÁRIO
+            ['descricao' => 'Adicionar Usuário'],
+            ['descricao' => 'Editar Usuário'],
+            ['descricao' => 'Deletar Usuário'],
         ]);
     }
 }
