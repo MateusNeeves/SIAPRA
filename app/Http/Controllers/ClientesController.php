@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Log;
+use App\Models\Acao;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ClientesController extends Controller
@@ -40,23 +43,56 @@ class ClientesController extends Controller
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#newModal')->withInput(); 
         }
 
-        // SALVANDO CLIENTE
-        $cliente = new Cliente;
+        try{
+            DB::beginTransaction();
 
-        $cliente->cnpj = $request->cnpj;
-        $cliente->razao_social = mb_strtoupper($request->razao_social);
-        $cliente->nome_fantasia = mb_strtoupper($request->nome_fantasia);
-        $cliente->end_logradouro = mb_strtoupper($request->end_logradouro);
-        $cliente->end_complemento = mb_strtoupper($request->end_complemento);
-        $cliente->estado = mb_strtoupper($request->estado);
-        $cliente->cidade = mb_strtoupper($request->cidade);
-        $cliente->bairro = mb_strtoupper($request->bairro);
-        $cliente->cep = $request->cep;
-        $cliente->tempo_transp = $request->tempo_transp;
+            // SALVANDO CLIENTE
+            $cliente = new Cliente;
+    
+            $cliente->cnpj = $request->cnpj;
+            $cliente->razao_social = mb_strtoupper($request->razao_social);
+            $cliente->nome_fantasia = mb_strtoupper($request->nome_fantasia);
+            $cliente->end_logradouro = mb_strtoupper($request->end_logradouro);
+            $cliente->end_complemento = mb_strtoupper($request->end_complemento);
+            $cliente->estado = mb_strtoupper($request->estado);
+            $cliente->cidade = mb_strtoupper($request->cidade);
+            $cliente->bairro = mb_strtoupper($request->bairro);
+            $cliente->cep = $request->cep;
+            $cliente->tempo_transp = $request->tempo_transp;
+    
+            $cliente->save();
 
-        $cliente->save();
+            // ADICIONANDO LOG
+            $log = new Log();
+            
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Adicionar Cliente')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Cliente adicionado:\n" .
+                "- CNPJ: {$cliente->cnpj}\n" .
+                "- Razão Social: {$cliente->razao_social}\n" .
+                "- Nome Fantasia: {$cliente->nome_fantasia}\n" .
+                "- Endereço: Logradouro: {$cliente->end_logradouro}, Complemento: {$cliente->end_complemento}\n" .
 
-        return redirect()->route('clientes')->with('alert-success', 'Cliente cadastrado com sucesso');
+                "- Estado: {$cliente->estado}\n" .
+                "- Cidade: {$cliente->cidade}\n" .
+                "- Bairro: {$cliente->bairro}\n" .
+                "- CEP: {$cliente->cep}\n" .
+                "- Tempo de Transporte: {$cliente->tempo_transp}\n";
+
+            $log->save();
+
+            DB::commit();
+            return redirect()->back()->with('alert-success', 'Cliente cadastrado com sucesso');
+        }
+        catch (\Exception $exception) {
+            DB::rollback();
+            return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput();
+        }
+
+
     }
 
     public function edit(Request $request){
@@ -83,40 +119,100 @@ class ClientesController extends Controller
         if ($validator->fails())
             return redirect()->back()->with('alert-danger', $validator->messages()->first())->with('modal', '#editModal')->withInput();     
         
-        // SALVANDO CLIENTE
-        Cliente::findOrFail($request->id_edit)->update([
-            'cnpj' => $request->cnpj,
-            'razao_social' => mb_strtoupper($request->razao_social),
-            'nome_fantasia' => mb_strtoupper($request->nome_fantasia),
-            'end_logradouro' => mb_strtoupper($request->end_logradouro),
-            'end_complemento' => mb_strtoupper($request->end_complemento),
-            'estado' => mb_strtoupper($request->estado),
-            'cidade' => mb_strtoupper($request->cidade),
-            'bairro' => mb_strtoupper($request->bairro),
-            'cep' => $request->cep,
-            'tempo_transp' => $request->tempo_transp
-        ]);
-        return redirect()->route('clientes')->with('alert-success', 'Cliente editado com sucesso');
+        try{
+            DB::beginTransaction();
+
+            // SALVANDO CLIENTE
+
+            $cliente = Cliente::findOrFail($request->id_edit);
+            
+            $clienteAntes = $cliente->toArray();
+
+            $cliente->update([
+                'cnpj' => $request->cnpj,
+                'razao_social' => mb_strtoupper($request->razao_social),
+                'nome_fantasia' => mb_strtoupper($request->nome_fantasia),
+                'end_logradouro' => mb_strtoupper($request->end_logradouro),
+                'end_complemento' => mb_strtoupper($request->end_complemento),
+                'estado' => mb_strtoupper($request->estado),
+                'cidade' => mb_strtoupper($request->cidade),
+                'bairro' => mb_strtoupper($request->bairro),
+                'cep' => $request->cep,
+                'tempo_transp' => $request->tempo_transp
+            ]);
+
+            $clienteDepois = $cliente->refresh()->toArray();
+
+            // ADICIONANDO LOG
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Editar Cliente')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Cliente editado:\n" .
+                "- ID do Cliente: {$clienteAntes['id']}\n" .
+                "- Nome Fantasia: {$clienteAntes['nome_fantasia']}\n\n" .
+                "Campos alterados:\n";
+
+                foreach ($clienteDepois as $campo => $valor) {
+                    if ($valor != ($clienteAntes[$campo] ?? null)) {
+                        $log->descricao .= "- {$campo}: " .
+                            ($clienteAntes[$campo] === null || $clienteAntes[$campo] === '' ? '(não informado)' : $clienteAntes[$campo]) . 
+                            " -> " . 
+                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                    }
+                }
+
+            $log->save();
+            
+            DB::commit();
+            return redirect()->back()->with('alert-success', 'Cliente editado com sucesso');
+        }
+        catch(\Exception $exception){
+            DB::rollBack();
+            return redirect()->back()->with('alert-danger', 'Ocorreu um erro na atualização no banco de dados: ' . $exception->getMessage())->withInput();
+        }
     }
 
     public function destroy(Request $request){
-        DB::beginTransaction();
+        try{
+            DB::beginTransaction();
 
-        Cliente::find($request->id_delete)->delete();
+            $cliente = Cliente::find($request->id_delete);
+            $clienteAntes = $cliente->toArray();
+            $cliente->delete();
 
-        if ($request->soft == 'false'){
-            try{
-                Cliente::withTrashed()->find($request->id_delete)->forceDelete();
-                DB::commit();
-                return redirect()->back()->with('alert-success', 'Cliente excluído com sucesso');
-            }
-            catch(\Exception $exception){
-                DB::rollBack();
-                return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Cliente, pois outras informações dependem dele. <br><br> Deseja Desativar esse Cliente ao invés de Deletar? <br><br> Você pode restaurá-lo futuramente, caso necessário.')->with('modal', '#deleteModal')->withInput();
-            } 
+            // ADICIONANDO LOG
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Deletar Cliente')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Cliente deletado:\n" .
+                "- CNPJ: {$cliente->cnpj}\n" .
+                "- Razão Social: {$cliente->razao_social}\n" .
+                "- Nome Fantasia: {$cliente->nome_fantasia}\n" .
+                "- Endereço: Logradouro: {$cliente->end_logradouro}, Complemento: {$cliente->end_complemento}\n" .
+                "- Estado: {$cliente->estado}\n" .
+                "- Cidade: {$cliente->cidade}\n" .
+                "- Bairro: {$cliente->bairro}\n" .
+                "- CEP: {$cliente->cep}\n" .
+                "- Tempo de Transporte: {$cliente->tempo_transp}\n";
+
+            $log->save();
+
+            DB::commit();
+            return redirect()->back()->with('alert-success', 'Cliente excluído com sucesso');
         }
-
-        DB::commit();
-        return redirect()->back()->with('alert-success', 'Cliente desativado com sucesso');
+        catch(\Exception $exception){
+            DB::rollBack();
+            return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Cliente, pois outras informações dependem dele.' . $exception->getMessage())->withInput();
+        } 
     }
 }
