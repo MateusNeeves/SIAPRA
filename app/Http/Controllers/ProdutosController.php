@@ -118,7 +118,7 @@ class ProdutosController extends Controller
                     
                     $produto_fab[$i]->save();
     
-                    $fabricantesLog .= "   ID: {$fabricante['id']}, Nome: {$fabricante['nome']}\n";
+                    $fabricantesLog .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$fabricante['id']}, Nome: {$fabricante['nome']}\n";
                 }
             }
 
@@ -138,7 +138,7 @@ class ProdutosController extends Controller
                     
                     $produto_forn[$i]->save();
 
-                    $fornecedoresLog .= "   ID: {$fornecedor['id']}, Nome: {$fornecedor['nome']}\n";
+                    $fornecedoresLog .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$fornecedor['id']}, Nome: {$fornecedor['nome']}\n";
                 }
             }
 
@@ -325,7 +325,7 @@ class ProdutosController extends Controller
                 if (!empty($new_fabs)) {
                     $log->descricao .= "- Fabricantes Adicionados:\n";
                     foreach ($new_fabs as $new_fab) {
-                        $log->descricao .= "   ID: {$new_fab['id']}, Nome: {$new_fab['nome']}\n";
+                        $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$new_fab['id']}, Nome: {$new_fab['nome']}\n";
                     }
                 }
 
@@ -333,7 +333,7 @@ class ProdutosController extends Controller
                 if (!empty($removed_fabs)) {
                     $log->descricao .= "- Fabricantes Removidos:\n";
                     foreach ($removed_fabs as $removed_fab) {
-                        $log->descricao .= "   ID: {$removed_fab['id']}, Nome: {$removed_fab['nome']}\n";
+                        $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$removed_fab['id']}, Nome: {$removed_fab['nome']}\n";
                     }
                 }
 
@@ -341,7 +341,7 @@ class ProdutosController extends Controller
                 if (!empty($new_forns)) {
                     $log->descricao .= "- Fornecedores Adicionados:\n";
                     foreach ($new_forns as $new_forn) {
-                        $log->descricao .= "   ID: {$new_forn['id']}, Nome: {$new_forn['nome']}\n";
+                        $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$new_forn['id']}, Nome: {$new_forn['nome']}\n";
                     }
                 }
 
@@ -349,7 +349,7 @@ class ProdutosController extends Controller
                 if (!empty($removed_forns)) {
                     $log->descricao .= "- Fornecedores Removidos:\n";
                     foreach ($removed_forns as $removed_forn) {
-                        $log->descricao .= "   ID: {$removed_forn['id']}, Nome: {$removed_forn['nome']}\n";
+                        $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$removed_forn['id']}, Nome: {$removed_forn['nome']}\n";
                     }
                 }
                 
@@ -376,12 +376,12 @@ class ProdutosController extends Controller
 
             $fabricantesLog = "";
             foreach ($fabricantes as $fabricante) {
-                $fabricantesLog .= "   ID: {$fabricante->id}, Nome: {$fabricante->nome}\n";
+                $fabricantesLog .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$fabricante->id}, Nome: {$fabricante->nome}\n";
             }
 
             $fornecedoresLog = "";
             foreach ($fornecedores as $fornecedor) {
-                $fornecedoresLog .= "   ID: {$fornecedor->id}, Nome: {$fornecedor->nome}\n";
+                $fornecedoresLog .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$fornecedor->id}, Nome: {$fornecedor->nome}\n";
             }
 
             $produto = Produto::find($request->id_delete);
