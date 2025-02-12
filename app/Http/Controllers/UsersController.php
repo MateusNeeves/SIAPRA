@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Classe;
+use App\Models\Log;
+use App\Models\Acao;
 use App\Models\User;
+use App\Models\Classe;
 use App\Models\User_Classe;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
@@ -73,8 +76,10 @@ class UsersController extends Controller
 
             $usuario->save();
 
+            $classesLog = "\n";
+
             // ADICIONANDO CLASSES
-            foreach ((array) $request->classes as $i => $classe) {
+            foreach ( $request->classes as $i => $classe) {
                 $id_classe = Classe::where('nome', $classe)->first()->id;
                     
                 $user_classe[$i] = new User_Classe();
@@ -83,7 +88,27 @@ class UsersController extends Controller
                 $user_classe[$i]->id_classe = $id_classe;
                 
                 $user_classe[$i]->save();
+
+                $classesLog .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$id_classe}, Nome: {$classe }\n";
             }
+
+            // ADICIONANDO LOG
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Adicionar Usuário')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Usuário adicionado:\n" .
+                "- Username: {$usuario->username}\n" .
+                "- Nome: {$usuario->name}\n" .
+                "- CPF: {$usuario->cpf}\n" .
+                "- Email: {$usuario->email}\n" .
+                "- Telefone: {$usuario->phone}\n" .
+                "- Classes: {$classesLog}\n";
+
+            $log->save();
 
             DB::commit();
             return redirect()->route('usuarios')->with('alert-success', 'Usuário cadastrado com sucesso');
@@ -128,6 +153,8 @@ class UsersController extends Controller
             // SALVANDO TIPO DE PRODUTO
             $user = User::findOrFail($request->id_edit);
 
+            $userAntes = $user->toArray();
+
             $user->update([
                 'username' => mb_strtolower($request->username),
                 'name' => $request->name,
@@ -137,9 +164,11 @@ class UsersController extends Controller
                 'phone' => $request->phone,
             ]);
 
-            // ATUALIZANDO FORNECEDORES
+            $userDepois = $user->refresh()->toArray();
+
+            // ATUALIZANDO CLASSES
             
-            // lista desatualizada de fornecedores
+            // lista desatualizada de classes
             $classes = DB::select('SELECT * FROM CLASSES WHERE ID IN (SELECT ID_CLASSE FROM USERS_CLASSES WHERE ID_USER = ?)', [$user->id]);
             foreach ($classes as $classe)
                 $old_classes[] = $classe->nome;
@@ -162,6 +191,47 @@ class UsersController extends Controller
                 $user_classe[$i]->save();
             }
 
+            // ADICIONANDO LOG
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Editar Usuário')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Usuário editado:\n" .
+                "- ID do Usuário: {$userAntes['id']}\n" .
+                "- Username: {$userAntes['username']}\n\n" .
+                "Campos alterados:\n";
+
+                foreach ($userDepois as $campo => $valor) {
+                    if ($valor != ($userAntes[$campo] ?? null)) {
+                        $log->descricao .= "- {$campo}: " .
+                            ($userAntes[$campo] === null || $userAntes[$campo] === '' ? '(não informado)' : $userAntes[$campo]) . 
+                            " -> " . 
+                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                    }
+                }
+            
+                // Classes Adicionadas
+                if (!empty($new_classes)) {
+                    $log->descricao .= "- Classes Adicionadas:\n";
+                    foreach ($new_classes as $new_classe) {
+                        $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$new_classe['id']}, Nome: {$new_classe['nome']}\n";
+                    }
+                }
+
+                // Classes Removidas
+                if (!empty($removed_classes)) {
+                    $log->descricao .= "- Classes Removidas:\n";
+                    foreach ($removed_classes as $removed_classe) {
+                        $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$removed_classe['id']}, Nome: {$removed_classe['nome']}\n";
+                    }
+                }
+
+            $log->save();
+
             DB::commit();
             return redirect()->route('usuarios')->with('alert-success', 'Usuário editado com sucesso');
         }
@@ -174,23 +244,46 @@ class UsersController extends Controller
     }
 
     public function destroy(Request $request){
-        DB::beginTransaction();
+        try{
+            DB::beginTransaction();
 
-        User::find($request->id_delete)->delete();
-
-        if ($request->soft == 'false'){
-            try{
-                User::withTrashed()->find($request->id_delete)->forceDelete();
-                DB::commit();
-                return redirect()->back()->with('alert-success', 'Usuário excluído com sucesso');
+            $classes = DB::select('SELECT ID, NOME FROM CLASSES WHERE ID IN (SELECT ID_CLASSE FROM USERS_CLASSES WHERE ID_USER = ?)', [$request->id_delete]);
+            User_Classe::where('id_user', $request->id_delete)->delete();
+            
+            $classesLog = "\n";
+            foreach ($classes as $classe) {
+                $classesLog .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$classe->id}, Nome: {$classe->nome}\n";
             }
-            catch(\Exception $exception){
-                DB::rollBack();
-                return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Usuário, pois outras informações dependem dele. <br><br> Deseja Desativar esse Usuário ao invés de Deletar? <br><br> Você pode restaurá-lo futuramente, caso necessário.')->with('modal', '#deleteModal')->withInput();
-            } 
-        }
+            
+            $user = User::find($request->id_delete);
+            $userAntes = $user->toArray();
+            $user->delete();
 
-        DB::commit();
-        return redirect()->back()->with('alert-success', 'Usuário desativado com sucesso');
+            // ADICIONANDO LOG
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Deletar Usuário')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Usuário deletado:\n" .
+                "- Username: {$userAntes['username']}\n" .
+                "- Nome: {$userAntes['name']}\n" .
+                "- CPF: {$userAntes['cpf']}\n" .
+                "- Email: {$userAntes['email']}\n" .
+                "- Telefone: {$userAntes['phone']}\n" .
+                "- Classes: {$classesLog}\n";
+            
+            $log->save();
+
+
+            DB::commit();
+            return redirect()->back()->with('alert-success', 'Usuário excluído com sucesso');
+        }
+        catch(\Exception $exception){
+            DB::rollBack();
+            return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Usuário, pois outras informações dependem dele.' . $exception->getMessage())->withInput();
+        } 
     }
 }
