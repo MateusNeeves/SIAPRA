@@ -77,5 +77,9 @@ class DatabaseSeeder extends Seeder
             ['descricao' => 'Editar Usuário'],
             ['descricao' => 'Deletar Usuário'],
         ]);
+
+        DB::table('parametros')->insert(
+            ['ativ_dose' => 10, 'tempo_exames' => 60, 'vol_max_cq' => 6, 'tempo_exped' => 25, 'rend_tip_ciclotron' => 210, 'corrente_alvo' => 30, 'rend_sintese' => 55, 'tempo_sintese' => 30, 'vol_eos' => 30, 'hora_saida' => '09:00:00']
+        );
     }
 }
