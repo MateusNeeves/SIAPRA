@@ -154,7 +154,7 @@ class ProdutosController extends Controller
                 "Produto adicionado:\n" .
                 "- Nome: {$produto->nome}\n" .
                 "- Descrição: {$produto->descricao}\n" .
-                "- Tipo: ID: {$produto->id_tipo}, nome: {$request->tipo}\n" .
+                "- Tipo: ID: {$produto->id_tipo}, Nome: {$request->tipo}\n" .
                 "- Qtd. Aceitável: {$produto->qtd_aceitavel}\n" .
                 "- Qtd. Mínima: {$produto->qtd_minima}\n" .
                 "- Fabricantes: " . ($fabricantesLog === "" ? "(não informado)\n" : "\n".$fabricantesLog) .
