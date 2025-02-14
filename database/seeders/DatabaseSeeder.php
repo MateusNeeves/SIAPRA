@@ -76,6 +76,9 @@ class DatabaseSeeder extends Seeder
             ['descricao' => 'Adicionar Usuário'],
             ['descricao' => 'Editar Usuário'],
             ['descricao' => 'Deletar Usuário'],
+
+        // PARAMETROS
+            ['descricao' => 'Editar Parâmetros'],
         ]);
 
         DB::table('parametros')->insert(
