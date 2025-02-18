@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Log;
+use App\Models\Acao;
 use App\Models\Pedido;
 use App\Models\Cliente;
 use App\Models\Parametro;
@@ -182,6 +184,7 @@ class PlanejamentosController extends Controller
                 $planejamento->ativ_esp = $ativ_esp;
                 
                 $planejamento->save();
+
                 foreach ($pedidos as $idx => $pedido) {
                     $pedidos_plan[$idx] = new Pedido_Plan;
                     $pedidos_plan[$idx]->id_pedido = $pedido->id;
@@ -192,6 +195,45 @@ class PlanejamentosController extends Controller
                     
                     $pedidos_plan[$idx]->save();
                 }
+
+                $user_username = Auth::user()->username;
+
+                $log = new Log();
+
+                $log->id_user = Auth::user()->id;
+                $log->id_acao = Acao::where('descricao', 'Adicionar Planejamento')->first()["id"];
+                $log->tipo = "Info";
+                $log->data_hora = now();
+                $log->descricao = 
+                    "Planejamento adicionado:\n" .
+                    "- Usuário: ID: {$planejamento->id_usuario}, Username: {$user_username}\n"  .
+                    "- Data da Produção: {$planejamento->data_producao}\n" .
+                    "- Fator de Segurança: {$planejamento->fator_seguranca}\n" .
+                    "- Atividade Por Dose: {$planejamento->ativ_dose}\n" .
+                    "- Tempo Entre Exames: {$planejamento->tempo_exames}\n" .
+                    "- Volume Máximo de Controle de Qualidade: {$planejamento->vol_max_cq}\n" .
+                    "- Tempo de Expedição: {$planejamento->tempo_exped}\n" .
+                    "- Rendimento Típico do Ciclotron: {$planejamento->rend_tip_ciclotron}\n" .
+                    "- Corrente Alvo: {$planejamento->corrente_alvo}\n" .
+                    "- Rendimento de Síntese: {$planejamento->rend_sintese}\n" .
+                    "- Tempo de Síntese: {$planejamento->tempo_sintese}\n" .
+                    "- Volume EOS: {$planejamento->vol_eos}\n" . 
+                    "- Hora de Saída: {$planejamento->hora_saida}\n" .
+                    "- Duração do Ciclotron: {$planejamento->duracao_ciclotron}\n" .
+                    "- Atividade EOB: {$planejamento->ativ_eob}\n" .
+                    "- Atividade EOS: {$planejamento->ativ_eos}\n" .
+                    "- Atividade Específica: {$planejamento->ativ_esp}\n" .
+                    "- Pedidos:\n";
+                
+                foreach ($pedidos_plan as $idx => $pedido_plan) {
+                    $log->descricao .= 
+                        "&nbsp;&nbsp;&nbsp;&nbsp;- Pedido: ID: {$pedido->id}, Cliente: {$pedidos[$idx]->nome_fantasia}\n" .
+                        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Qtd. de Doses Selecionadas: {$pedido_plan->qtd_doses_selec}\n" .
+                        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Atividade no Destino: {$pedido_plan->ativ_dest}\n" .
+                        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Volume por Frasco: {$pedido_plan->vol_frasco}\n";
+                }
+    
+                $log->save();
 
                 DB::commit();
                 return redirect()->route('planejamentos')->with('alert-success', 'Planejamento realizado com sucesso.');
@@ -207,19 +249,63 @@ class PlanejamentosController extends Controller
         try{
             DB::beginTransaction();
 
-            $pedidos_plan = Pedido_Plan::where('id_planejamento', $request->id)->get();
+            $pedidos = collect(DB::select('SELECT P.ID, C.NOME_FANTASIA, PP.QTD_DOSES_SELEC, PP.ATIV_DEST, PP.VOL_FRASCO
+            FROM PEDIDOS P INNER JOIN PEDIDOS_PLAN PP ON (P.ID = PP.ID_PEDIDO) INNER JOIN CLIENTES C ON (P.ID_CLIENTE = C.ID) 
+            WHERE PP.ID_PLANEJAMENTO = ?', [$request->id]));
 
-            foreach ($pedidos_plan as $pedido_plan)
-                $pedido_plan->delete();
 
-            Planejamento::find($request->id)->delete();
+            Pedido_Plan::where('id_planejamento', $request->id)->delete();
+
+            $planejamento = Planejamento::find($request->id);
+
+            $user_username = Auth::user()->username;
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Deletar Planejamento')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Planejamento deletado:\n" .
+                "- Usuário: ID: {$planejamento->id_usuario}, Username: {$user_username}\n"  .
+                "- Data da Produção: {$planejamento->data_producao}\n" .
+                "- Fator de Segurança: {$planejamento->fator_seguranca}\n" .
+                "- Atividade Por Dose: {$planejamento->ativ_dose}\n" .
+                "- Tempo Entre Exames: {$planejamento->tempo_exames}\n" .
+                "- Volume Máximo de Controle de Qualidade: {$planejamento->vol_max_cq}\n" .
+                "- Tempo de Expedição: {$planejamento->tempo_exped}\n" .
+                "- Rendimento Típico do Ciclotron: {$planejamento->rend_tip_ciclotron}\n" .
+                "- Corrente Alvo: {$planejamento->corrente_alvo}\n" .
+                "- Rendimento de Síntese: {$planejamento->rend_sintese}\n" .
+                "- Tempo de Síntese: {$planejamento->tempo_sintese}\n" .
+                "- Volume EOS: {$planejamento->vol_eos}\n" . 
+                "- Hora de Saída: {$planejamento->hora_saida}\n" .
+                "- Duração do Ciclotron: {$planejamento->duracao_ciclotron}\n" .
+                "- Atividade EOB: {$planejamento->ativ_eob}\n" .
+                "- Atividade EOS: {$planejamento->ativ_eos}\n" .
+                "- Atividade Específica: {$planejamento->ativ_esp}\n" .
+                "- Pedidos:\n";
+            
+            foreach ($pedidos as $idx => $pedido) {
+                $log->descricao .= 
+                    "&nbsp;&nbsp;&nbsp;&nbsp;- Pedido: ID: {$pedido->id}, Cliente: {$pedido->nome_fantasia}\n" .
+                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Qtd. de Doses Selecionadas: {$pedido->qtd_doses_selec}\n" .
+                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Atividade no Destino: {$pedido->ativ_dest}\n" .
+                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Volume por Frasco: {$pedido->vol_frasco}\n";
+            }
+
+            $log->save();
+
+            $planejamento->delete();
+
 
             DB::commit();
             return redirect()->back()->with('alert-success', 'Planejamento excluído com sucesso');
         }
         catch(\Exception $exception){
             DB::rollBack();
-            return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Planejamento, pois outras informações dependem dele.');
+            return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Planejamento, pois outras informações dependem dele.' . $exception);
         } 
     }
 }

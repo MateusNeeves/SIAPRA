@@ -79,6 +79,10 @@ class DatabaseSeeder extends Seeder
 
         // PARAMETROS
             ['descricao' => 'Editar Parâmetros'],
+
+        // PLANEJAMENTO
+            ['descricao' => 'Adicionar Planejamento'],
+            ['descricao' => 'Deletar Planejamento'],
         ]);
 
         DB::table('parametros')->insert(
