@@ -23,6 +23,7 @@ div.dt-container select.dt-input{
 .btn-orange {
     background-color: #ca500d;
     color: white;
+    cursor: pointer;
 }
 
 .btn-orange:hover {
@@ -71,4 +72,15 @@ table.dataTable tbody tr.selected>* {
 .table-scroll tfoot {
     position: sticky;
     bottom: 0;
+}
+
+.pika-button {
+    background-color: #f2714b !important;
+    border-color: #f2714b !important;
+    color: white !important;
+}
+
+.pika-button:hover {
+    background-color: #ca500d !important;
+    border-color: #ca500d !important;
 }

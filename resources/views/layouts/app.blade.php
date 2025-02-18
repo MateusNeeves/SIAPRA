@@ -56,11 +56,11 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 
         <!-- MEU CSS -->
-        <link rel="stylesheet" href="./css/styles.css">
+        <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
         <!-- MEUS JS -->
-        <script defer type="text/javascript" src="./js/tables.js"></script>
-        <script defer type="text/javascript" src="./js/printPdf.js"></script>
+        <script defer type="text/javascript" src="{{ asset('./js/tables.js') }}"></script>
+        <script defer type="text/javascript"  src="{{ asset('./js/printPdf.js') }}"></script>
 
         {{-- PIKADAY --}}
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">

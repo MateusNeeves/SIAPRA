@@ -10,14 +10,14 @@
                     @csrf
                     @if (array_intersect(['Admin', 'Almoxarife'], Auth::user()->getClassNamesAttribute()))
                         <div class="flex justify-content-center mb-5">
-                            <a class="btn btn-dark" href="{{route('planejamentos.register')}}">
+                            <a class="btn btn-orange" href="{{route('planejamentos.register')}}">
                                 {{ __('Novo Planejamento') }}
                             </a>
                         </div>
                     @endif
                     <div class="flex justify-content-center mb-5">
                         <div class="position-relative" style="width: 220px">
-                            <input class="btn btn-secondary border rounded border-dark placeholder-visible pe-3"  type="text" id="datePicker" name="data_producao" value="{{old('data_producao')}}" placeholder="Selecionar Data" readonly required>
+                            <input class="btn-orange border rounded border-dark placeholder-visible pe-3"  type="text" id="datePicker" name="data_producao" value="{{old('data_producao')}}" placeholder="Selecionar Data" readonly required style="">
                             <i class="bi bi-calendar3-week input-icon"></i>
                         </div>
                         
@@ -55,12 +55,11 @@
                                     document.getElementById('visualizar_button').disabled = false;
                                 }
                             });
-
-                                              
+          
                         </script>
 
                         <button>
-                            <button disabled class="btn btn-dark  ms-3" id="visualizar_button" style="width: 220px">
+                            <button disabled class="btn btn-orange  ms-3" id="visualizar_button" style="width: 220px">
                                 {{ __('Visualizar Planejamento') }}
                             </button>
                         </button>
@@ -80,13 +79,13 @@
                         $data_producao = session()->get('data_producao');
                     @endphp
                     <div class="flex justify-content-end mb-2 me-5">
-                        <button id="pdfBtn" onclick="printPdf('Planejamento_'+'{{ $data_producao}}'+'.pdf')" class="btn btn-dark bg-gradient"> PDF </button>
+                        <button id="pdfBtn" onclick="printPdf('Planejamento_'+'{{ $data_producao}}'+'.pdf')" class="btn btn-orange bg-gradient"> PDF </button>
                     </div>
                     <div id="divPdf" class="mb-4 bg-white">
                         @foreach ($planejamentos as $idx => $planejamento)
                         <div class="{{$idx == 0 ? '' : 'breakPage'}}">
                             <div class="flex">
-                                <button class="btn btn-dark mb-2" style="display: inline-flex !important; align-items: center !important;" data-bs-toggle="collapse" data-bs-target="#collapse_{{$idx}}">
+                                <button class="btn btn-orange mb-2" style="display: inline-flex !important; align-items: center !important;" data-bs-toggle="collapse" data-bs-target="#collapse_{{$idx}}">
                                     <div>{{$idx+1 . 'º Planejamento '}}</div>
                                     <div class="ms-1">
                                         <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -101,7 +100,7 @@
                             <div class="collapse mb-5 bg-white" id="collapse_{{$idx}}">
                                 <div class="container">
                                     <table class="table table-bordered">
-                                        <thead class="table-dark text-center">
+                                        <thead class="table-orange text-center">
                                             <tr>
                                                 <th colspan="3" scope="colgroup"> Parâmetros Gerais </th>
                                                 <th colspan="3" scope="colgroup"> Cíclotron </th>
@@ -111,104 +110,104 @@
                                         <tbody class="text-start">
                                             <tr>
                                                 <!-- Parâmetros Gerais -->
-                                                <td class="bg-secondary text-white text-center"> Data da Produção </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Data da Produção </td>
                                                 <td class="text-end">
                                                     {{$data_producao}}
                                                 </td>
                                                 <td colspan="1"></td>
                         
                                                 <!-- Cíclotron -->
-                                                <td class="bg-secondary text-white text-center"> Início </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Início </td>
                                                 <td class="text-end">{{$inicio_ciclotron[$idx]}}</td>
                                                 <td class="text-start">{{'h'}}</td>
                                                 
                                                 <!-- Síntese -->    
-                                                <td class="bg-secondary text-white text-center"> Início </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Início </td>
                                                 <td class="text-end">{{$inicio_sintese[$idx]}}</td> 
                                                 <td class="text-start">{{'h'}}</td>
                                             </tr>
                         
                                             <tr>
                                                 <!-- Parâmetros Gerais -->
-                                                <td class="bg-secondary text-white text-center"> Horário de Saída </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Horário de Saída </td>
                                                 <td class="text-end">{{$planejamento->hora_saida}}</td>
                                                 <td class="text-start">{{"h"}}</td>
         
                                                 <!-- Cíclotron -->    
-                                                <td class="bg-secondary text-white text-center"> Fim </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Fim </td>
                                                 <td class="text-end">{{$fim_ciclotron[$idx]}}</td> 
                                                 <td class="text-start">{{'h'}}</td>
         
                                                 <!-- Síntese -->
-                                                <td class="bg-secondary text-white text-center"> Fim </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Fim </td>
                                                 <td class="text-end">{{$fim_sintese[$idx]}}</td> 
                                                 <td class="text-start">{{'h'}}</td>
                                             </tr>
                                         
                                             <tr>
                                                 <!-- Parâmetros Gerais -->
-                                                <td class="bg-secondary text-white text-center"> Atividade por Dose </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Atividade por Dose </td>
                                                 <td class="text-end">{{$planejamento->ativ_dose}}</td>
                                                 <td class="text-start">{{"mCi"}}</td>
         
                                                 <!-- Cíclotron -->    
-                                                <td class="bg-secondary text-white text-center"> Duração </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Duração </td>
                                                 <td class="text-end">{{$dur_ciclotron[$idx]}}</td>
                                                 <td class="text-start">{{"h"}}</td>
         
                                                 <!-- Síntese -->   
-                                                <td class="bg-secondary text-white text-center"> Duração </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Duração </td>
                                                 <td class="text-end">{{$planejamento->tempo_sintese}}</td>
                                                 <td class="text-start">{{"min"}}</td>
                                             </tr>
                                         
                                             <tr>
                                                 <!-- Parâmetros Gerais -->
-                                                <td class="bg-secondary text-white text-center"> Volume Frascos C.Q. </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Volume Frascos C.Q. </td>
                                                 <td class="text-end">{{$planejamento->vol_max_cq}}</td>
                                                 <td class="text-start">{{"ml"}}</td>
         
                                                 <!-- Cíclotron -->    
-                                                <td class="bg-secondary text-white text-center"> Rendimento Típico do Cíclotron </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Rendimento Típico do Cíclotron </td>
                                                 <td class="text-end">{{$planejamento->rend_tip_ciclotron}}</td>
                                                 <td class="text-start">{{"mCi/µAsat"}}</td>
         
                                                 <!-- Síntese -->
-                                                <td class="bg-secondary text-white text-center"> Rend. da Síntese </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Rend. da Síntese </td>
                                                 <td class="text-end">{{$planejamento->rend_sintese}}</td>
                                                 <td class="text-start">{{"%"}}</td>
                                             </tr>
         
                                             <tr>
                                                 <!-- Parâmetros Gerais -->
-                                                <td class="bg-secondary text-white text-center"> Tempo Entre Exames </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Tempo Entre Exames </td>
                                                 <td class="text-end">{{$planejamento->tempo_exames}}</td>
                                                 <td class="text-start">{{"min"}}</td>
         
                                                 <!-- Cíclotron -->
-                                                <td class="bg-secondary text-white text-center"> Corrente Alvo </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Corrente Alvo </td>
                                                 <td class="text-end">{{$planejamento->corrente_alvo}}</td>
                                                 <td class="text-start">{{"µA"}}</td>
         
                                                 <!-- Síntese -->
-                                                <td class="bg-secondary text-white text-center"> Volume EOS </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Volume EOS </td>
                                                 <td class="text-end">{{$planejamento->vol_eos}}</td>
                                                 <td class="text-start">{{"ml"}}</td>
                                             </tr>
         
                                             <tr>
                                                 <!-- Parâmetros Gerais -->
-                                                <td class="bg-secondary text-white text-center"> Tempo de Expedição </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Tempo de Expedição </td>
                                                 <td class="text-end">{{$planejamento->tempo_exped}}</td>
                                                 <td class="text-start">{{"min"}}</td>
         
                                                 <!-- Cíclotron -->
-                                                <td class="bg-secondary text-white text-center"> Fator de Segurança </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Fator de Segurança </td>
                                                 <td class="text-end">{{$planejamento->fator_seguranca}}</td>
                                                 <td class="text-start">{{"%"}}</td>
         
                                                 <!-- Síntese -->
-                                                <td class="bg-secondary text-white text-center"> Ativ. Esp. </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Ativ. Esp. </td>
                                                 <td class="text-end">{{$planejamento->ativ_esp}}</td>
                                                 <td class="text-start">{{"mCi/ml"}}</td>
                                             </tr>
@@ -220,12 +219,12 @@
                                                 <td colspan="1"></td>
         
                                                 <!-- Cíclotron -->
-                                                <td class="bg-secondary text-white text-center"> Atividade EOB </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Atividade EOB </td>
                                                 <td class="text-end">{{$planejamento->ativ_eob}}</td>
                                                 <td class="text-start">{{"mCi"}}</td>
         
                                                 <!-- Síntese -->
-                                                <td class="bg-secondary text-white text-center"> Atividade EOS </td>
+                                                <td class="text-white text-center" style="--bs-table-color: #fff;--bs-table-bg: #f2714b;"> Atividade EOS </td>
                                                 <td class="text-end">{{$planejamento->ativ_eos}}</td>
                                                 <td class="text-start">{{"mCi"}}</td>
                                             </tr>
@@ -235,7 +234,7 @@
                                 <br>
                                 <div class="container">
                                     <table class="table table-bordered">
-                                        <thead class="table-dark text-center">
+                                        <thead class="table-orange text-center">
                                             <tr>
                                                 <th scope="col"> # </th>
                                                 <th scope="col"> Cliente </th>
