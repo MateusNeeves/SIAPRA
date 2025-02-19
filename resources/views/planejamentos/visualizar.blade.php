@@ -284,7 +284,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar </button>
-                        <button type="submit" class="btn btn-danger">Deletar</button>
+                        <button type="submit" class="btn btn-danger" id="submitBtnDelete" onclick="preventDoubleClick('submitBtnDelete')">Deletar</button>
                     </div>
                 </form>
             </div>

@@ -246,7 +246,7 @@
                             </div>
                             @if (Session::has('eob'))
                                 <div class="flex justify-content-center">
-                                    <button name="action" value="save" class="mb-4 btn btn-orange">
+                                    <button type="submit" name="action" value="save" class="mb-4 btn btn-orange"  id="submitBtn" onclick="preventDoubleClick('submitBtn')">
                                         {{'Salvar Planejamento'}}
                                     </button>
                                 </div>

@@ -155,7 +155,7 @@ class PlanejamentosController extends Controller
         if ($request->action == 'calculate'){
             return redirect()->back()->with(['dur_ciclotron' => $dur_ciclotron_print, 'eob' => $eob, 'eos'=> $eos, 'ativ_esp' => $ativ_esp, 'pedidos' => $pedidos, 'inicio_sintese' => $inicio_sintese_str, 'fim_sintese' => $fim_sintese_str, 'inicio_ciclotron' => $inicio_ciclotron_str, 'fim_ciclotron' => $fim_ciclotron_str])->withInput();
         }
-        else if ($request->action == 'save'){
+        else{
             // RETIRAR OS PEDIDOS QUE FORAM 'DESCELECIONADOS'
             foreach ($pedidos as $idx => $pedido) 
                 if ($request->qtd_doses_selec[$idx] == 0)

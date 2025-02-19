@@ -102,7 +102,7 @@
                             @yield('content')
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-orange">Confirmar</button>
+                            <button type="submit" class="btn btn-orange" id="submitBtn" onclick="preventDoubleClick('submitBtn')">Confirmar</button>
                         </div>
                     </form>
                 </div>
@@ -140,7 +140,7 @@
                             @yield('content')
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-orange">Atualizar</button>
+                            <button type="submit" class="btn btn-orange" id="submitBtn" onclick="preventDoubleClick('submitBtn')">Atualizar</button>
                         </div>
                     </form>
                 </div>
@@ -183,9 +183,9 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar </button>
                         @if (Session::has('modal') && Session::get('modal') == '#deleteModal')
-                            <button type="submit" class="btn btn-danger">Desativar</button>
+                            <button type="submit" class="btn btn-danger" id="submitBtn" onclick="preventDoubleClick('submitBtn')">Desativar</button>
                         @else
-                            <button type="submit" class="btn btn-danger">Deletar</button>
+                            <button type="submit" class="btn btn-danger" id="submitBtn" onclick="preventDoubleClick('submitBtn')">Deletar</button>
                         @endif
                     </div>
                 </form>

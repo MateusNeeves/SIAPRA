@@ -61,6 +61,7 @@
         <!-- MEUS JS -->
         <script defer type="text/javascript" src="{{ asset('./js/tables.js') }}"></script>
         <script defer type="text/javascript"  src="{{ asset('./js/printPdf.js') }}"></script>
+        <script defer type="text/javascript"  src="{{ asset('./js/preventDoubleClick.js') }}"></script>
 
         {{-- PIKADAY --}}
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">

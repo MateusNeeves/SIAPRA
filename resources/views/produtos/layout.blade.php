@@ -144,7 +144,7 @@
                             @yield('content')
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-orange">Cadastrar</button>
+                            <button type="submit" class="btn btn-orange" id="submitBtn" onclick="preventDoubleClick('submitBtn')">Cadastrar</button>
                         </div>
                     </form>
                 </div>
@@ -229,7 +229,7 @@
                             @yield('content')
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-orange">Atualizar</button>
+                            <button type="submit" class="btn btn-orange" id="submitBtn" onclick="preventDoubleClick('submitBtn')">Atualizar</button>
                         </div>
                     </form>
                 </div>
@@ -272,9 +272,9 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar </button>
                         @if (Session::has('modal') && Session::get('modal') == '#deleteModal')
-                            <button type="submit" class="btn btn-danger">Desativar</button>
+                            <button type="submit" class="btn btn-danger" id="submitBtn" onclick="preventDoubleClick('submitBtn')">Desativar</button>
                         @else
-                            <button type="submit" class="btn btn-danger">Deletar</button>
+                            <button type="submit" class="btn btn-danger" id="submitBtn" onclick="preventDoubleClick('submitBtn')">Deletar</button>
                         @endif
                     </div>
                 </form>
@@ -375,7 +375,7 @@
                             @yield('mov_in')
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-orange">Confirmar</button>
+                            <button type="submit" class="btn btn-orange" id="submitBtnMovIn" onclick="preventDoubleClick('submitBtnMovIn')">Confirmar</button>
                         </div>
                     </form>
                 </div>
@@ -456,7 +456,7 @@
                             @yield('mov_out')
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-orange">Confirmar</button>
+                            <button type="submit" class="btn btn-orange" id="submitBtnMovOut" onclick="preventDoubleClick('submitBtnMovOut')">Confirmar</button>
                         </div>
                         <input hidden name="id_view" id="id_view" value="{{old('id_view')}}">
                     </form>
