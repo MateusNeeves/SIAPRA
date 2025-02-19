@@ -121,7 +121,7 @@ class DestProdutosController extends Controller
                 "Campos alterados:\n";
 
                 foreach ($dest_produtoDepois as $campo => $valor) {
-                    if ($valor != ($tipo_produtoAntes[$campo] ?? null)) {
+                    if ($valor != ($dest_produtoAntes[$campo] ?? null)) {
                         $log->descricao .= "- {$campo}: " .
                             ($dest_produtoAntes[$campo] === null || $dest_produtoAntes[$campo] === '' ? '(não informado)' : $dest_produtoAntes[$campo]) . 
                             " -> " . 

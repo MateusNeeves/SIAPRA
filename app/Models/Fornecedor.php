@@ -26,5 +26,6 @@ class Fornecedor extends Model
         'nome_contato',
         'email',
         'site',
+        'telefone',
 ];
 }

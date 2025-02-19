@@ -75,8 +75,7 @@ class ClientesController extends Controller
                 "- CNPJ: {$cliente->cnpj}\n" .
                 "- Razão Social: {$cliente->razao_social}\n" .
                 "- Nome Fantasia: {$cliente->nome_fantasia}\n" .
-                "- Endereço: Logradouro: {$cliente->end_logradouro}, Complemento: {$cliente->end_complemento}\n" .
-
+                "- Endereço: Logradouro: {$cliente->end_logradouro}, Complemento: " . ($cliente->end_complemento ?: '(não informado)') . "\n" .
                 "- Estado: {$cliente->estado}\n" .
                 "- Cidade: {$cliente->cidade}\n" .
                 "- Bairro: {$cliente->bairro}\n" .
@@ -199,7 +198,7 @@ class ClientesController extends Controller
                 "- CNPJ: {$cliente->cnpj}\n" .
                 "- Razão Social: {$cliente->razao_social}\n" .
                 "- Nome Fantasia: {$cliente->nome_fantasia}\n" .
-                "- Endereço: Logradouro: {$cliente->end_logradouro}, Complemento: {$cliente->end_complemento}\n" .
+                "- Endereço: Logradouro: {$cliente->end_logradouro}, Complemento: ($cliente->end_complemento ?: '(não informado)')\n" .
                 "- Estado: {$cliente->estado}\n" .
                 "- Cidade: {$cliente->cidade}\n" .
                 "- Bairro: {$cliente->bairro}\n" .

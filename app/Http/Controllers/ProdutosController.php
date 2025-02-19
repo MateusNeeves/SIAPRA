@@ -402,7 +402,7 @@ class ProdutosController extends Controller
                 "- ID do Produto: {$produto->id}\n" .
                 "- Nome: {$produto->nome}\n" .
                 "- Descrição: {$produto->descricao}\n" .
-                "- Tipo: {$request->tipo} (ID: {$produto->id_tipo})\n" .
+                "- Tipo: {$request->tipo} ID: {$produto->id_tipo}\n" .
                 "- Qtd. Aceitável: {$produto->qtd_aceitavel}\n" .
                 "- Qtd. Mínima: {$produto->qtd_minima}\n" . 
                 "- Fabricantes: " . ($fabricantesLog === "" ? "(não informado)\n" : "\n".$fabricantesLog) .
@@ -604,7 +604,7 @@ class ProdutosController extends Controller
                 "Movimentação (Entrada) de Produto adicionada:\n" .
                 "- ID da Movimentação (Saída): {$mov->id}\n" .
                 "- Produto: ID: {$produto['id']}, nome: {$produto['nome']}\n" .
-                "- Movimentação (Entrada): ID: {$mov->id_produtos_mov_in}\n" .
+                "- ID da Movimentação (Entrada): {$mov->id_produtos_mov_in}\n" .
                 "- Destino: ID: {$mov->id_destino}, nome: {$nome_destino}\n" .
                 "- Qtd. de Itens Movidos: {$mov->qtd_itens_movidos}\n" .
                 "- Data da Movimentação de Saída: {$mov->data_mov_out}\n"; 
