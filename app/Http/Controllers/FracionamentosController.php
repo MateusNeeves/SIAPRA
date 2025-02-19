@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Log;
+use App\Models\Acao;
 use App\Models\Pedido;
-use App\Models\Planejamento;
 use App\Models\Pedido_Frac;
+use App\Models\Planejamento;
 use Illuminate\Http\Request;
 use App\Models\Fracionamento;
 use Illuminate\Support\Facades\DB;
@@ -135,12 +137,44 @@ class FracionamentosController extends Controller{
                     $pedidos_frac[$i]->save();
                 }
 
+                $user_username = Auth::user()->username;
+
+                $log = new Log();
+
+                $log->id_user = Auth::user()->id;
+                $log->id_acao = Acao::where('descricao', 'Adicionar Fracionamento')->first()["id"];
+                $log->tipo = "Info";
+                $log->data_hora = now();
+                $log->descricao = 
+                    "Fracionamento adicionado:\n" .
+                    "- ID: {$fracionamento->id}\n" .
+                    "- Usuário: ID: {$fracionamento->id_usuario}, Username: {$user_username}\n"  .
+                    "- Atividade EOB Real: {$fracionamento->ativ_eob_real}\n" .
+                    "- Atividade EOS Necessária: {$fracionamento->ativ_eos_nec}\n" .
+                    "- Atividade EOS Real: {$fracionamento->ativ_eos_real}\n" .
+                    "- Volume EOS: {$fracionamento->vol_eos}\n" .
+                    "- Atividade Específica: {$fracionamento->ativ_esp}\n" .
+                    "- Rendimento de Síntese Real: {$fracionamento->rend_sintese_real}\n" .
+                    "- Fim de Síntese: {$fracionamento->fim_sintese}\n" . 
+                    "- Pedidos: \n";
+
+                foreach ($pedidos_frac as $idx => $pedido_frac) {
+                    $log->descricao .= 
+                        "&nbsp;&nbsp;&nbsp;&nbsp;- Pedido: ID: {$pedido_frac->id_pedido}, Cliente: {$pedidos_plan[$idx]->nome_fantasia}\n" .
+                        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Quantidade de Doses Selecionadas: {$pedido_frac->qtd_doses_selec}\n" .
+                        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Atividade no Destino: {$pedido_frac->ativ_dest}\n" .
+                        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Quantidade de Doses Entregues: {$pedido_frac->qtd_doses_entregues}\n" .
+                        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Volume Real do Frasco: {$pedido_frac->vol_real_frasco}\n";
+                }
+
+                $log->save();
+
                 DB::commit();
                 return redirect()->route('fracionamentos')->with('alert-success', 'Fracionamento realizado com sucesso.');
             }
             catch (\Exception $exception) {
                 DB::rollback();
-                return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput(); 
+                return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception)->withInput(); 
             }
         }
 
