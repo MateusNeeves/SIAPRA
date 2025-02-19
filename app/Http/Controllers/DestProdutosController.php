@@ -55,6 +55,7 @@ class DestProdutosController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Destino de Produto adicionado:\n" .
+                "- ID do Destino de Produto: {$dest_produto->id}\n" .
                 "- Nome: {$dest_produto->nome}\n";
 
             $log->save();
@@ -156,6 +157,7 @@ class DestProdutosController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Destino de Produto deletado:\n" . 
+                "- ID do Destino de Produto: {$dest_produto->id}\n" .
                 "- Nome: {$dest_produto->nome}\n";
 
             $log->save();

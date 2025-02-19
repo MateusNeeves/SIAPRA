@@ -206,6 +206,7 @@ class PlanejamentosController extends Controller
                 $log->data_hora = now();
                 $log->descricao = 
                     "Planejamento adicionado:\n" .
+                    "- ID do Planejamento: {$planejamento->id}\n" .
                     "- Usuário: ID: {$planejamento->id_usuario}, Username: {$user_username}\n"  .
                     "- Data da Produção: {$planejamento->data_producao}\n" .
                     "- Fator de Segurança: {$planejamento->fator_seguranca}\n" .
@@ -227,7 +228,7 @@ class PlanejamentosController extends Controller
                 
                 foreach ($pedidos_plan as $idx => $pedido_plan) {
                     $log->descricao .= 
-                        "&nbsp;&nbsp;&nbsp;&nbsp;- Pedido: ID: {$pedido->id}, Cliente: {$pedidos[$idx]->nome_fantasia}\n" .
+                        "&nbsp;&nbsp;&nbsp;&nbsp;- Pedido: ID: {$pedido_plan->id_pedido}, Cliente: {$pedidos[$idx]->nome_fantasia}\n" .
                         "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Qtd. de Doses Selecionadas: {$pedido_plan->qtd_doses_selec}\n" .
                         "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Atividade no Destino: {$pedido_plan->ativ_dest}\n" .
                         "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Volume por Frasco: {$pedido_plan->vol_frasco}\n";
@@ -268,6 +269,7 @@ class PlanejamentosController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Planejamento deletado:\n" .
+                "- ID do Planejamento: {$planejamento->id}\n" .
                 "- Usuário: ID: {$planejamento->id_usuario}, Username: {$user_username}\n"  .
                 "- Data da Produção: {$planejamento->data_producao}\n" .
                 "- Fator de Segurança: {$planejamento->fator_seguranca}\n" .

@@ -74,6 +74,7 @@ class PedidosController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Pedido adicionado:\n" .
+                "- ID do Pedido: {$pedido->id}\n" .
                 "- Cliente: ID: {$pedido->id_cliente}, Nome Fantasia: {$cliente_nome_fantasia}\n" .
                 "- Usuário: ID: {$pedido->id_usuario}, Username: {$user_username}\n"  .
                 "- Qtd. de Doses: {$pedido->qtd_doses}\n" .
@@ -168,11 +169,10 @@ class PedidosController extends Controller
             DB::beginTransaction();
 
             $pedido = Pedido::find($request->id_delete);
-            $pedidoAntes = $pedido->toArray();
             $pedido->delete();
 
-            $cliente_nome_fantasia = Cliente::where('id', $pedidoAntes['id_cliente'])->first()->nome_fantasia;
-            $user_username = User::where('id', $pedidoAntes['id_usuario'])->first()->username;
+            $cliente_nome_fantasia = Cliente::where('id', $pedido->id_cliente)->first()->nome_fantasia;
+            $user_username = User::where('id', $pedido->id_usuario)->first()->username;
 
             // ADICIONANDO LOG
             $log = new Log();
@@ -183,6 +183,7 @@ class PedidosController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Pedido deletado:\n" .
+                "- ID do Pedido: {$pedido->id}\n" .
                 "- Cliente: ID: {$pedido->id_cliente}, Nome Fantasia: {$cliente_nome_fantasia}\n" .
                 "- Usuário: ID: {$pedido->id_usuario}, Username: {$user_username}\n"  .
                 "- Qtd. de Doses: {$pedido->qtd_doses}\n" .

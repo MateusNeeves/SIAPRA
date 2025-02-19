@@ -59,6 +59,7 @@ class TiposProdutosController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Tipo de Produto adicionado:\n" .
+                "- ID: {$tipo_produto->id}\n" .
                 "- Nome: {$tipo_produto->nome}\n" .
                 "- Descrição: " . ($tipo_produto->descricao ?: '(não informado)') . "\n" . 
                 "- Sigla: {$tipo_produto->sigla}\n";
@@ -153,7 +154,6 @@ class TiposProdutosController extends Controller
             DB::beginTransaction();
             
             $tipo_produto = Tipo_Produto::find($request->id_delete);
-            $tipo_produtoAntes = $tipo_produto->toArray();
             $tipo_produto->delete();
 
             $log = new Log();
@@ -163,6 +163,7 @@ class TiposProdutosController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Tipo de Produto deletado:\n" . 
+                "- ID: {$tipo_produto->id}\n" .
                 "- Nome: {$tipo_produto->nome}\n" .
                 "- Descrição: " . ($tipo_produto->descricao ?: '(não informado)') . "\n" .
                 "- Sigla: {$tipo_produto->sigla}\n";

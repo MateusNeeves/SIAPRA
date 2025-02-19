@@ -71,6 +71,7 @@ class ClientesController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Cliente adicionado:\n" .
+                "- ID do Cliente: {$cliente->id}\n" .
                 "- CNPJ: {$cliente->cnpj}\n" .
                 "- Razão Social: {$cliente->razao_social}\n" .
                 "- Nome Fantasia: {$cliente->nome_fantasia}\n" .
@@ -182,7 +183,6 @@ class ClientesController extends Controller
             DB::beginTransaction();
 
             $cliente = Cliente::find($request->id_delete);
-            $clienteAntes = $cliente->toArray();
             $cliente->delete();
 
             // ADICIONANDO LOG
@@ -195,6 +195,7 @@ class ClientesController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Cliente deletado:\n" .
+                "- ID do Cliente: {$cliente->id}\n" .
                 "- CNPJ: {$cliente->cnpj}\n" .
                 "- Razão Social: {$cliente->razao_social}\n" .
                 "- Nome Fantasia: {$cliente->nome_fantasia}\n" .

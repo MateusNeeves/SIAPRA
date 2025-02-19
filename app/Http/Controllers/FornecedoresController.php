@@ -82,7 +82,7 @@ class FornecedoresController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Fornecedor adicionado:\n" .
-                "- ID: {$fornecedor->id}\n" .
+                "- ID do Fornecedor: {$fornecedor->id}\n" .
                 "- Nome: {$fornecedor->nome}\n" .
                 "- País: {$fornecedor->pais}\n" .
                 "- CNPJ: " . ($fornecedor->cnpj ?: '(não informado)') . "\n" .
@@ -216,7 +216,6 @@ class FornecedoresController extends Controller
             DB::beginTransaction();
             
             $fornecedor = Fornecedor::find($request->id_delete);
-            $fornecedorAntes = $fornecedor->toArray();
             $fornecedor->delete();
 
             $log = new Log();
@@ -226,7 +225,7 @@ class FornecedoresController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Fornecedor deletado:\n" . 
-                "- ID: {$fornecedor->id}\n" .
+                "- ID do Fornecedor: {$fornecedor->id}\n" .
                 "- Nome: {$fornecedor->nome}\n" .
                 "- País: {$fornecedor->pais}\n" .
                 "- CNPJ: " . ($fornecedor->cnpj ?: '(não informado)') . "\n" .

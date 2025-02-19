@@ -101,6 +101,7 @@ class UsersController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Usuário adicionado:\n" .
+                "- ID do Usuário: {$usuario->id}\n" .
                 "- Username: {$usuario->username}\n" .
                 "- Nome: {$usuario->name}\n" .
                 "- CPF: {$usuario->cpf}\n" .
@@ -256,7 +257,6 @@ class UsersController extends Controller
             }
             
             $user = User::find($request->id_delete);
-            $userAntes = $user->toArray();
             $user->delete();
 
             // ADICIONANDO LOG
@@ -268,11 +268,12 @@ class UsersController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Usuário deletado:\n" .
-                "- Username: {$userAntes['username']}\n" .
-                "- Nome: {$userAntes['name']}\n" .
-                "- CPF: {$userAntes['cpf']}\n" .
-                "- Email: {$userAntes['email']}\n" .
-                "- Telefone: {$userAntes['phone']}\n" .
+                "- ID do Usuário: {$user->id}\n" .
+                "- Username: {$user->username}\n" .
+                "- Nome: {$user->name}\n" .
+                "- CPF: {$user->cpf}\n" .
+                "- Email: {$user->email}\n" .
+                "- Telefone: {$user->phone}\n" .
                 "- Classes: {$classesLog}\n";
             
             $log->save();

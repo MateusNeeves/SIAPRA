@@ -152,6 +152,7 @@ class ProdutosController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Produto adicionado:\n" .
+                "- ID do Produto: {$produto->id}\n" .
                 "- Nome: {$produto->nome}\n" .
                 "- Descrição: {$produto->descricao}\n" .
                 "- Tipo: ID: {$produto->id_tipo}, Nome: {$request->tipo}\n" .
@@ -389,7 +390,6 @@ class ProdutosController extends Controller
             }
 
             $produto = Produto::find($request->id_delete);
-            $produtoAntes = $produto->toArray();
             $produto->delete();
 
             $log = new Log();
@@ -399,14 +399,15 @@ class ProdutosController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Produto deletado:\n" .
-                "- Nome: {$produtoAntes['nome']}\n" .
-                "- Descrição: {$produtoAntes['descricao']}\n" .
-                "- Tipo: {$request->tipo} (ID: {$produtoAntes['id_tipo']})\n" .
-                "- Qtd. Aceitável: {$produtoAntes['qtd_aceitavel']}\n" .
-                "- Qtd. Mínima: {$produtoAntes['qtd_minima']}\n" . 
+                "- ID do Produto: {$produto->id}\n" .
+                "- Nome: {$produto->nome}\n" .
+                "- Descrição: {$produto->descricao}\n" .
+                "- Tipo: {$request->tipo} (ID: {$produto->id_tipo})\n" .
+                "- Qtd. Aceitável: {$produto->qtd_aceitavel}\n" .
+                "- Qtd. Mínima: {$produto->qtd_minima}\n" . 
                 "- Fabricantes: " . ($fabricantesLog === "" ? "(não informado)\n" : "\n".$fabricantesLog) .
                 "- Fornecedores: " . ($fornecedoresLog === "" ? "(não informado)\n" : "\n".$fornecedoresLog) .
-                "- Quarentena: {$produtoAntes['quarentena']}\n";
+                "- Quarentena: {$produto->quarentena}\n";
             
                 $log->save();
 
@@ -502,6 +503,7 @@ class ProdutosController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Movimentação (Entrada) de Produto adicionada:\n" .
+                "- ID da Movimentação (Entrada): {$lote->id}\n" .
                 "- Produto: ID: {$lote->id_produto}, nome: {$nome_produto}\n" .
                 "- Fabricante: ID: {$lote->id_fabricante}, nome: {$request->fabricante}\n" .
                 "- Lote do Fabricante: {$lote->lote_fabricante}\n" .
@@ -600,6 +602,7 @@ class ProdutosController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Movimentação (Entrada) de Produto adicionada:\n" .
+                "- ID da Movimentação (Saída): {$mov->id}\n" .
                 "- Produto: ID: {$produto['id']}, nome: {$produto['nome']}\n" .
                 "- Movimentação (Entrada): ID: {$mov->id_produtos_mov_in}\n" .
                 "- Destino: ID: {$mov->id_destino}, nome: {$nome_destino}\n" .

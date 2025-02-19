@@ -84,6 +84,7 @@ class FabricantesController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Fabricante adicionado:\n" .
+                "- ID do Fabricante: {$fabricante->id}\n" .
                 "- Nome: {$fabricante->nome}\n" .
                 "- País: {$fabricante->pais}\n" .
                 "- CNPJ: " . ($fabricante->cnpj ?: '(não informado)') . "\n" .
@@ -178,28 +179,30 @@ class FabricantesController extends Controller
 
             $fabricanteDepois = $fabricante->refresh()->toArray();
 
-            $log = new Log();
-
-            $log->id_user = Auth::user()->id;
-            $log->id_acao = Acao::where('descricao', 'Editar Fabricante')->first()["id"];
-            $log->tipo = "Info";
-            $log->data_hora = now();
-            $log->descricao = 
-                "Fabricante editado:\n" .
-                "- ID do Fabricante: {$fabricanteAntes['id']}\n" .
-                "- Nome do Fabricante: {$fabricanteAntes['nome']}\n\n" .
-                "Campos alterados:\n";
-
-                foreach ($fabricanteDepois as $campo => $valor) {
-                    if ($valor != ($fabricanteAntes[$campo] ?? null)) {
-                        $log->descricao .= "- {$campo}: " .
-                            ($fabricanteAntes[$campo] === null || $fabricanteAntes[$campo] === '' ? '(não informado)' : $fabricanteAntes[$campo]) . 
-                            " -> " . 
-                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+            if (array_diff_assoc($fabricanteAntes, $fabricanteDepois) != []){
+                $log = new Log();
+    
+                $log->id_user = Auth::user()->id;
+                $log->id_acao = Acao::where('descricao', 'Editar Fabricante')->first()["id"];
+                $log->tipo = "Info";
+                $log->data_hora = now();
+                $log->descricao = 
+                    "Fabricante editado:\n" .
+                    "- ID do Fabricante: {$fabricanteAntes['id']}\n" .
+                    "- Nome do Fabricante: {$fabricanteAntes['nome']}\n\n" .
+                    "Campos alterados:\n";
+    
+                    foreach ($fabricanteDepois as $campo => $valor) {
+                        if ($valor != ($fabricanteAntes[$campo] ?? null)) {
+                            $log->descricao .= "- {$campo}: " .
+                                ($fabricanteAntes[$campo] === null || $fabricanteAntes[$campo] === '' ? '(não informado)' : $fabricanteAntes[$campo]) . 
+                                " -> " . 
+                                ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                        }
                     }
-                }
-
-            $log->save();
+    
+                $log->save();
+            }
 
             DB::commit();
             
@@ -218,7 +221,6 @@ class FabricantesController extends Controller
             DB::beginTransaction();
             
             $fabricante = Fabricante::find($request->id_delete);
-            $fabricanteAntes = $fabricante->toArray();
             $fabricante->delete();
 
             $log = new Log();
@@ -228,6 +230,7 @@ class FabricantesController extends Controller
             $log->data_hora = now();
             $log->descricao = 
                 "Fabricante deletado:\n" . 
+                "- ID do Fabricante: {$fabricante->id}\n" .
                 "- Nome: {$fabricante->nome}\n" .
                 "- País: {$fabricante->pais}\n" .
                 "- CNPJ: " . ($fabricante->cnpj ?: '(não informado)') . "\n" .
