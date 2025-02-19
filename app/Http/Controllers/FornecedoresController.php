@@ -176,28 +176,30 @@ class FornecedoresController extends Controller
 
             $fornecedorDepois = $fornecedor->refresh()->toArray();
 
-            $log = new Log();
+            if (array_diff_assoc($fornecedorAntes, $fornecedorDepois) != []){
+                $log = new Log();
 
-            $log->id_user = Auth::user()->id;
-            $log->id_acao = Acao::where('descricao', 'Editar Fornecedor')->first()["id"];
-            $log->tipo = "Info";
-            $log->data_hora = now();
-            $log->descricao = 
-                "Fornecedor editado:\n" .
-                "- ID do Fornecedor: {$fornecedorAntes['id']}\n" .
-                "- Nome do Fornecedor: {$fornecedorAntes['nome']}\n\n" .
-                "Campos alterados:\n";
+                $log->id_user = Auth::user()->id;
+                $log->id_acao = Acao::where('descricao', 'Editar Fornecedor')->first()["id"];
+                $log->tipo = "Info";
+                $log->data_hora = now();
+                $log->descricao = 
+                    "Fornecedor editado:\n" .
+                    "- ID do Fornecedor: {$fornecedorAntes['id']}\n" .
+                    "- Nome do Fornecedor: {$fornecedorAntes['nome']}\n\n" .
+                    "Campos alterados:\n";
 
-                foreach ($fornecedorDepois as $campo => $valor) {
-                    if ($valor != ($fornecedorAntes[$campo] ?? null)) {
-                        $log->descricao .= "- {$campo}: " .
-                            ($fornecedorAntes[$campo] === null || $fornecedorAntes[$campo] === '' ? '(não informado)' : $fornecedorAntes[$campo]) . 
-                            " -> " . 
-                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                    foreach ($fornecedorDepois as $campo => $valor) {
+                        if ($valor != ($fornecedorAntes[$campo] ?? null)) {
+                            $log->descricao .= "- {$campo}: " .
+                                ($fornecedorAntes[$campo] === null || $fornecedorAntes[$campo] === '' ? '(não informado)' : $fornecedorAntes[$campo]) . 
+                                " -> " . 
+                                ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                        }
                     }
-                }
 
-            $log->save();
+                $log->save();
+            }
 
             
             DB::commit();

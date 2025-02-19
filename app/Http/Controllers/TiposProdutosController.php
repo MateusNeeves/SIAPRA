@@ -115,28 +115,31 @@ class TiposProdutosController extends Controller
 
             $tipo_produtoDepois = $tipo_produto->refresh()->toArray();
 
-            $log = new Log();
+            if (array_diff_assoc($tipo_produtoAntes, $tipo_produtoDepois) != []){
 
-            $log->id_user = Auth::user()->id;
-            $log->id_acao = Acao::where('descricao', 'Editar Tipo de Produto')->first()["id"];
-            $log->tipo = "Info";
-            $log->data_hora = now();
-            $log->descricao = 
-                "Tipo de Produto editado:\n" .
-                "- ID do Tipo de Produto: {$tipo_produtoAntes['id']}\n" .
-                "- Nome do Tipo de Produto: {$tipo_produtoAntes['nome']}\n\n" .
-                "Campos alterados:\n";
+                $log = new Log();
 
-                foreach ($tipo_produtoDepois as $campo => $valor) {
-                    if ($valor != ($tipo_produtoAntes[$campo] ?? null)) {
-                        $log->descricao .= "- {$campo}: " .
-                            ($tipo_produtoAntes[$campo] === null || $tipo_produtoAntes[$campo] === '' ? '(não informado)' : $tipo_produtoAntes[$campo]) . 
-                            " -> " . 
-                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                $log->id_user = Auth::user()->id;
+                $log->id_acao = Acao::where('descricao', 'Editar Tipo de Produto')->first()["id"];
+                $log->tipo = "Info";
+                $log->data_hora = now();
+                $log->descricao = 
+                    "Tipo de Produto editado:\n" .
+                    "- ID do Tipo de Produto: {$tipo_produtoAntes['id']}\n" .
+                    "- Nome do Tipo de Produto: {$tipo_produtoAntes['nome']}\n\n" .
+                    "Campos alterados:\n";
+
+                    foreach ($tipo_produtoDepois as $campo => $valor) {
+                        if ($valor != ($tipo_produtoAntes[$campo] ?? null)) {
+                            $log->descricao .= "- {$campo}: " .
+                                ($tipo_produtoAntes[$campo] === null || $tipo_produtoAntes[$campo] === '' ? '(não informado)' : $tipo_produtoAntes[$campo]) . 
+                                " -> " . 
+                                ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                        }
                     }
-                }
 
-            $log->save();
+                $log->save();
+            }
 
             DB::commit();
             

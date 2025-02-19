@@ -13,8 +13,14 @@ function preventDoubleClick(buttonId) {
         return;
     }
 
-    button.disabled = true;
-    button.innerHTML = "Processando...";
-    form.submit();
+    form.addEventListener("submit", function () {
+        button.disabled = true;
+        let originalText = button.innerHTML;
+        button.innerHTML = "Processando...";
 
+        setTimeout(function () {
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }, 3000);
+    });
 }

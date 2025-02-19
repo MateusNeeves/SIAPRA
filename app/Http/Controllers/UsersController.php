@@ -174,65 +174,66 @@ class UsersController extends Controller
             foreach ($classes as $classe)
                 $old_classes[] = $classe->nome;
         
-            $new_classes = array_diff($request->classes ?? [], $old_classes ?? []);
-            $removed_classes = array_diff($old_classes ?? [], $request->classes ?? []);
+            $new_classes_names = array_diff($request->classes ?? [], $old_classes ?? []);
+            $removed_classes_names = array_diff($old_classes ?? [], $request->classes ?? []);
+
+            $new_classes = Classe::whereIn('classes.nome', $new_classes_names)->get();
+            $removed_classes = Classe::whereIn('classes.nome', $removed_classes_names)->get();
+            
         
             // REMOVENDO CLASSES
-            User_Classe::join('classes', 'users_classes.id_classe', '=', 'classes.id')->where('users_classes.id_user', $user->id)->whereIn('classes.nome', $removed_classes)->delete();
+            User_Classe::join('classes', 'users_classes.id_classe', '=', 'classes.id')->where('users_classes.id_user', $user->id)->whereIn('classes.nome', $removed_classes_names)->delete();
 
             // ADICIONANDO CLASSES
-            foreach ($new_classes as $i => $classe) {
-                $id_classe = Classe::where('nome', $classe)->first()->id;
-                    
+            foreach ($new_classes as $i => $classe) {                  
                 $user_classe[$i] = new User_Classe();
                 
                 $user_classe[$i]->id_user = $user->id;
-                $user_classe[$i]->id_classe = $id_classe;
+                $user_classe[$i]->id_classe = $classe->id;
                 
                 $user_classe[$i]->save();
             }
-
             // ADICIONANDO LOG
+            if (array_diff_assoc($userAntes, $userDepois) != [] || $new_classes_names != [] || $removed_classes_names != []) {
+                $log = new Log();
 
-            $log = new Log();
+                $log->id_user = Auth::user()->id;
+                $log->id_acao = Acao::where('descricao', 'Editar Usuário')->first()["id"];
+                $log->tipo = "Info";
+                $log->data_hora = now();
+                $log->descricao = 
+                    "Usuário editado:\n" .
+                    "- ID do Usuário: {$userAntes['id']}\n" .
+                    "- Username: {$userAntes['username']}\n\n" .
+                    "Campos alterados:\n";
 
-            $log->id_user = Auth::user()->id;
-            $log->id_acao = Acao::where('descricao', 'Editar Usuário')->first()["id"];
-            $log->tipo = "Info";
-            $log->data_hora = now();
-            $log->descricao = 
-                "Usuário editado:\n" .
-                "- ID do Usuário: {$userAntes['id']}\n" .
-                "- Username: {$userAntes['username']}\n\n" .
-                "Campos alterados:\n";
-
-                foreach ($userDepois as $campo => $valor) {
-                    if ($valor != ($userAntes[$campo] ?? null)) {
-                        $log->descricao .= "- {$campo}: " .
-                            ($userAntes[$campo] === null || $userAntes[$campo] === '' ? '(não informado)' : $userAntes[$campo]) . 
-                            " -> " . 
-                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                    foreach ($userDepois as $campo => $valor) {
+                        if ($valor != ($userAntes[$campo] ?? null)) {
+                            $log->descricao .= "- {$campo}: " .
+                                ($userAntes[$campo] === null || $userAntes[$campo] === '' ? '(não informado)' : $userAntes[$campo]) . 
+                                " -> " . 
+                                ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                        }
                     }
-                }
-            
-                // Classes Adicionadas
-                if (!empty($new_classes)) {
-                    $log->descricao .= "- Classes Adicionadas:\n";
-                    foreach ($new_classes as $new_classe) {
-                        $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$new_classe['id']}, Nome: {$new_classe['nome']}\n";
+                
+                    // Classes Adicionadas
+                    if (!empty($new_classes_names)) {
+                        $log->descricao .= "- Classes Adicionadas:\n";
+                        foreach ($new_classes as $new_classe) {
+                            $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$new_classe->id}, Nome: {$new_classe->nome}\n";
+                        }
                     }
-                }
 
-                // Classes Removidas
-                if (!empty($removed_classes)) {
-                    $log->descricao .= "- Classes Removidas:\n";
-                    foreach ($removed_classes as $removed_classe) {
-                        $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$removed_classe['id']}, Nome: {$removed_classe['nome']}\n";
+                    // Classes Removidas
+                    if (!empty($removed_classes_names)) {
+                        $log->descricao .= "- Classes Removidas:\n";
+                        foreach ($removed_classes as $removed_classe) {
+                            $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$removed_classe->id}, Nome: {$removed_classe->nome}\n";
+                        }
                     }
-                }
 
-            $log->save();
-
+                $log->save();
+            }
             DB::commit();
             return redirect()->route('usuarios')->with('alert-success', 'Usuário editado com sucesso');
         }

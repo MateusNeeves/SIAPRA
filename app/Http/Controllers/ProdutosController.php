@@ -305,61 +305,64 @@ class ProdutosController extends Controller
                 }
 
             // CADASTRANDO LOG
-                $log = new Log();
+                if (array_diff_assoc($produtoAntes, $produtoDepois) != [] || $new_fabs != [] || $removed_fabs != [] || $new_forns != [] || $removed_forns != []) {
 
-                $log->id_user = Auth::user()->id;
-                $log->id_acao = Acao::where('descricao', 'Editar Produto')->first()["id"];
-                $log->tipo = "Info";
-                $log->data_hora = now();
-                $log->descricao = 
-                    "Produto editado:\n" .
-                    "- ID do Produto: {$produtoAntes['id']}\n" .
-                    "- Nome do Produto: {$produtoAntes['nome']}\n\n" .
-                    "Campos alterados:\n";
+                    $log = new Log();
 
-                foreach ($produtoDepois as $campo => $valor) {
-                    if ($valor != ($produtoAntes[$campo] ?? null)) {
-                        $log->descricao .= "- {$campo}: " .
-                            ($produtoAntes[$campo] === null || $produtoAntes[$campo] === '' ? '(não informado)' : $produtoAntes[$campo]) . 
-                            " -> " . 
-                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                    $log->id_user = Auth::user()->id;
+                    $log->id_acao = Acao::where('descricao', 'Editar Produto')->first()["id"];
+                    $log->tipo = "Info";
+                    $log->data_hora = now();
+                    $log->descricao = 
+                        "Produto editado:\n" .
+                        "- ID do Produto: {$produtoAntes['id']}\n" .
+                        "- Nome do Produto: {$produtoAntes['nome']}\n\n" .
+                        "Campos alterados:\n";
+
+                    foreach ($produtoDepois as $campo => $valor) {
+                        if ($valor != ($produtoAntes[$campo] ?? null)) {
+                            $log->descricao .= "- {$campo}: " .
+                                ($produtoAntes[$campo] === null || $produtoAntes[$campo] === '' ? '(não informado)' : $produtoAntes[$campo]) . 
+                                " -> " . 
+                                ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                        }
                     }
-                }
 
-                // Fabricantes Adicionados
-                if (!empty($new_fabs)) {
-                    $log->descricao .= "- Fabricantes Adicionados:\n";
-                    foreach ($new_fabs as $new_fab) {
-                        $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$new_fab['id']}, Nome: {$new_fab['nome']}\n";
+                    // Fabricantes Adicionados
+                    if (!empty($new_fabs)) {
+                        $log->descricao .= "- Fabricantes Adicionados:\n";
+                        foreach ($new_fabs as $new_fab) {
+                            $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$new_fab['id']}, Nome: {$new_fab['nome']}\n";
+                        }
                     }
-                }
 
-                // Fabricantes Removidos
-                if (!empty($removed_fabs)) {
-                    $log->descricao .= "- Fabricantes Removidos:\n";
-                    foreach ($removed_fabs as $removed_fab) {
-                        $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$removed_fab['id']}, Nome: {$removed_fab['nome']}\n";
+                    // Fabricantes Removidos
+                    if (!empty($removed_fabs)) {
+                        $log->descricao .= "- Fabricantes Removidos:\n";
+                        foreach ($removed_fabs as $removed_fab) {
+                            $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$removed_fab['id']}, Nome: {$removed_fab['nome']}\n";
+                        }
                     }
-                }
 
-                // Fornecedores Adicionados
-                if (!empty($new_forns)) {
-                    $log->descricao .= "- Fornecedores Adicionados:\n";
-                    foreach ($new_forns as $new_forn) {
-                        $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$new_forn['id']}, Nome: {$new_forn['nome']}\n";
+                    // Fornecedores Adicionados
+                    if (!empty($new_forns)) {
+                        $log->descricao .= "- Fornecedores Adicionados:\n";
+                        foreach ($new_forns as $new_forn) {
+                            $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$new_forn['id']}, Nome: {$new_forn['nome']}\n";
+                        }
                     }
-                }
 
-                // Fornecedores Removidos
-                if (!empty($removed_forns)) {
-                    $log->descricao .= "- Fornecedores Removidos:\n";
-                    foreach ($removed_forns as $removed_forn) {
-                        $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$removed_forn['id']}, Nome: {$removed_forn['nome']}\n";
+                    // Fornecedores Removidos
+                    if (!empty($removed_forns)) {
+                        $log->descricao .= "- Fornecedores Removidos:\n";
+                        foreach ($removed_forns as $removed_forn) {
+                            $log->descricao .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$removed_forn['id']}, Nome: {$removed_forn['nome']}\n";
+                        }
                     }
+                    
+                    $log->save();
                 }
                 
-                $log->save();
-
             DB::commit();
             return redirect()->back()->with('alert-success', 'Produto editado com sucesso');
         }

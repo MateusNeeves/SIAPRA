@@ -132,29 +132,30 @@ class PedidosController extends Controller
             $pedidoDepois = $pedido->refresh()->toArray();
 
             // ADICIONANDO LOG
+            if (array_diff_assoc($pedidoAntes, $pedidoDepois) != []){
 
-            $log = new Log();
+                $log = new Log();
 
-            $log->id_user = Auth::user()->id;
-            $log->id_acao = Acao::where('descricao', 'Editar Pedido')->first()["id"];
-            $log->tipo = "Info";
-            $log->data_hora = now();
-            $log->descricao = 
-                "Pedido editado:\n" .
-                "- ID do Pedido: {$pedidoAntes['id']}\n" .
-                "Campos alterados:\n";
+                $log->id_user = Auth::user()->id;
+                $log->id_acao = Acao::where('descricao', 'Editar Pedido')->first()["id"];
+                $log->tipo = "Info";
+                $log->data_hora = now();
+                $log->descricao = 
+                    "Pedido editado:\n" .
+                    "- ID do Pedido: {$pedidoAntes['id']}\n" .
+                    "Campos alterados:\n";
 
-                foreach ($pedidoDepois as $campo => $valor) {
-                    if ($valor != ($pedidoAntes[$campo] ?? null)) {
-                        $log->descricao .= "- {$campo}: " .
-                            ($pedidoAntes[$campo] === null || $pedidoAntes[$campo] === '' ? '(não informado)' : $pedidoAntes[$campo]) . 
-                            " -> " . 
-                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                    foreach ($pedidoDepois as $campo => $valor) {
+                        if ($valor != ($pedidoAntes[$campo] ?? null)) {
+                            $log->descricao .= "- {$campo}: " .
+                                ($pedidoAntes[$campo] === null || $pedidoAntes[$campo] === '' ? '(não informado)' : $pedidoAntes[$campo]) . 
+                                " -> " . 
+                                ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                        }
                     }
-                }
 
-            $log->save();
-            
+                $log->save();
+            }
             DB::commit();
             return redirect()->back()->with('alert-success', 'Pedido editado com sucesso');
         }

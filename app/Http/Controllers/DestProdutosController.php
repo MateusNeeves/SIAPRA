@@ -108,29 +108,30 @@ class DestProdutosController extends Controller
 
             $dest_produtoDepois = $dest_produto->refresh()->toArray();
 
-            $log = new Log();
+            if (array_diff_assoc($dest_produtoAntes, $dest_produtoDepois) != []){
+                $log = new Log();
 
-            $log->id_user = Auth::user()->id;
-            $log->id_acao = Acao::where('descricao', 'Editar Destino de Produto')->first()["id"];
-            $log->tipo = "Info";
-            $log->data_hora = now();
-            $log->descricao = 
-                "Destino de Produto editado:\n" .
-                "- ID do Destino de Produto: {$dest_produtoAntes['id']}\n" .
-                "- Nome do Destino de Produto: {$dest_produtoAntes['nome']}\n\n" .
-                "Campos alterados:\n";
+                $log->id_user = Auth::user()->id;
+                $log->id_acao = Acao::where('descricao', 'Editar Destino de Produto')->first()["id"];
+                $log->tipo = "Info";
+                $log->data_hora = now();
+                $log->descricao = 
+                    "Destino de Produto editado:\n" .
+                    "- ID do Destino de Produto: {$dest_produtoAntes['id']}\n" .
+                    "- Nome do Destino de Produto: {$dest_produtoAntes['nome']}\n\n" .
+                    "Campos alterados:\n";
 
-                foreach ($dest_produtoDepois as $campo => $valor) {
-                    if ($valor != ($dest_produtoAntes[$campo] ?? null)) {
-                        $log->descricao .= "- {$campo}: " .
-                            ($dest_produtoAntes[$campo] === null || $dest_produtoAntes[$campo] === '' ? '(não informado)' : $dest_produtoAntes[$campo]) . 
-                            " -> " . 
-                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                    foreach ($dest_produtoDepois as $campo => $valor) {
+                        if ($valor != ($dest_produtoAntes[$campo] ?? null)) {
+                            $log->descricao .= "- {$campo}: " .
+                                ($dest_produtoAntes[$campo] === null || $dest_produtoAntes[$campo] === '' ? '(não informado)' : $dest_produtoAntes[$campo]) . 
+                                " -> " . 
+                                ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                        }
                     }
-                }
 
-            $log->save();
-
+                $log->save();
+            }
             DB::commit();
             
             return redirect()->back()->with('alert-success', 'Destino do Produto editado com sucesso');

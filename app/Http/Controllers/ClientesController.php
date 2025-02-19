@@ -144,30 +144,31 @@ class ClientesController extends Controller
             $clienteDepois = $cliente->refresh()->toArray();
 
             // ADICIONANDO LOG
+            if (array_diff_assoc($clienteAntes, $clienteDepois) != []){
+                $log = new Log();
 
-            $log = new Log();
+                $log->id_user = Auth::user()->id;
+                $log->id_acao = Acao::where('descricao', 'Editar Cliente')->first()["id"];
+                $log->tipo = "Info";
+                $log->data_hora = now();
+                $log->descricao = 
+                    "Cliente editado:\n" .
+                    "- ID do Cliente: {$clienteAntes['id']}\n" .
+                    "- Nome Fantasia: {$clienteAntes['nome_fantasia']}\n\n" .
+                    "Campos alterados:\n";
 
-            $log->id_user = Auth::user()->id;
-            $log->id_acao = Acao::where('descricao', 'Editar Cliente')->first()["id"];
-            $log->tipo = "Info";
-            $log->data_hora = now();
-            $log->descricao = 
-                "Cliente editado:\n" .
-                "- ID do Cliente: {$clienteAntes['id']}\n" .
-                "- Nome Fantasia: {$clienteAntes['nome_fantasia']}\n\n" .
-                "Campos alterados:\n";
-
-                foreach ($clienteDepois as $campo => $valor) {
-                    if ($valor != ($clienteAntes[$campo] ?? null)) {
-                        $log->descricao .= "- {$campo}: " .
-                            ($clienteAntes[$campo] === null || $clienteAntes[$campo] === '' ? '(não informado)' : $clienteAntes[$campo]) . 
-                            " -> " . 
-                            ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                    foreach ($clienteDepois as $campo => $valor) {
+                        if ($valor != ($clienteAntes[$campo] ?? null)) {
+                            $log->descricao .= "- {$campo}: " .
+                                ($clienteAntes[$campo] === null || $clienteAntes[$campo] === '' ? '(não informado)' : $clienteAntes[$campo]) . 
+                                " -> " . 
+                                ($valor === null || $valor === '' ? '(não informado)' : $valor) . "\n";
+                        }
                     }
-                }
 
-            $log->save();
-            
+                $log->save();
+            }
+
             DB::commit();
             return redirect()->back()->with('alert-success', 'Cliente editado com sucesso');
         }
