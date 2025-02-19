@@ -9,6 +9,8 @@ class Fracionamento extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'id_usuario',
         'id_planejamento',

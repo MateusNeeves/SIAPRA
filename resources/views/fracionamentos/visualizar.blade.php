@@ -10,7 +10,7 @@
                     @csrf
                     @if (array_intersect(['Admin', 'Almoxarife'], Auth::user()->getClassNamesAttribute()))
                         <div class="flex justify-content-center mb-5">
-                            <a class="btn btn-dark" href="{{route('fracionamentos.register')}}">
+                            <a class="btn btn-orange" href="{{route('fracionamentos.register')}}">
                                 {{ __('Novo Fracionamento') }}
                             </a>
                         </div>
@@ -18,7 +18,7 @@
 
                     <div class="flex justify-content-center mb-5">
                         <div class="position-relative" style="width: 230px">
-                            <input class="btn btn-secondary border rounded border-dark placeholder-visible pe-3"  type="text" id="datePicker" name="data_producao" value="{{old('data_producao')}}" placeholder="Selecionar Data" readonly required>
+                            <input class="btn-orange border rounded border-dark placeholder-visible pe-3"  type="text" id="datePicker" name="data_producao" value="{{old('data_producao')}}" placeholder="Selecionar Data" readonly required>
                             <i class="bi bi-calendar3-week input-icon"></i>
                         </div>
                         
@@ -61,7 +61,7 @@
                         </script>
 
                         <button>
-                            <button disabled class="btn btn-dark ms-2" id="visualizar_button" style="width: 230px">
+                            <button disabled class="btn btn-orange ms-2" id="visualizar_button" style="width: 230px">
                                 {{ __('Visualizar Fracionamento') }}
                             </button>
                         </button>
@@ -75,13 +75,13 @@
                         $data_producao = session()->get('data_producao');       
                     @endphp
                     <div class="flex justify-content-end mb-2 me-5">
-                        <button id="pdfBtn" onclick="printPdf('Fracionamento_'+'{{$data_producao}}'+'.pdf')" class="btn btn-dark bg-gradient"> PDF </button>
+                        <button id="pdfBtn" onclick="printPdf('Fracionamento_'+'{{$data_producao}}'+'.pdf')" class="btn btn-orange bg-gradient"> PDF </button>
                     </div>
                     <div id="divPdf" class="bg-white mb-4">
                         @foreach ($fracionamentos as $idx => $fracionamento)
                             <div class="{{$idx == 0 ? '' : 'breakPage'}}">
                                 <div class="flex">
-                                    <button class="btn btn-dark mb-2" style="display: inline-flex !important; align-items: center !important;" data-bs-toggle="collapse" data-bs-target="#collapse_{{$idx}}">
+                                    <button class="btn btn-orange mb-2" style="display: inline-flex !important; align-items: center !important;" data-bs-toggle="collapse" data-bs-target="#collapse_{{$idx}}">
                                         <div>{{$idx+1 . 'º Fracionamento '}}</div>
                                         <div class="ms-1">
                                             <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -94,7 +94,7 @@
                                 <div class="collapse mb-5 bg-white" id="collapse_{{$idx}}">
                                     <div class="container">
                                         <table class="table table-bordered">
-                                            <thead class="table-dark text-center">
+                                            <thead class="table-orange text-center">
                                                 <tr>
                                                     <th scope="col"> Ativ. EOB Calculada (mCi) </th>
                                                     <th scope="col"> Ativ. EOB Real (mCi) </th>
@@ -121,7 +121,7 @@
                                     <br>
                                     <div class="container">
                                         <table class="table table-bordered">
-                                            <thead class="table-dark text-center">
+                                            <thead class="table-orange text-center">
                                                 <tr>
                                                     <th scope="col"> # </th>
                                                     <th scope="col"> Cliente </th>

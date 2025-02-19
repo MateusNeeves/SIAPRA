@@ -10,7 +10,7 @@
                     <div>
                         <div class="container">
                             <table class="table table-bordered">
-                                <thead class="table-dark text-center">
+                                <thead class="table-orange text-center">
                                     <tr>
                                         <th scope="col"> Ativ. EOB Calculada (mCi) </th>
                                         <th scope="col"> Ativ. EOB Real (mCi) </th>
@@ -24,10 +24,10 @@
                                 <tbody class="text-center">
                                     <tr>
                                         <td>{{$planejamento->ativ_eob}}</td>
-                                        <td style="background-color: rgb(229 231 235);"><input class="bg-transparent border-0 text-center w-100" id="ativ_eob_real" type="number" name="ativ_eob_real" value="{{old('ativ_eob_real')}}" required></td>
+                                        <td style="background-color: #eab1a0;"><input class="bg-transparent border-0 text-center w-100" id="ativ_eob_real" type="number" name="ativ_eob_real" value="{{old('ativ_eob_real')}}" required></td>
                                         <td>{{session()->get('ativ_eos_nec') ?? ''}}</td>
-                                        <td style="background-color: rgb(229 231 235);"><input class="bg-transparent border-0 text-center w-100" id="ativ_eos_real" type="number" name="ativ_eos_real" value="{{old('ativ_eos_real')}}" required></td>
-                                        <td style="background-color: rgb(229 231 235);"><input class="bg-transparent border-0 text-center w-100" id="vol_eos" type="number" name="vol_eos" value="{{old('vol_eos')}}" required></td>
+                                        <td style="background-color: #eab1a0;"><input class="bg-transparent border-0 text-center w-100" id="ativ_eos_real" type="number" name="ativ_eos_real" value="{{old('ativ_eos_real')}}" required></td>
+                                        <td style="background-color: #eab1a0;"><input class="bg-transparent border-0 text-center w-100" id="vol_eos" type="number" name="vol_eos" value="{{old('vol_eos')}}" required></td>
                                         <td>{{session()->get('ativ_esp') ?? ''}}</td>
                                         <td>{{session()->get('rend_sintese_real') ?? ''}}</td>
     
@@ -38,7 +38,7 @@
                         
                         <div class="container pt-5">
                             <table class="table table-bordered">
-                                <thead class="table-dark text-center">
+                                <thead class="table-orange text-center">
                                     <tr> 
                                         <th class="header" scope="col"> # </th>
                                         <th class="header" scope="col"> Cliente </th>
@@ -65,7 +65,7 @@
                                             <td> {{$pedido_plan->nome_fantasia}}</td>  
                                             <td> {{$pedido_plan->qtd_doses_selec}}</td>  
                                             <td> {{$pedido_plan->tempo_transp}}</td>  
-                                            <td style="background-color: rgb(229 231 235);"><input class="bg-transparent border-0 text-center w-100" type="number" name="ativ_dest[{{$idx}}]" id="ativ_dest[{{$idx}}]" value="{{round(old('ativ_dest')[$idx] ?? $pedido_plan->ativ_dest)}}" required></td>
+                                            <td style="background-color: #eab1a0;"><input class="bg-transparent border-0 text-center w-100" type="number" name="ativ_dest[{{$idx}}]" id="ativ_dest[{{$idx}}]" value="{{round(old('ativ_dest')[$idx] ?? $pedido_plan->ativ_dest)}}" required></td>
                                             <td> {{session()->get('ativ_eos')[$idx] ?? ''}}</td>  
                                             <td> {{session()->get('vol_frasco')[$idx] ?? ''}}</td>  
                                         </tr>
@@ -75,7 +75,7 @@
                             <br>
                             <div class="flex justify-content-center">
                                 <button name="action" value="calculate" class="mb-4">
-                                    <a class="btn btn-dark" >
+                                    <a class="btn btn-orange" >
                                         {{'Calcular'}}
                                     </a>
                                 </button>
@@ -84,7 +84,7 @@
                             @if (session()->has('ativ_eos'))
                                 <div class="flex justify-content-center">
                                     <button name="action" value="save" class="mb-4">
-                                        <a class="btn btn-dark" >
+                                        <a class="btn btn-orange" >
                                             {{ __('Salvar Fracionamento') }}
                                         </a>
                                     </button>
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                     <table class="table table-bordered ms-4 h6" style="width: fit-content; height: fit-content;">
-                        <thead class="table-dark text-center">
+                        <thead class="table-orange text-center">
                             <tr>
                                 <th scope="col"> Qtd. Doses </th>
                                 <th scope="col"> Atividade </th>
