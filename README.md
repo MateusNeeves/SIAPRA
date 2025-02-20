@@ -40,6 +40,7 @@ Install the following applications:
 Open the file php.ini in a text editor and uncomment the following lines:
 - **extension=fileinfo**
 - **extension=zip**
+- **extension=mbstring**
 
 Open terminal, get to the project folder and execute the following commands:
 
