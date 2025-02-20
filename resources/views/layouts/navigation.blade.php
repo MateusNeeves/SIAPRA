@@ -75,6 +75,9 @@
                                         {{ __('Quarentena') }}
                                     </x-dropdown-link>
                                 @endif
+                                    <x-dropdown-link class=" text-decoration-none" :href="route('relatorios')">
+                                        {{ __('Relatórios') }}
+                                    </x-dropdown-link>
                                 @endif
                                 
                             </x-slot>
