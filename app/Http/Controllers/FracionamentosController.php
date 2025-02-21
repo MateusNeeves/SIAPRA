@@ -99,7 +99,7 @@ class FracionamentosController extends Controller{
             return redirect()->back()->with(['ativ_eos' => $ativ_eos, 'vol_frasco' => $vol_frasco, 'ativ_eos_nec' => $ativ_eos_nec, 'ativ_esp' => $ativ_esp, 'ativ_cq' => $ativ_cq, 'rend_sintese_real' => $rend_sintese_real, 'fim_sintese' => $fim_sintese->format('H:i'), 'hora_saida' => $hora_saida->format('H:i')])->withInput();
         }
 
-        else if  ($request->action == 'save'){
+        else{
             try{
                 DB::beginTransaction();
 

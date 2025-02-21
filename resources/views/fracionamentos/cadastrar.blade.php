@@ -83,10 +83,8 @@
     
                             @if (session()->has('ativ_eos'))
                                 <div class="flex justify-content-center">
-                                    <button name="action" value="save" class="mb-4">
-                                        <a class="btn btn-orange" >
-                                            {{ __('Salvar Fracionamento') }}
-                                        </a>
+                                    <button name="action" value="save" class="mb-4 btn btn-orange" id="submitBtn" onclick="preventDoubleClick('submitBtn')">
+                                        {{ __('Salvar Fracionamento') }}
                                     </button>
                                 </div>
                             @endif
