@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tipo_Produto;
 use DateTime;
 
 
@@ -116,8 +117,6 @@ class RelatoriosController extends Controller
 
             <h4>*ITENS QUE FICARÃO COM O ESTOQUE ABAIXO DO VALOR MÍNIMO APÓS ' . htmlspecialchars($request->meses) . ' MESES</h4>';
 
-            
-
             // Escreva o conteúdo HTML no PDF
             $mpdf->WriteHTML($html);
 
@@ -135,7 +134,143 @@ class RelatoriosController extends Controller
             $mpdf->Output($nome_arquivo, 'D');
         }
         else if ($request->tipo_relatorio == 'inventario'){
+            $tipos = Tipo_Produto::all()->pluck('nome', 'id')->toArray();
+            
+            foreach ($tipos as $id => $nome) {
+                $tipos[$id] = [
+                    'nome' => $nome,
+                    'inventario' => []
+                ];
+            }
 
+            $inventario = DB::select(
+                "SELECT P.ID, P.NOME, P.ID_TIPO,
+                    COALESCE((
+                        SELECT SUM(L.QTD_ITENS_RECEBIDOS)
+                        FROM PRODUTOS_MOV_IN AS L
+                        WHERE L.ID_PRODUTO = P.ID 
+                        AND L.DATA_ENTREGA BETWEEN ? AND ?
+                    ), 0) AS QTD, 
+                    COALESCE((
+                        SELECT SUM(L.PRECO)
+                        FROM PRODUTOS_MOV_IN AS L
+                        WHERE L.ID_PRODUTO = P.ID 
+                        AND L.DATA_ENTREGA BETWEEN ? AND ?
+                    ), 0) AS VALOR_TOTAL
+                FROM PRODUTOS P", 
+                ["{$request->ano}-01-01", "{$request->ano}-12-31", "{$request->ano}-01-01", "{$request->ano}-12-31"]
+            );
+
+            foreach ($inventario as $produto) {
+                if (isset($tipos[$produto->id_tipo])) {
+                    $tipos[$produto->id_tipo]['inventario'][] = [
+                        'id' => $produto->id,
+                        'nome' => $produto->nome,
+                        'qtd' => $produto->qtd,
+                        'valor_total' => $produto->valor_total
+                    ];
+                }
+            }
+
+            $mpdf = new Mpdf();
+
+            // Comece a construir o HTML para o relatório
+            $html = '
+                <style>
+                    h2 {
+                        text-align: center;
+                    }
+                    h4 {
+                        text-align: center;
+                        color: #ff0000;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-family: Arial, sans-serif;
+                    }
+                    th, td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: center;
+                    }
+                    th {
+                        background-color: #ca500d;
+                        color: white;
+                        font-weight: bold;
+                    }
+                    tr:nth-child(even) {
+                        background-color: #f9f9f9;
+                    }
+                    .estoque-baixo {
+                        color: #ff0000 !important;
+                    }
+                    .data-emissao {
+                        text-align: center;
+                        font-size: 14px;
+                        font-style: italic;
+                        margin-bottom: 10px;
+                    }
+                    .break-page {
+                        page-break-before: always;
+                    }
+                </style>
+
+                <p class="data-emissao">Data de Emissão: ' . date('d/m/Y') . '</p>
+                <br>
+                <h2>RELATÓRIO DO INVENTÁRIO DO ALMOXARIFADO DA DIPRA DE ' . htmlspecialchars($request->ano) . '</h2>
+            ';
+
+            // Adiciona uma tabela para cada tipo de produto
+            $first = true; // Controla a quebra de página
+            foreach ($tipos as $id_tipo => $tipo) {
+                // Adiciona quebra de página apenas a partir do segundo tipo
+                if (!$first) {
+                    $html .= '<div class="break-page"></div>';
+                }
+                $first = false;
+
+                $html .= '<h3>Tipo de Produto: ' . htmlspecialchars($tipo['nome']) . '</h3>';
+                $html .= '
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome do Produto</th>
+                                <th>Quantidade</th>
+                                <th>Valor Total (R$)</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+                
+                // Se houver produtos no inventário
+                if (!empty($tipo['inventario'])) {
+                    foreach ($tipo['inventario'] as $produto) {
+                        $html .= '
+                            <tr>
+                                <td>' . htmlspecialchars($produto['id']) . '</td>
+                                <td>' . htmlspecialchars($produto['nome']) . '</td>
+                                <td>' . htmlspecialchars($produto['qtd']) . '</td>
+                                <td>R$ ' . number_format($produto['valor_total'], 2, ',', '.') . '</td>
+                            </tr>';
+                    }
+                } else {
+                    // Caso não haja produtos nesse tipo
+                    $html .= '
+                        <tr>
+                            <td colspan="4">Nenhum produto encontrado.</td>
+                        </tr>';
+                }
+
+                $html .= '</tbody></table>';
+            }
+
+            // Escreva o conteúdo HTML no PDF
+            $mpdf->WriteHTML($html);
+
+            $nome_arquivo = 'relatorio_inventario_almoxarifado_dipra_' . $request->ano . '_.pdf';
+
+            $mpdf->Output($nome_arquivo, 'D');
         }
 
         else {

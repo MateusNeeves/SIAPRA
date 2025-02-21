@@ -23,6 +23,12 @@
                             meses
                         </label>
                     </div>
+
+                    <div id="ano_container" class="mb-4 hidden">
+                        <label class="block text-gray-700">Ano: 
+                            <input type="number" value="{{ date('Y') }}" max="{{ date('Y') }}" min="1970" name="ano" id="ano" class="p-2 border rounded"  style="width: 100px">
+                        </label>
+                    </div>
                     <div class="flex justify-content-center my-4">
 
                         <button disabled id="submitBtn" class="btn btn-orange bg-gradient me-2" >
@@ -37,10 +43,13 @@
     <script>
         document.getElementById('tipo_relatorio').addEventListener('change', function() {
             let mesesContainer = document.getElementById('meses_container');
+            let anoContainer = document.getElementById('ano_container');
             if (this.value === 'itens_a_vencer') {
                 mesesContainer.classList.remove('hidden');
+                anoContainer.classList.add('hidden');
             } else {
                 mesesContainer.classList.add('hidden');
+                anoContainer.classList.remove('hidden');
             }
 
             if (this.value) {
