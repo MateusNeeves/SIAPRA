@@ -129,6 +129,9 @@
                                 <x-dropdown-link class=" text-decoration-none" :href="route('planejamentos')">
                                     {{ __('Planejamento') }}
                                 </x-dropdown-link>
+                                <x-dropdown-link class=" text-decoration-none" :href="route('registros_lote')">
+                                    {{ __('Registros de Lote') }}
+                                </x-dropdown-link>
                             </x-slot>
 
                         </x-dropdown>

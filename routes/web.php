@@ -15,6 +15,7 @@ use App\Http\Controllers\FabricantesController;
 use App\Http\Controllers\DestProdutosController;
 use App\Http\Controllers\FornecedoresController;
 use App\Http\Controllers\PlanejamentosController;
+use App\Http\Controllers\RegistrosLoteController;
 use App\Http\Controllers\TiposProdutosController;
 use App\Http\Controllers\FracionamentosController;
 
@@ -75,6 +76,14 @@ Route::get('/', function () {
             Route::post('/fracionamentos', [FracionamentosController::class, 'show'])->middleware(['auth'])->name('fracionamentos.show');
             Route::get('/fracionamentos/cadastrar', [FracionamentosController::class, 'register'])->middleware(['auth'])->name('fracionamentos.register');
             Route::post('/fracionamentos/cadastrar', [FracionamentosController::class, 'store'])->middleware(['auth'])->name('fracionamentos.store');
+       
+        //Registros de Lote
+            Route::get('/registros_lote', [RegistrosLoteController::class, 'index'])->middleware(['auth'])->name('registros_lote');
+            Route::post('/registros_lote', [RegistrosLoteController::class, 'make_pdf'])->middleware(['auth'])->name('registros_lote.make_pdf');
+            Route::get('/registros_lote/cadastrar', [RegistrosLoteController::class, 'register'])->middleware(['auth'])->name('registros_lote.register');
+            Route::post('/registros_lote/cadastrar', [RegistrosLoteController::class, 'store'])->middleware(['auth'])->name('registros_lote.store');
+
+
     });
     
 

@@ -8,7 +8,7 @@
 
                 <form method="POST" action="{{route('planejamentos.show')}}">
                     @csrf
-                    @if (array_intersect(['Admin', 'Almoxarife'], Auth::user()->getClassNamesAttribute()))
+                    @if (array_intersect(['Admin', 'Produção'], Auth::user()->getClassNamesAttribute()))
                         <div class="flex justify-content-center mb-5">
                             <a class="btn btn-orange" href="{{route('planejamentos.register')}}">
                                 {{ __('Novo Planejamento') }}

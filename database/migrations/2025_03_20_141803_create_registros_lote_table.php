@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('registros_lote', function (Blueprint $table) {
             $table->id();
+            $table->boolean('completed')->default(false);
             $table->string('lote');
             $table->date('data_fabricacao');
 
         // PAGINA 3
             $table->string('lote_agua_enriquecida');
-            $table->string('lote_agua_enriquecida_verificacao');
             $table->unsignedBigInteger('id_usuario_lote_agua_enriquecida');
                 $table->foreign('id_usuario_lote_agua_enriquecida')->references('id')->on('users');
 
@@ -27,7 +27,9 @@ return new class extends Migration
             $table->decimal('pressao_He_refrigeracao', 2, 1);
             $table->decimal('pressao_He_analitico', 2, 1);
             $table->decimal('radiacao_ambiental_lab', 2, 1);
-            
+            $table->unsignedBigInteger('id_usuario_verificacao_p3');
+                $table->foreign('id_usuario_verificacao_p3')->references('id')->on('users');
+
             $table->time('hora_inicio_irradiacao_agua_enriquecida');
             $table->time('hora_final_irradiacao_agua_enriquecida');
             $table->decimal('ativ_teorica_F18');
