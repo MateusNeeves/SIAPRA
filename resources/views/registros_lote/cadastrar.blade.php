@@ -1,130 +1,542 @@
 <x-app-layout>
-    <div class="w-100 py-16">        
+    <div class="w-100 py-16">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 bg-white overflow-hidden shadow-sm sm:rounded-lg p-5">
             <div class="container justify-content-center">
-                <div class="m-5 text-gray-900 text-center h3">
+                <div class="pb-4 m-5 text-gray-900 text-center h3">
                     {{ 'Novo Registro de Lote' }}
                 </div>
 
                 <form action="{{ route('registros_lote.store') }}" method="POST">
                     @csrf
 
-                    <!-- Lote e Data de Fabricação -->
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="lote" class="form-label">Lote</label>
-                            <input type="text" class="form-control" id="lote" name="lote" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="data_fabricacao" class="form-label">Data de Fabricação</label>
-                            <input type="date" class="form-control" id="data_fabricacao" name="data_fabricacao" required>
-                        </div>
+                    <!-- Páginas do Formulário -->
+                    <div id="pagina1">
+                        <h4 class="mt-4">1. Dados do Lote</h4>
+                        <table class="table table-bordered">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Lote: </th>
+                                    <td>
+                                        <input type="text" class="form-control" id="lote" name="lote">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Data de Fabricação: </th>
+                                    <td>
+                                        <input type="date" class="form-control" id="data_fabricacao" name="data_fabricacao">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
-                    <!-- Página 3 - Irradiação -->
-                    <h4 class="mt-4">Irradiação</h4>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="lote_agua_enriquecida" class="form-label">Lote da Água Enriquecida</label>
-                            <input type="text" class="form-control" id="lote_agua_enriquecida" name="lote_agua_enriquecida" required>
-                        </div>
+                    <div id="pagina2" style="display: none;">
+                        <h5  class="mt-4 mb-5">2. Irradiação</h5>
+
+                        <table class="table table-bordered">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Lote da água enriquecida <sup>18</sup>O 95%:  </th>
+                                    <td><input type="text" class="form-control" id="lote_agua_enriquecida" name="lote_agua_enriquecida"></td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_lote_agua_enriquecida" name="id_usuario_lote_agua_enriquecida">
+                                            <option selected hidden>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>    
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        
+                        <table class="table table-bordered mt-5">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Verificar </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Especificações </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Medida </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Pressão de ar comprimido (Medição na saída 
+                                        do Compressor): </th>
+                                    <td> 8 - 10 bar </td>
+                                    <td>
+                                        <input type="number" step="0.1" class="form-control" id="pressao_ar_comprimido" name="pressao_ar_comprimido">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Pressão de Hidrogênio 6.0:  </th>
+                                    <td> 1 - 3 bar </td>
+                                    <td>
+                                        <input type="number" step="0.1" class="form-control" id="pressao_H" name="pressao_H">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Pressão de Helio de Refrigeração 4.5: </th>
+                                    <td> 0,2 - 1 bar </td>
+                                    <td>
+                                        <input type="number" step="0.1" class="form-control" id="pressao_He_refrigeracao" name="pressao_He_refrigeracao">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Pressão de Helio 5.0 analítico: </th>
+                                    <td> 1,5 - 3 bar </td>
+                                    <td>
+                                        <input type="number" step="0.1" class="form-control" id="pressao_He_analitico" name="pressao_He_analitico">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Radiação ambiental no Laboratório de 
+                                        Produção: </th>
+                                    <td> < 5 µSv/h </td>
+                                    <td>
+                                        <input type="number" step="0.1" class="form-control" id="radiacao_ambiental_lab" name="radiacao_ambiental_lab">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_lote_agua_enriquecida" name="id_usuario_lote_agua_enriquecida">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>    
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <h6  class="mb-4 mt-5">2.1 Realizar irradiação da água enriquecida em <sup>18</sup>O 95%</h6>
+
+                        <table class="table table-bordered">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Início (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_inicio_irradiacao_agua_enriquecida" name="hora_inicio_irradiacao_agua_enriquecida">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Final (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_final_irradiacao_agua_enriquecida" name="hora_final_irradiacao_agua_enriquecida">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Atividade Teórica do <sup>18</sup>F (mCi): </th>
+                                    <td>
+                                        <input type="number" class="form-control" id="ativ_teorica_F18" name="ativ_teorica_F18">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Realizado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_irradiacao_agua_enriquecida" name="id_usuario_irradiacao_agua_enriquecida">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>   
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <h6  class="mb-4 mt-5">2.2  Transferir o <sup>18</sup>F para o Módulo de Síntese</h6>
+                        
+                        <table class="table table-bordered">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Início (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_inicio_transferir_F18_sintese" name="hora_inicio_transferir_F18_sintese">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Final (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_final_transferir_F18_sintese" name="hora_final_transferir_F18_sintese">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Realizado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_transferir_F18_sintese" name="id_usuario_transferir_F18_sintese">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Ocorrências: </th>
+                                    <td>
+                                        <textarea class="form-control" id="ocorrencias_p3" name="ocorrencias_p3" maxlength="290"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Horário: </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="ocorrencias_horario_p3" name="ocorrencias_horario_p3">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Executado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_ocorrencias_p3" name="id_usuario_ocorrencias_p3">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> O Logbook foi anexado? </th>
+                                    <td>
+                                        <select class="form-select" id="logbook_anexado" name="logbook_anexado">
+                                            <option selected hidden></option>
+                                            <option value="0"> Nâo </option>
+                                            <option value="1"> Sim </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Data: </th>
+                                    <td>
+                                        <input type="date" class="form-control" id="logbook_data" name="logbook_data">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Hora: </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="logbook_time" name="logbook_time">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Executado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_logbook" name="id_usuario_logbook">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
                     </div>
 
-                    <!-- Pressões e Radiação -->
-                    <h4 class="mt-4">Medições</h4>
-                    <div class="row mb-3">
-                        <div class="col-md-3">
-                            <label for="pressao_ar_comprimido" class="form-label">Pressão de Ar Comprimido (bar)</label>
-                            <input type="number" step="0.1" class="form-control" id="pressao_ar_comprimido" name="pressao_ar_comprimido" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="pressao_H" class="form-label">Pressão de H 6.0 (bar)</label>
-                            <input type="number" step="0.1" class="form-control" id="pressao_H" name="pressao_H" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="pressao_He_refrigeracao" class="form-label">Pressão de He de Refrigeração 4.5 (bar)</label>
-                            <input type="number" step="0.1" class="form-control" id="pressao_He_refrigeracao" name="pressao_He_refrigeracao" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="pressao_He_analitico" class="form-label">Pressão de He 5.0 Analítico (bar)</label>
-                            <input type="number" step="0.1" class="form-control" id="pressao_He_analitico" name="pressao_He_analitico" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="radiacao_ambiental_lab" class="form-label">Radiação Ambiental no Laboratório de Produção (µSv/h)</label>
-                            <input type="number" step="0.1" class="form-control" id="radiacao_ambiental_lab" name="radiacao_ambiental_lab" required>
-                        </div>
+                    <div id="pagina3" style="display: none;">
+                        <h4 class="mt-4">3. Síntese</h4>
+
+                        <table class="table table-bordered">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Módulo de Síntese: </th>
+                                    <td>
+                                        <select class="form-select" id="modulo_sintese" name="modulo_sintese">
+                                            <option selected hidden></option>
+                                            <option value="0"> 077 </option>
+                                            <option value="1"> 078 </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h6  class="mb-4 mt-5">3.1 Ações prévias à síntese </h6>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Separar </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Qtd. </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Lote </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Validade </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Kryptofix 222 (K<sub>2</sub>CO<sub>3</sub>): </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="kryptofix222_lote" name="kryptofix222_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="kryptofix222_data_validade" name="kryptofix222_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Triflato de manose: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="triflato_manose_lote" name="triflato_manose_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="triflato_manose_data_validade" name="triflato_manose_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Hidróxido de sódio (NaOH): </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="hidroxido_sodio_lote" name="hidroxido_sodio_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="hidroxido_sodio_data_validade" name="hidroxido_sodio_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Água para injetáveis: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="agua_injetaveis_lote" name="agua_injetaveis_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="agua_injetaveis_data_validade" name="agua_injetaveis_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Acetonitrila anidra: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="acetronitrila_anidra_lote" name="acetronitrila_anidra_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="acetronitrila_anidra_data_validade" name="acetronitrila_anidra_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> IFP - Synthera: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="ifp_synthera_lote" name="ifp_synthera_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="ifp_synthera_data_validade" name="ifp_synthera_data_validade">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered mt-5">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Colunas/Condicionantes </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Qtd. </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Lote </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Validade </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Sep-Pak Light Accell Plus QMA: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="sep_pak_lote" name="sep_pak_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="sep_pak_data_validade" name="sep_pak_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Coluna SCX: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="coluna_scx_lote" name="coluna_scx_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="coluna_scx_data_validade" name="coluna_scx_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Coluna C18: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="coluna_c18_lote" name="coluna_c18_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="coluna_c18_data_validade" name="coluna_c18_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Coluna Alumina: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="coluna_alumina_lote" name="coluna_alumina_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="coluna_alumina_data_validade" name="coluna_alumina_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Seringa descartável de 3 ml: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="seringa_3ml_lote" name="seringa_3ml_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="seringa_3ml_data_validade" name="seringa_3ml_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Agulha 0,5 x 25 mm: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="agulha_05x25_lote" name="agulha_05x25_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="agulha_05x25_data_validade" name="agulha_05x25_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Água injetável (25ml) em Seringa: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="agua_injetavel_seringa_lote" name="agua_injetavel_seringa_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="agua_injetavel_seringa_data_validade" name="agua_injetavel_seringa_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Etanol (10ml) em Seringa: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="etanol_seringa_lote" name="etanol_seringa_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="etanol_seringa_data_validade" name="etanol_seringa_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> NaHCO<sub>3</sub> a 8,4% (5ml) em Seringa: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="NaHCO3_seringa_lote" name="NaHCO3_seringa_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="NaHCO3_seringa_data_validade" name="NaHCO3_seringa_data_validade">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            Separado e Registrado por: 
+                                            <select class="form-select ms-2" id="id_usuario_separado_registrado_p4" name="id_usuario_separado_registrado_p4">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div> 
+                                    </th>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            Data:
+                                            <input type="date" class="ms-2 form-control" id="data_separado_registrado_p4" name="data_separado_registrado_p4">
+                                        </div> 
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            Recebido e Conferido por:
+                                            <select class="form-select ms-2" id="id_usuario_recebido_conferido_p4" name="id_usuario_recebido_conferido_p4">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </th>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center"> 
+                                            Data: 
+                                            <input type="date" class="form-control ms-2" id="data_recebido_conferido_p4" name="data_recebido_conferido_p4">
+                                        </div>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
 
-                    <!-- Horários -->
-                    <h4 class="mt-4">3.1.1 Realizar irradiação da água enriquecida em O18 95% </h4>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="hora_inicio_irradiacao_agua_enriquecida" class="form-label">Início (h)</label>
-                            <input type="time" class="form-control" id="hora_inicio_irradiacao_agua_enriquecida" name="hora_inicio_irradiacao_agua_enriquecida" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="hora_final_irradiacao_agua_enriquecida" class="form-label">Fim (h)</label>
-                            <input type="time" class="form-control" id="hora_final_irradiacao_agua_enriquecida" name="hora_final_irradiacao_agua_enriquecida" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="ativ_teorica_F18" class="form-label">Atividade Teórica do F18 (mCi)</label>
-                            <input type="number" class="form-control" id="ativ_teorica_F18" name="ativ_teorica_F18" required>
-                        </div>
+                    <!-- Botões de Navegação -->
+                    <div class="text-center mt-5">
+                        <button type="button" id="btn-voltar" class="btn btn-secondary px-5" onclick="voltarPagina()">Voltar</button>
+                        <button type="button" id="btn-proximo" class="btn btn-primary px-5" onclick="proximaPagina()">Próximo</button>
+                        <button type="submit" id="btn-salvar" class="btn btn-primary px-5">Salvar Registro</button>
                     </div>
-
-                    <h4 class="mt-4">3.1.2 Transferir o F18 para o Módulo de Síntese  </h4>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="hora_inicio_transferir_F18_sintese" class="form-label">Início (h)</label>
-                            <input type="time" class="form-control" id="hora_inicio_transferir_F18_sintese" name="hora_inicio_transferir_F18_sintese" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="hora_final_transferir_F18_sintese" class="form-label">Fim (h)</label>
-                            <input type="time" class="form-control" id="hora_final_transferir_F18_sintese" name="hora_final_transferir_F18_sintese" required>
-                        </div>
-                    </div>
-
-                    <!-- Ocorrências -->
-                    <h4 class="mt-4">Ocorrências</h4>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="ocorrencias_p3" class="form-label">Descrição</label>
-                            <textarea class="form-control" id="ocorrencias_p3" name="ocorrencias_p3"></textarea>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="ocorrencias_horario_p3" class="form-label">Horário da Ocorrência</label>
-                            <input type="time" class="form-control" id="ocorrencias_horario_p3" name="ocorrencias_horario_p3">
-                        </div>
-                    </div>
-
-                    <!-- Logbook -->
-                    <h4 class="mt-4">Logbook</h4>
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Anexado?</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="logbook_anexado" name="logbook_anexado">
-                                <label class="form-check-label" for="logbook_anexado">Sim</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="logbook_data" class="form-label">Data</label>
-                            <input type="date" class="form-control" id="logbook_data" name="logbook_data">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="logbook_time" class="form-label">Hora</label>
-                            <input type="time" class="form-control" id="logbook_time" name="logbook_time">
-                        </div>
-                    </div>
-
-                    <!-- Botão de Envio -->
-                    <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-primary px-5">Salvar Registro</button>
-                    </div>
-
                 </form>
             </div>
         </div>
     </div>
+
+    <script>
+        let paginaAtual = 1;
+        let paginaAnterior = 1;
+        const totalPaginas = 3;
+
+        function atualizarVisibilidade() {
+            document.getElementById('pagina'+paginaAnterior).style.display = 'none';
+            document.getElementById('pagina'+paginaAtual).style.display = 'block';
+            
+            document.getElementById('btn-voltar').style.display = (paginaAtual > 1) ? 'inline-block' : 'none';
+            document.getElementById('btn-proximo').style.display = (paginaAtual < totalPaginas) ? 'inline-block' : 'none';
+            document.getElementById('btn-salvar').style.display = (paginaAtual === totalPaginas) ? 'inline-block' : 'none';
+        }
+
+        function proximaPagina() {
+            if (paginaAtual < totalPaginas) {
+                paginaAnterior = paginaAtual;
+                paginaAtual++;
+                atualizarVisibilidade();
+            }
+        }
+
+        function voltarPagina() {
+            if (paginaAtual > 1) {
+                paginaAnterior = paginaAtual;
+                paginaAtual--;
+                atualizarVisibilidade();
+            }
+        }
+        atualizarVisibilidade();
+
+    </script>
 </x-app-layout>

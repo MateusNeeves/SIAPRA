@@ -17,8 +17,8 @@ class RegistrosLoteController extends Controller
     }
 
     public function register(){
-        $datas = Planejamento::select('data_producao')->distinct()->pluck('data_producao');
-        return view('registros_lote/cadastrar', ['datas' => $datas]);
+        $usuarios = User::all();
+        return view('registros_lote/cadastrar', ['usuarios' => $usuarios]);
     }
 
     public function store(Request $request)
@@ -216,7 +216,7 @@ class RegistrosLoteController extends Controller
 
         // PÁGINA 4
             $pdf->AddPage();
-            $tplIdx = $pdf->importPage(3);
+            $tplIdx = $pdf->importPage(4);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
             $pdf->SetXY(39, 51);
@@ -224,6 +224,9 @@ class RegistrosLoteController extends Controller
 
             $pdf->SetXY(155, 51);
             $pdf->Write(10, $dia . "   " . $mes . "  " . $ano);
+
+            // ---------------------------------------------------//
+
 
         $pdf->Output('registro_de_lote_preenchido.pdf', 'I');
     }
