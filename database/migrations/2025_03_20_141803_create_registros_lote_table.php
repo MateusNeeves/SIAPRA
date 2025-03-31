@@ -41,7 +41,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_usuario_transferir_F18_sintese');
                 $table->foreign('id_usuario_transferir_F18_sintese')->references('id')->on('users');
 
-            $table->string('descricao', 290);
+            $table->string('ocorrencias_p3', 290);
             $table->time('ocorrencias_horario_p3');
             $table->unsignedBigInteger('id_usuario_ocorrencias_p3');
                 $table->foreign('id_usuario_ocorrencias_p3')->references('id')->on('users');

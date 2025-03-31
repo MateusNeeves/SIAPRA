@@ -106,7 +106,7 @@
                                 <tr>
                                     <th class="table-light" scope="col"> Verificado Por: </th>
                                     <td colspan="5" class="table-light" scope="col">
-                                        <select class="form-select" id="id_usuario_lote_agua_enriquecida" name="id_usuario_lote_agua_enriquecida">
+                                        <select class="form-select" id="id_usuario_verificacao_p3" name="id_usuario_verificacao_p3">
                                             <option selected disabled>Selecione um usuário</option>
                                             @foreach($usuarios as $usuario)
                                                 <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
@@ -499,8 +499,8 @@
                     <!-- Botões de Navegação -->
                     <div class="text-center mt-5">
                         <button type="button" id="btn-voltar" class="btn btn-secondary px-5" onclick="voltarPagina()">Voltar</button>
-                        <button type="button" id="btn-proximo" class="btn btn-primary px-5" onclick="proximaPagina()">Próximo</button>
-                        <button type="submit" id="btn-salvar" class="btn btn-primary px-5">Salvar Registro</button>
+                        <button type="button" id="btn-proximo" class="btn btn-orange px-5" onclick="proximaPagina()">Próximo</button>
+                        <button type="submit" id="btn-salvar" class="btn btn-orange px-5">Salvar Registro</button>
                     </div>
                 </form>
             </div>
