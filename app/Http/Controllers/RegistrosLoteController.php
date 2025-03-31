@@ -100,6 +100,56 @@ class RegistrosLoteController extends Controller
             $registroLote->id_usuario_recebido_conferido_p4 = $request->id_usuario_recebido_conferido_p4;
             $registroLote->data_recebido_conferido_p4 = $request->data_recebido_conferido_p4;
 
+        // PAGINA 5
+            
+            $registroLote->hora_inicio_montagem_kit_synthera = $request->hora_inicio_montagem_kit_synthera;
+            $registroLote->hora_final_montagem_kit_synthera = $request->hora_final_montagem_kit_synthera;
+            $registroLote->id_usuario_execucao_montagem_kit_synthera = $request->id_usuario_execucao_montagem_kit_synthera;
+            $registroLote->id_usuario_verificacao_montagem_kit_synthera = $request->id_usuario_verificacao_montagem_kit_synthera;
+            
+            $registroLote->temperatura_lab_producao = $request->temperatura_lab_producao;
+            $registroLote->umidade_lab_producao = $request->umidade_lab_producao;
+            $registroLote->id_usuario_verificacao_p5 = $request->id_usuario_verificacao_p5;
+
+            $registroLote->limpeza_celula = $request->has('limpeza_celula') ? true : false;
+            $registroLote->verif_volume_H218O = $request->has('verif_volume_H218O') ? true : false;
+            $registroLote->verif_frasco_rejeitos = $request->has('verif_frasco_rejeitos') ? true : false;
+            $registroLote->verif_bolsa_ar = $request->has('verif_bolsa_ar') ? true : false;
+            $registroLote->abrir_valvula_ar_comprimido = $request->has('abrir_valvula_ar_comprimido') ? true : false;
+            $registroLote->abrir_valvula_nitrogenio = $request->has('abrir_valvula_nitrogenio') ? true : false;
+            $registroLote->verif_pos_capilares = $request->has('verif_pos_capilares') ? true : false;
+            $registroLote->ligar_controle_synthera = $request->has('ligar_controle_synthera') ? true : false;
+            $registroLote->ligar_notebook_synthera = $request->has('ligar_notebook_synthera') ? true : false;
+            $registroLote->iniciar_programa_mpb = $request->has('iniciar_programa_mpb') ? true : false;
+            $registroLote->retirar_ifp_usado = $request->has('retirar_ifp_usado') ? true : false;
+            $registroLote->inserir_ifp_synthera = $request->has('inserir_ifp_synthera') ? true : false;
+            $registroLote->conectar_theodorico = $request->has('conectar_theodorico') ? true : false;
+
+        // PAGINA 6
+
+            $registroLote->iniciar_auto_teste = $request->has('iniciar_auto_teste') ? true : false;
+            $registroLote->efetuar_diluicao_triflato_manose = $request->has('efetuar_diluicao_triflato_manose') ? true : false;
+            $registroLote->remover_bloco_vermelho = $request->has('remover_bloco_vermelho') ? true : false;
+            $registroLote->fechar_portas_bbs = $request->has('fechar_portas_bbs') ? true : false;
+            $registroLote->pressionar_start = $request->has('pressionar_start') ? true : false;
+            $registroLote->id_usuario_verificacao_acoes = $request->has('id_usuario_verificacao_acoes') ? true : false;
+
+            $registroLote->ativ_chegada_18F = $request->ativ_chegada_18F;
+            $registroLote->ativ_residual_18F = $request->ativ_residual_18F;
+            $registroLote->ativ_modulo_sintese = $request->ativ_modulo_sintese;
+            $registroLote->ativ_modulo_fracionamento = $request->ativ_modulo_fracionamento;
+            $registroLote->hora_inicio_sintese = $request->hora_inicio_sintese;
+            $registroLote->hora_final_sintese = $request->hora_final_sintese;
+            $registroLote->rendimento_sintese = $request->rendimento_sintese;
+            $registroLote->id_usuario_execucao_p6 = $request->id_usuario_execucao_p6;
+            $registroLote->id_usuario_verificacao_p6 = $request->id_usuario_verificacao_p6;
+
+            $registroLote->ocorrencias_p6 = $request->ocorrencias_p6;
+            $registroLote->ocorrencias_horario_p6 = $request->ocorrencias_horario_p6;
+            $registroLote->id_usuario_execucao_ocorrencias_p6 = $request->id_usuario_execucao_ocorrencias_p6;
+            $registroLote->id_usuario_verificacao_ocorrencias_p6 = $request->id_usuario_verificacao_ocorrencias_p6;
+
+
         $registroLote->save();
 
         return redirect()->route('registros_lote')->with('alert-success', 'Registro de lote salvo com sucesso.');

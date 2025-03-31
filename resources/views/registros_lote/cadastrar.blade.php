@@ -11,7 +11,7 @@
 
                     <!-- Páginas do Formulário -->
                     <div id="pagina1">
-                        <h4 class="mt-4">1. Dados do Lote</h4>
+                        <h4 class="mt-4 mb-5">1. Dados do Lote</h4>
                         <table class="table table-bordered">
                             <tbody class="text-center">
                                 <tr>
@@ -31,7 +31,7 @@
                     </div>
 
                     <div id="pagina2" style="display: none;">
-                        <h5  class="mt-4 mb-5">2. Irradiação</h5>
+                        <h4  class="mt-4 mb-5">2. Irradiação</h4>
 
                         <table class="table table-bordered">
                             <tbody class="text-center">
@@ -69,28 +69,28 @@
                                         do Compressor): </th>
                                     <td> 8 - 10 bar </td>
                                     <td>
-                                        <input type="number" step="0.1" class="form-control" id="pressao_ar_comprimido" name="pressao_ar_comprimido">
+                                        <input type="number" min="0" step="0.1" class="form-control" id="pressao_ar_comprimido" name="pressao_ar_comprimido">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th> Pressão de Hidrogênio 6.0:  </th>
                                     <td> 1 - 3 bar </td>
                                     <td>
-                                        <input type="number" step="0.1" class="form-control" id="pressao_H" name="pressao_H">
+                                        <input type="number" min="0" step="0.1" class="form-control" id="pressao_H" name="pressao_H">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th> Pressão de Helio de Refrigeração 4.5: </th>
                                     <td> 0,2 - 1 bar </td>
                                     <td>
-                                        <input type="number" step="0.1" class="form-control" id="pressao_He_refrigeracao" name="pressao_He_refrigeracao">
+                                        <input type="number" min="0" step="0.1" class="form-control" id="pressao_He_refrigeracao" name="pressao_He_refrigeracao">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th> Pressão de Helio 5.0 analítico: </th>
                                     <td> 1,5 - 3 bar </td>
                                     <td>
-                                        <input type="number" step="0.1" class="form-control" id="pressao_He_analitico" name="pressao_He_analitico">
+                                        <input type="number" min="0" step="0.1" class="form-control" id="pressao_He_analitico" name="pressao_He_analitico">
                                     </td>
                                 </tr>
                                 <tr>
@@ -98,7 +98,7 @@
                                         Produção: </th>
                                     <td> < 5 µSv/h </td>
                                     <td>
-                                        <input type="number" step="0.1" class="form-control" id="radiacao_ambiental_lab" name="radiacao_ambiental_lab">
+                                        <input type="number" min="0" step="0.1" class="form-control" id="radiacao_ambiental_lab" name="radiacao_ambiental_lab">
                                     </td>
                                 </tr>
                             </tbody>
@@ -136,7 +136,7 @@
                                 <tr>
                                     <th> Atividade Teórica do <sup>18</sup>F (mCi): </th>
                                     <td>
-                                        <input type="number" class="form-control" id="ativ_teorica_F18" name="ativ_teorica_F18">
+                                        <input type="number" min="0" class="form-control" id="ativ_teorica_F18" name="ativ_teorica_F18">
                                     </td>
                                 </tr>
                             </tbody>
@@ -494,7 +494,356 @@
                                 </tr>
                             </tfoot>
                         </table>
+                    
                     </div>
+
+                    <div id="pagina4" style="display: none;">
+                        <h6  class="mb-4 mt-5">3.2 Realizar montagem do KIT SYNTHERA </h6>
+
+                        <table class="table table-bordered">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Início (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_inicio_montagem_kit_synthera" name="hora_inicio_montagem_kit_synthera">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Final (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_final_montagem_kit_synthera" name="hora_final_montagem_kit_synthera">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Executado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_execucao_montagem_kit_synthera" name="id_usuario_execucao_montagem_kit_synthera">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>   
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_montagem_kit_synthera" name="id_usuario_verificacao_montagem_kit_synthera">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>   
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <table class="table table-bordered mt-5">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Registrar </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Especificações </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Medida </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Temperatura do Laboratório de Produção: </th>
+                                    <td> 15 a 25ºC </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="temperatura_lab_producao" name="temperatura_lab_producao">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Umidade do Laboratório de Produção:  </th>
+                                    <td> 30 a 70% UR </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="umidade_lab_producao" name="umidade_lab_producao">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_p5" name="id_usuario_verificacao_p5">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>    
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <h6  class="mb-4 mt-5">3.3 Check-list para síntese </h6>
+                        
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Ações </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Verificação </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Limpeza da Célula: </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="limpeza_celula">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Verificar volume de H<sub>2</sub><sup>18</sup>O no frasco de recuperação </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="verif_volume_H218O">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Verificar frasco de rejeitos </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="verif_frasco_rejeitos">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Verificar bolsa de ar </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="verif_bolsa_ar">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Abrir válvula de Ar comprimido (7-7,5 bar) </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="abrir_valvula_ar_comprimido">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Abrir válvula de Nitrogênio (17,5 psi) </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="abrir_valvula_nitrogenio">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Verificar posicionamento dos capilares no frasco em "V" </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="verif_pos_capilares">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Ligar Cx. Controle do Synthera </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="ligar_controle_synthera">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Ligar NoteBook do Synthera </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="ligar_notebook_synthera">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Iniciar programa MPB </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="iniciar_programa_mpb">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Retirar o IFP "usado" (se ainda presente) </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="retirar_ifp_usado">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Inserir o IFP no Synthera, pressionar os dois botões LOAD </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="inserir_ifp_synthera">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Inserir o IFP no Synthera, pressionar os dois botões LOAD </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="inserir_ifp_synthera">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Conectar a linha de transferência do produto final ao THEODORICO </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="conectar_theodorico">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Iniciar auto-teste pressionando o botão START (no PC) </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="iniciar_auto_teste">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Efetuar diluição do triflato de manose </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="efetuar_diluicao_triflato_manose">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Remover BLOCO VERMELHO de Segurança das agulhas e prender o capilar </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="remover_bloco_vermelho">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Fechar as portas da BBS (acionar "LOCKED / VENTILATION") </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="fechar_portas_bbs">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Ao chegar o radioisótopo, pressionar o botão "START"(verde) na caixa de controle  </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_start">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="2" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_acoes" name="id_usuario_verificacao_acoes">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>   
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+
+                    <div id="pagina5" style="display: none;">
+                        <h6 class="mt-5 border border-black py-1 fw-bold text-center mx-auto" style="max-width: 70%;">
+                            <span class="fw-normal">ATENÇÃO!</span> Caso algum problema seja verificado, checar medidas para resolução, no POP correspondente à atividade, antes de seguir para próxima ação.
+                        </h6>
+
+                        <h6 class="my-4 py-1 text-center mx-auto" style="max-width: 70%;">
+                            *Verificar, no calibrador de dose, a Atividade do <sup>18</sup>F que chega ao módulo de síntese: Atividade de chegada menos a Atividade residual. 
+                        </h6>
+
+                        <table class="table table-bordered">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Atividade de CHEGADA do <sup>18</sup>F (mCi): </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="ativ_chegada_18F" name="ativ_chegada_18F">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Atividade RESIDUAL do <sup>18</sup> (mCi): </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="ativ_residual_18F" name="ativ_residual_18F">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Atividade no MÓDULO DE SÍNTESE (mCi): </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="ativ_modulo_sintese" name="ativ_modulo_sintese">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Atividade no MODÚLO DE FRACIONAMENTO (mCi): </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="ativ_modulo_fracionamento" name="ativ_modulo_fracionamento">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Início da Síntese (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_inicio_sintese" name="hora_inicio_sintese">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Final da Síntese (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_final_sintese" name="hora_final_sintese">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> RENDIMENTO DA SÍNTESE (%) : </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="rendimento_sintese" name="rendimento_sintese">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Executado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_execucao_p6" name="id_usuario_execucao_p6">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>   
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_p6" name="id_usuario_verificacao_p6">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>   
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Ocorrências: </th>
+                                    <td>
+                                        <textarea class="form-control" id="ocorrencias_p6" name="ocorrencias_p6" ></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Horário: </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="ocorrencias_horario_p6" name="ocorrencias_horario_p6">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Executado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_execucao_ocorrencias_p6" name="id_usuario_execucao_ocorrencias_p6">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_ocorrencias_p6" name="id_usuario_verificacao_ocorrencias_p6">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
 
                     <!-- Botões de Navegação -->
                     <div class="text-center mt-5">
@@ -510,7 +859,7 @@
     <script>
         let paginaAtual = 1;
         let paginaAnterior = 1;
-        const totalPaginas = 3;
+        const totalPaginas = 5;
 
         function atualizarVisibilidade() {
             document.getElementById('pagina'+paginaAnterior).style.display = 'none';
