@@ -807,7 +807,7 @@
                                 <tr>
                                     <th> Ocorrências: </th>
                                     <td>
-                                        <textarea class="form-control" id="ocorrencias_p6" name="ocorrencias_p6" ></textarea>
+                                        <textarea class="form-control" id="ocorrencias_p6" name="ocorrencias_p6" maxlength="550"></textarea>
                                     </td>
                                 </tr>
                                 <tr>

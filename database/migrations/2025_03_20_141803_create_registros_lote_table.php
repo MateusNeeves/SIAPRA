@@ -142,7 +142,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('id_usuario_verificacao_p6')->nullable();
                     $table->foreign('id_usuario_verificacao_p6')->references('id')->on('users');
                 
-                $table->string('ocorrencias_p6')->nullable();
+                $table->string('ocorrencias_p6', 550)->nullable();
                 $table->time('ocorrencias_horario_p6')->nullable();
                 $table->unsignedBigInteger('id_usuario_execucao_ocorrencias_p6')->nullable();
                     $table->foreign('id_usuario_execucao_ocorrencias_p6')->references('id')->on('users');

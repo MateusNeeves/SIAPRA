@@ -448,6 +448,212 @@ class RegistrosLoteController extends Controller
 
             // ---------------------------------------------------//
 
+            $pdf->SetXY(30, 82.5);
+            $pdf->Write(10, substr($registro_lote->hora_inicio_montagem_kit_synthera, 0, -3));
+
+            $pdf->SetXY(62, 82.5);
+            $pdf->Write(10, substr($registro_lote->hora_final_montagem_kit_synthera, 0, -3));
+
+            $pdf->SetXY(98, 80.5);
+            $pdf->Write(10, User::find($registro_lote->id_usuario_execucao_montagem_kit_synthera)->username . " - " . $registro_lote->id_usuario_execucao_montagem_kit_synthera);
+
+            $pdf->SetXY(146, 80.5);
+            $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_montagem_kit_synthera)->username . " - " . $registro_lote->id_usuario_verificacao_montagem_kit_synthera);
+
+            // ---------------------------------------------------//
+
+            $pdf->SetXY(138, 106);
+            $pdf->Write(10, $registro_lote->temperatura_lab_producao);
+
+            $pdf->SetXY(138, 113.5);
+            $pdf->Write(10, $registro_lote->umidade_lab_producao);
+
+            $pdf->SetXY(59, 121);
+            $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_montagem_kit_synthera)->username . " - " . $registro_lote->id_usuario_verificacao_p5);
+
+            // ---------------------------------------------------//
+            
+            if ($registro_lote->limpeza_celula){
+                $pdf->SetXY(177, 154);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->verif_volume_H218O){
+                $pdf->SetXY(177, 161);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->verif_frasco_rejeitos){
+                $pdf->SetXY(177, 168);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->verif_bolsa_ar){
+                $pdf->SetXY(177, 175.5);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->abrir_valvula_ar_comprimido){
+                $pdf->SetXY(177, 182.5);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->abrir_valvula_nitrogenio){
+                $pdf->SetXY(177, 189.5);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->verif_pos_capilares){
+                $pdf->SetXY(177, 197);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->ligar_controle_synthera){
+                $pdf->SetXY(177, 204);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->ligar_notebook_synthera){
+                $pdf->SetXY(177, 211);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->iniciar_programa_mpb){
+                $pdf->SetXY(177, 218.5);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->retirar_ifp_usado){
+                $pdf->SetXY(177, 225.5);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->inserir_ifp_synthera){
+                $pdf->SetXY(177, 232.5);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->conectar_theodorico){
+                $pdf->SetXY(177, 240);
+                $pdf->Write(10, "X");
+            }
+
+        // PÁGINA 6
+            $pdf->AddPage();
+            $tplIdx = $pdf->importPage(6);
+            $pdf->useTemplate($tplIdx, 0, 0, 210);
+            
+            $pdf->SetXY(39, 51);
+            $pdf->Write(10, $lote);
+
+            $pdf->SetXY(155, 51);
+            $pdf->Write(10, $dia . "   " . $mes . "  " . $ano);
+
+            // ---------------------------------------------------//
+        
+            if (!$registro_lote->iniciar_auto_teste){
+                $pdf->SetXY(177, 69);
+                $pdf->Write(10, "X");
+            }
+        
+            if ($registro_lote->efetuar_diluicao_triflato_manose){
+                $pdf->SetXY(177, 76);
+                $pdf->Write(10, "X");
+            }
+        
+            if ($registro_lote->remover_bloco_vermelho){
+                $pdf->SetXY(177, 83);
+                $pdf->Write(10, "X");
+            }
+        
+            if ($registro_lote->fechar_portas_bbs){
+                $pdf->SetXY(177, 90);
+                $pdf->Write(10, "X");
+            }
+        
+            if (!$registro_lote->pressionar_start){
+                $pdf->SetXY(177, 98.5);
+                $pdf->Write(10, "X");
+            }
+
+            $pdf->SetXY(58, 106.5);
+            $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_acoes)->username . " - " . $registro_lote->id_usuario_verificacao_acoes);
+
+            // ---------------------------------------------------//
+
+            $pdf->SetXY(30, 163.5);
+            $pdf->Write(10, substr($registro_lote->ativ_chegada_18F, 0, -3) . " mCi");
+
+            $pdf->SetXY(72.5, 163.5);
+            $pdf->Write(10, substr($registro_lote->ativ_residual_18F, 0, -3) . " mCi");
+
+            $pdf->SetXY(110, 163.5);
+            $pdf->Write(10, substr($registro_lote->ativ_modulo_sintese, 0, -3) . " mCi");
+
+            $pdf->SetXY(148, 163.5);
+            $pdf->Write(10, substr($registro_lote->ativ_modulo_fracionamento, 0, -3) . " mCi");
+
+            $pdf->SetXY(30, 178.5);
+            $pdf->Write(10, substr($registro_lote->hora_inicio_sintese, 0, -3) . " h");
+
+            $pdf->SetXY(72.5, 178.5);
+            $pdf->Write(10, substr($registro_lote->hora_final_sintese, 0, -3) . " h");
+
+            $pdf->SetXY(148, 174.5);
+            $pdf->Write(10, substr($registro_lote->rendimento_sintese, 0, -3) . " h");
+
+            $pdf->SetXY(61, 186.5);
+            $pdf->Write(10, User::find($registro_lote->id_usuario_execucao_p6)->username . " - " . $registro_lote->id_usuario_execucao_p6);
+
+            $pdf->SetXY(141, 186.5);
+            $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_p6)->username . " - " . $registro_lote->id_usuario_verificacao_p6);
+
+            // ---------------------------------------------------//
+
+            $pdf->SetXY(56, 207);
+
+            $texto = utf8_decode($registro_lote->ocorrencias_p6);
+
+            $palavras = explode(" ", $texto);
+            $linha1 = "";
+            $restante = "";
+
+            foreach ($palavras as $palavra) {
+                if ($pdf->GetStringWidth($linha1 . " " . $palavra) < 130)
+                    $linha1 .= " " . $palavra;
+                else
+                    $restante .= " " . $palavra;
+            }
+
+            $pdf->Write(6, trim($linha1));
+
+            if (!empty($restante)) {
+                $pdf->SetXY(30, $pdf->GetY() + 6);
+                $pdf->MultiCell(160, 7, trim($restante), 0, 'L');
+            }
+
+            $pdf->SetXY(30, 262);
+            $pdf->Write(10, substr($registro_lote->ocorrencias_horario_p6, 0, -3));
+
+            $pdf->SetXY(63, 260);
+            $pdf->Write(10, User::find($registro_lote->id_usuario_execucao_ocorrencias_p6)->username . " - " . $registro_lote->id_usuario_execucao_ocorrencias_p6);
+
+            $pdf->SetXY(127, 260);
+            $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_ocorrencias_p6)->username . " - " . $registro_lote->id_usuario_verificacao_ocorrencias_p6);
+
+        // PÁGINA 7
+            $pdf->AddPage();
+            $tplIdx = $pdf->importPage(7);
+            $pdf->useTemplate($tplIdx, 0, 0, 210);
+            
+            $pdf->SetXY(39, 51);
+            $pdf->Write(10, $lote);
+
+            $pdf->SetXY(155, 51);
+            $pdf->Write(10, $dia . "   " . $mes . "  " . $ano);
+
+            // ---------------------------------------------------//
+
         $pdf->Output('registro_de_lote_preenchido.pdf', 'I');
     }
 }
