@@ -17,13 +17,13 @@
                                 <tr>
                                     <th> Lote: </th>
                                     <td>
-                                        <input type="text" class="form-control" id="lote" name="lote">
+                                        <input type="text" class="form-control" id="lote" name="lote" required>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th> Data de Fabricação: </th>
                                     <td>
-                                        <input type="date" class="form-control" id="data_fabricacao" name="data_fabricacao">
+                                        <input type="date" class="form-control" id="data_fabricacao" name="data_fabricacao" required>
                                     </td>
                                 </tr>
                             </tbody>
@@ -43,13 +43,13 @@
                             <tfoot class="text-center">
                                 <tr>
                                     <th class="table-light" scope="col"> Verificado Por: </th>
-                                    <td colspan="5" class="table-light" scope="col">
+                                    <td colspan="5" class="table-light" scope="col">   
                                         <select class="form-select" id="id_usuario_lote_agua_enriquecida" name="id_usuario_lote_agua_enriquecida">
-                                            <option selected hidden>Selecione um usuário</option>
+                                            <option selected disabled>Selecione um usuário</option>
                                             @foreach($usuarios as $usuario)
                                                 <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
                                             @endforeach
-                                        </select>    
+                                        </select> 
                                     </td>
                                 </tr>
                             </tfoot>

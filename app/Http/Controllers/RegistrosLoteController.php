@@ -53,14 +53,14 @@ class RegistrosLoteController extends Controller
             $registroLote->ocorrencias_horario_p3 = $request->ocorrencias_horario_p3;
             $registroLote->id_usuario_ocorrencias_p3 = $request->id_usuario_ocorrencias_p3;
 
-            $registroLote->logbook_anexado = $request->logbook_anexado ?? 0;
+            $registroLote->logbook_anexado = $request->logbook_anexado;
             $registroLote->logbook_data = $request->logbook_data;
             $registroLote->logbook_time = $request->logbook_time;
             $registroLote->id_usuario_logbook = $request->id_usuario_logbook;
         
         // PAGINA 4
             
-            $registroLote->modulo_sintese = $request->modulo_sintese != "0";
+            $registroLote->modulo_sintese = $request->modulo_sintese;
 
             $registroLote->kryptofix222_lote = $request->kryptofix222_lote;
             $registroLote->kryptofix222_data_validade = $request->kryptofix222_data_validade;
@@ -132,7 +132,7 @@ class RegistrosLoteController extends Controller
             $registroLote->remover_bloco_vermelho = $request->has('remover_bloco_vermelho') ? true : false;
             $registroLote->fechar_portas_bbs = $request->has('fechar_portas_bbs') ? true : false;
             $registroLote->pressionar_start = $request->has('pressionar_start') ? true : false;
-            $registroLote->id_usuario_verificacao_acoes = $request->has('id_usuario_verificacao_acoes') ? true : false;
+            $registroLote->id_usuario_verificacao_acoes = $request->id_usuario_verificacao_acoes;
 
             $registroLote->ativ_chegada_18F = $request->ativ_chegada_18F;
             $registroLote->ativ_residual_18F = $request->ativ_residual_18F;
@@ -208,8 +208,10 @@ class RegistrosLoteController extends Controller
             $pdf->SetXY(100, 95);
             $pdf->Write(10, $registro_lote->lote_agua_enriquecida);
             
-            $pdf->SetXY(58, 101);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_lote_agua_enriquecida)->username . " - " . $registro_lote->id_usuario_lote_agua_enriquecida);
+            if ($registro_lote->id_usuario_lote_agua_enriquecida){
+                $pdf->SetXY(58, 101);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_lote_agua_enriquecida)->username . " - " . $registro_lote->id_usuario_lote_agua_enriquecida);
+            }
 
             // ---------------------------------------------------//
             
@@ -227,9 +229,11 @@ class RegistrosLoteController extends Controller
 
             $pdf->SetXY(150, 147.5);
             $pdf->Write(10, $registro_lote->radiacao_ambiental_lab . " " . chr(181) . "Sv/h");
-
-            $pdf->SetXY(58, 155.5);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_lote_agua_enriquecida)->username . " - " . $registro_lote->id_usuario_lote_agua_enriquecida);
+            
+            if ($registro_lote->id_usuario_verificacao_p3){
+                $pdf->SetXY(58, 155.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_p3)->username . " - " . $registro_lote->id_usuario_verificacao_p3);
+            }
 
             // ---------------------------------------------------//
 
@@ -241,9 +245,10 @@ class RegistrosLoteController extends Controller
 
             $pdf->SetXY(84, 181.5);
             $pdf->Write(10, substr($registro_lote->ativ_teorica_F18, 0, -3) . " mCi");
-
-            $pdf->SetXY(127, 178);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_lote_agua_enriquecida)->username . " - " . $registro_lote->id_usuario_lote_agua_enriquecida);
+            if ($registro_lote->id_usuario_irradiacao_agua_enriquecida){
+                $pdf->SetXY(127, 178);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_irradiacao_agua_enriquecida)->username . " - " . $registro_lote->id_usuario_irradiacao_agua_enriquecida);
+            }
 
             // ---------------------------------------------------//
 
@@ -252,9 +257,11 @@ class RegistrosLoteController extends Controller
 
             $pdf->SetXY(76.5, 205);
             $pdf->Write(10, substr($registro_lote->hora_final_transferir_F18_sintese, 0, -3));
-
-            $pdf->SetXY(126, 203);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_lote_agua_enriquecida)->username . " - " . $registro_lote->id_usuario_lote_agua_enriquecida);
+            
+            if ($registro_lote->id_usuario_transferir_F18_sintese){
+                $pdf->SetXY(126, 203);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_transferir_F18_sintese)->username . " - " . $registro_lote->id_usuario_transferir_F18_sintese);
+            }
 
             // ---------------------------------------------------//
 
@@ -282,9 +289,11 @@ class RegistrosLoteController extends Controller
 
             $pdf->SetXY(47, 241);
             $pdf->Write(10, substr($registro_lote->ocorrencias_horario_p3, 0, -3));
-
-            $pdf->SetXY(110, 241);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_ocorrencias_p3)->username . " - " . $registro_lote->id_usuario_ocorrencias_p3);
+            
+            if ($registro_lote->id_usuario_ocorrencias_p3){
+                $pdf->SetXY(110, 241);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_ocorrencias_p3)->username . " - " . $registro_lote->id_usuario_ocorrencias_p3);
+            }
 
             // ---------------------------------------------------//
 
@@ -297,10 +306,12 @@ class RegistrosLoteController extends Controller
 
                 $pdf->SetXY(91, 259);
                 $pdf->Write(10, substr($registro_lote->logbook_time, 0, -3));
-
-                $pdf->SetXY(140, 259);
-                $pdf->Write(10, User::find($registro_lote->id_usuario_logbook)->username . " - " . $registro_lote->id_usuario_logbook);
-            } else {
+                
+                if ($registro_lote->id_usuario_logbook){
+                    $pdf->SetXY(140, 259);
+                    $pdf->Write(10, User::find($registro_lote->id_usuario_logbook)->username . " - " . $registro_lote->id_usuario_logbook);
+                }
+            } else if ($registro_lote->logbook_anexado != null) {
                 $pdf->SetXY(151.5, 252.5);
                 $pdf->Write(10, "X");
             }
@@ -318,11 +329,11 @@ class RegistrosLoteController extends Controller
 
             // ---------------------------------------------------//
 
-            if (!$registro_lote->modulo_sintese) {
+            if ($registro_lote->modulo_sintese != null && !$registro_lote->modulo_sintese){
                 $pdf->SetXY(100.5, 77 );
                 $pdf->Write(10, "X");
             }
-            else {
+            else if ($registro_lote->modulo_sintese != null){
                 $pdf->SetXY(100.5, 84);
                 $pdf->Write(10, "X");
             }
@@ -422,15 +433,19 @@ class RegistrosLoteController extends Controller
             $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->NaHCO3_seringa_data_validade)));
 
             // ---------------------------------------------------//
-
-            $pdf->SetXY(82, 241);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_separado_registrado_p4)->username . " - " . $registro_lote->id_usuario_separado_registrado_p4);
-
+            
+            if ($registro_lote->id_usuario_separado_registrado_p4){
+                $pdf->SetXY(82, 241);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_separado_registrado_p4)->username . " - " . $registro_lote->id_usuario_separado_registrado_p4);
+            }
+            
             $pdf->SetXY(165, 241);
             $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->data_separado_registrado_p4)));
 
-            $pdf->SetXY(82, 248.5);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_recebido_conferido_p4)->username . " - " . $registro_lote->id_usuario_recebido_conferido_p4);
+            if ($registro_lote->id_usuario_recebido_conferido_p4){
+                $pdf->SetXY(82, 248.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_recebido_conferido_p4)->username . " - " . $registro_lote->id_usuario_recebido_conferido_p4);
+            }
 
             $pdf->SetXY(165, 248.5);
             $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->data_recebido_conferido_p4)));
@@ -454,12 +469,15 @@ class RegistrosLoteController extends Controller
             $pdf->SetXY(62, 82.5);
             $pdf->Write(10, substr($registro_lote->hora_final_montagem_kit_synthera, 0, -3));
 
-            $pdf->SetXY(98, 80.5);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_execucao_montagem_kit_synthera)->username . " - " . $registro_lote->id_usuario_execucao_montagem_kit_synthera);
+            if ($registro_lote->id_usuario_execucao_montagem_kit_synthera){
+                $pdf->SetXY(98, 80.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_execucao_montagem_kit_synthera)->username . " - " . $registro_lote->id_usuario_execucao_montagem_kit_synthera);
+            }
 
-            $pdf->SetXY(146, 80.5);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_montagem_kit_synthera)->username . " - " . $registro_lote->id_usuario_verificacao_montagem_kit_synthera);
-
+            if ($registro_lote->id_usuario_verificacao_montagem_kit_synthera){
+                $pdf->SetXY(146, 80.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_montagem_kit_synthera)->username . " - " . $registro_lote->id_usuario_verificacao_montagem_kit_synthera);
+            }
             // ---------------------------------------------------//
 
             $pdf->SetXY(138, 106);
@@ -468,8 +486,10 @@ class RegistrosLoteController extends Controller
             $pdf->SetXY(138, 113.5);
             $pdf->Write(10, $registro_lote->umidade_lab_producao);
 
-            $pdf->SetXY(59, 121);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_montagem_kit_synthera)->username . " - " . $registro_lote->id_usuario_verificacao_p5);
+            if ($registro_lote->id_usuario_verificacao_p5){
+                $pdf->SetXY(59, 121);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_p5)->username . " - " . $registro_lote->id_usuario_verificacao_p5);
+            }
 
             // ---------------------------------------------------//
             
@@ -551,7 +571,7 @@ class RegistrosLoteController extends Controller
 
             // ---------------------------------------------------//
         
-            if (!$registro_lote->iniciar_auto_teste){
+            if ($registro_lote->iniciar_auto_teste){
                 $pdf->SetXY(177, 69);
                 $pdf->Write(10, "X");
             }
@@ -571,13 +591,15 @@ class RegistrosLoteController extends Controller
                 $pdf->Write(10, "X");
             }
         
-            if (!$registro_lote->pressionar_start){
+            if ($registro_lote->pressionar_start){
                 $pdf->SetXY(177, 98.5);
                 $pdf->Write(10, "X");
             }
 
-            $pdf->SetXY(58, 106.5);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_acoes)->username . " - " . $registro_lote->id_usuario_verificacao_acoes);
+            if ($registro_lote->id_usuario_verificacao_acoes){
+                $pdf->SetXY(58, 106.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_acoes)->username . " - " . $registro_lote->id_usuario_verificacao_acoes);
+            }
 
             // ---------------------------------------------------//
 
@@ -602,11 +624,15 @@ class RegistrosLoteController extends Controller
             $pdf->SetXY(148, 174.5);
             $pdf->Write(10, substr($registro_lote->rendimento_sintese, 0, -3) . " h");
 
-            $pdf->SetXY(61, 186.5);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_execucao_p6)->username . " - " . $registro_lote->id_usuario_execucao_p6);
+            if ($registro_lote->id_usuario_execucao_p6){
+                $pdf->SetXY(61, 186.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_execucao_p6)->username . " - " . $registro_lote->id_usuario_execucao_p6);
+            }
 
-            $pdf->SetXY(141, 186.5);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_p6)->username . " - " . $registro_lote->id_usuario_verificacao_p6);
+            if ($registro_lote->id_usuario_verificacao_p6){
+                $pdf->SetXY(141, 186.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_p6)->username . " - " . $registro_lote->id_usuario_verificacao_p6);
+            }
 
             // ---------------------------------------------------//
 
@@ -635,11 +661,15 @@ class RegistrosLoteController extends Controller
             $pdf->SetXY(30, 262);
             $pdf->Write(10, substr($registro_lote->ocorrencias_horario_p6, 0, -3));
 
-            $pdf->SetXY(63, 260);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_execucao_ocorrencias_p6)->username . " - " . $registro_lote->id_usuario_execucao_ocorrencias_p6);
+            if ($registro_lote->id_usuario_execucao_ocorrencias_p6){
+                $pdf->SetXY(63, 260);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_execucao_ocorrencias_p6)->username . " - " . $registro_lote->id_usuario_execucao_ocorrencias_p6);
+            }
 
-            $pdf->SetXY(127, 260);
-            $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_ocorrencias_p6)->username . " - " . $registro_lote->id_usuario_verificacao_ocorrencias_p6);
+            if ($registro_lote->id_usuario_verificacao_ocorrencias_p6){
+                $pdf->SetXY(127, 260);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_ocorrencias_p6)->username . " - " . $registro_lote->id_usuario_verificacao_ocorrencias_p6);
+            }
 
         // PÁGINA 7
             $pdf->AddPage();
