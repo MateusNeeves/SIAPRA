@@ -622,7 +622,7 @@ class RegistrosLoteController extends Controller
             $pdf->Write(10, substr($registro_lote->hora_final_sintese, 0, -3) . " h");
 
             $pdf->SetXY(148, 174.5);
-            $pdf->Write(10, substr($registro_lote->rendimento_sintese, 0, -3) . " h");
+            $pdf->Write(10, substr($registro_lote->rendimento_sintese, 0, -3) . " %");
 
             if ($registro_lote->id_usuario_execucao_p6){
                 $pdf->SetXY(61, 186.5);
