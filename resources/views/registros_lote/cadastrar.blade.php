@@ -844,6 +844,424 @@
                         </table>
                     </div>
 
+                    <div id="pagina6" style="display: none;">
+                        <h4 class="mt-4">4. Fracionamento</h4>
+
+                        <h6 class="my-4 py-1 text-center mx-auto" style="max-width: 70%;">
+                            Sistema de Fracionamento → THEODORICO - CÓDIGO - PROD - SDF - 001 
+                        </h6>
+
+                        <h6  class="mb-4 mt-5">4.1 Ações anteriores ao fracionamento </h6>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Separar </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Qtd. </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Lote </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Validade </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Kit de fracionamento (parte 1): </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="kit_fracionamento_1_lote" name="kit_fracionamento_1_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="kit_fracionamento_1_data_validade" name="kit_fracionamento_1_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Kit de fracionamento (parte 2): </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="kit_fracionamento_2_lote" name="kit_fracionamento_2_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="kit_fracionamento_2_data_validade" name="kit_fracionamento_2_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Filtro Millex GS: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="filtro_millex_gs_lote" name="filtro_millex_gs_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="filtro_millex_gs_data_validade" name="filtro_millex_gs_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Filtro Millex GV: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="filtro_millex_gv_lote" name="filtro_millex_gv_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="filtro_millex_gv_data_validade" name="filtro_millex_gv_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Soro fisiológico (NaCl 0,9%): </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="soro_fisiologico_lote" name="soro_fisiologico_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="soro_fisiologico_data_validade" name="soro_fisiologico_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Agulha 0,9 x 40: </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="agulha_09x40_lote" name="agulha_09x40_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="agulha_09x40_data_validade" name="agulha_09x40_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Frascos 15mL estéreis e apirogênicos: </th>
+                                    <td>
+                                        <input type="text" class="form-control" id="frascos_15ml_lote" name="frascos_15ml_lote">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="frascos_15ml_qtd" name="frascos_15ml_qtd">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="frascos_15ml_data_validade" name="frascos_15ml_data_validade">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Frasco "Bulk" estéril e apirogênico (30ml): </th>
+                                    <td> 01 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="frascos_bulk_lote" name="frascos_bulk_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="frascos_bulk_data_validade" name="frascos_bulk_data_validade">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            Separado e Registrado por: 
+                                            <select class="form-select ms-2" id="id_usuario_separado_registrado_p7" name="id_usuario_separado_registrado_p7">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div> 
+                                    </th>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            Data:
+                                            <input type="date" class="ms-2 form-control" id="data_separado_registrado_p7" name="data_separado_registrado_p7">
+                                        </div> 
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            Recebido e Conferido por:
+                                            <select class="form-select ms-2" id="id_usuario_recebido_conferido_p7" name="id_usuario_recebido_conferido_p7">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </th>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center"> 
+                                            Data: 
+                                            <input type="date" class="form-control ms-2" id="data_recebido_conferido_p7" name="data_recebido_conferido_p7">
+                                        </div>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Ações </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Verificação </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Ligar Theodorico, iniciar programa Movicon: </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="ligar_theodorico">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Colocar castelo de chumbo no DWS e marcar sua posição no software </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="colocar_castelo_chumbo_dws">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Pressionar o botão "Park" no painel Movicon </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_botao_park">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Pressionar a botão "Pinch Open" no painel Movicon </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_botao_pinch_open">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Retirar kit usado do Theodorico </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="retirar_kit_usado">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Realizar limpeza do Theodorico </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="realizar_limpeza_theodorico">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Conectar capilares do Synthera ao "Bulk" usando agulhas </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="conectar_capilares_synthera_bulk">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Conectar kit de fracionamento (parte 1) </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="conectar_kit_fracionamento_1">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Fechar bomba peristáltica </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="fechar_bomba_peristaltica">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Pressionar a botão "Pinch Close" no painel Movicon </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_botao_pinch_close">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Conectar kit de fracionamento (parte 2) </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="conectar_kit_fracionamento_2">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Prender os capilares nas paredes do Theodorico </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="prender_capilares_parede_theodorico">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Conectar os filtros "Millex GS" entre as partes 1 e 2 do kit de fracionamento  </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="conectar_filtros_millex_gs">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Verificar se todas as linhas estão corretamente conectadas </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="verificar_linhas_conectadas">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> IVerificar se todas as conexões dos capilares e agulhas estão bem ajustadas </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="verificar_conexoes_capilares">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Verificar se a agulha sucção do radiofármaco toca o fundo do "Bulk" </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="verificar_agulha_succao">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Fechar porta. Pressionar "Inflate" e "Ventilation" </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="fechar_porta">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Programar o fracionamento no software </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="programar_fracionamento_software">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Imprimir etiquetas dos frascos e colá-las </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="imprimir_etiqueta_frascos">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Alimentar antecâmara com frascos. Rótulo virado para fora </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="alimentar_antecamara_frascos">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Marcar, no software, a posição dos frascos </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="marcar_posicao_frascos">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Ao chegar radiofármaco, pressionar botão "From SYNT" </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_botao_from_synt">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Pressionar botão "Bulk Dilution", escrever o volume e confirmar </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_botao_bulk_dilution">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Pressionar botão "Start" </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_botao_start">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="2" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificado_p8" name="id_usuario_verificado_p8">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>   
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+
+                    <div id="pagina7" style="display: none;">
+                        <h6 class="my-4 py-1 text-center mx-auto" style="max-width: 70%;">
+                            * Anotar a atividade de FDG 18F que chega ao módulo de fracionamento.
+                        </h6>
+
+                        <table class="table table-bordered">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Atividade de FDG <sup>18</sup>F (mCi): </th>
+                                    <td>
+                                        <input type="text" class="form-control" id="atividade_fdg_18f" name="atividade_fdg_18f">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Volume de Soro Fisiológico adicionado (ml): </th>
+                                    <td>
+                                        <input type="text" class="form-control" id="volume_soro_fisiologico" name="volume_soro_fisiologico">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Imprimir e anexar relatório de produção: </th>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="imprimir_anexar_relatorio_producao">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Início do Fracionamento (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_inicio_p8" name="hora_inicio_p8">
+                                    </td>
+                                </tr>
+                                    <th> Final do Fracionamento (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_final_p8" name="hora_final_p8">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Fracionamento Executado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_fracionamento_executado" name="id_usuario_fracionamento_executado">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>   
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <h6 class="my-5 text-center mx-auto" style="max-width: 70%;">
+                            * Divide-se a atividade de FDG-18 que chegou ao módulo de fracionamento pela Atividade do <sup>18</sup>F que seguiu para módulo de síntese. O resultado deve ser multiplicado por 100. 
+                        </h6>
+
+                        <h6 class="mt-5 border border-black py-1 fw-bold text-center mx-auto" style="max-width: 70%;">
+                            ATENÇÃO! Caso algum problema seja verificado, checar medidas para resolução no POP correspondente à atividade, antes de seguir para próxima ação.
+                            <br><br>
+                            Ao final de cada envase, colar as etiquetas correspondentes, colocar o medicamento dos clientes no pass through de Expedição e as amostras destinadas à realização de análises de Controle de Qualidade devem ser colocadas no pass through do Controle de Qualidade Microbiológico. 
+                        </h6>
+
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Ocorrências: </th>
+                                    <td>
+                                        <textarea class="form-control" id="ocorrencias_p9" name="ocorrencias_p9" maxlength="550"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Horário: </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="ocorrencias_horario_p9" name="ocorrencias_horario_p9">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Executado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_execucao_ocorrencias_p9" name="id_usuario_execucao_ocorrencias_p9">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_ocorrencias_p9" name="id_usuario_verificacao_ocorrencias_p9">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
 
                     <!-- Botões de Navegação -->
                     <div class="text-center mt-5">
@@ -859,7 +1277,7 @@
     <script>
         let paginaAtual = 1;
         let paginaAnterior = 1;
-        const totalPaginas = 5;
+        const totalPaginas = 7;
 
         function atualizarVisibilidade() {
             document.getElementById('pagina'+paginaAnterior).style.display = 'none';

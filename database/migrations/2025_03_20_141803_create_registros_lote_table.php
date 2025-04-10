@@ -148,6 +148,77 @@ return new class extends Migration
                     $table->foreign('id_usuario_execucao_ocorrencias_p6')->references('id')->on('users');
                 $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p6')->nullable();
                     $table->foreign('id_usuario_verificacao_ocorrencias_p6')->references('id')->on('users');    
+
+            // PAGINA 7
+                $table->string('kit_fracionamento_1_lote')->nullable();
+                $table->date('kit_fracionamento_1_data_validade')->nullable();
+                $table->string('kit_fracionamento_2_lote')->nullable();
+                $table->date('kit_fracionamento_2_data_validade')->nullable();
+                $table->string('filtro_millex_gs_lote')->nullable();
+                $table->date('filtro_millex_gs_data_validade')->nullable();
+                $table->string('filtro_millex_gv_lote')->nullable();
+                $table->date('filtro_millex_gv_data_validade')->nullable();
+                $table->string('soro_fisiologico_lote')->nullable();
+                $table->date('soro_fisiologico_data_validade')->nullable();
+                $table->string('agulha_09x40_lote')->nullable();
+                $table->date('agulha_09x40_data_validade')->nullable();
+                $table->string('frascos_15ml_lote')->nullable();
+                $table->integer('frascos_15ml_qtd')->nullable();
+                $table->date('frascos_15ml_data_validade')->nullable();
+                $table->string('frascos_bulk_lote')->nullable();
+                $table->date('frascos_bulk_data_validade')->nullable();
+
+                $table->unsignedBigInteger('id_usuario_separado_registrado_p7')->nullable();
+                    $table->foreign('id_usuario_separado_registrado_p7')->references('id')->on('users');
+                $table->date('data_separado_registrado_p7')->nullable();
+                $table->unsignedBigInteger('id_usuario_recebido_conferido_p7')->nullable();
+                    $table->foreign('id_usuario_recebido_conferido_p7')->references('id')->on('users');
+                $table->date('data_recebido_conferido_p7')->nullable();
+
+                $table->boolean('ligar_theodorico')->nullable();
+                $table->boolean('colocar_castelo_chumbo_dws')->nullable();
+                $table->boolean('pressionar_botao_park')->nullable();
+                $table->boolean('pressionar_botao_pinch_open')->nullable();                
+                $table->boolean('retirar_kit_usado')->nullable();                
+                $table->boolean('realizar_limpeza_theodorico')->nullable();                
+                $table->boolean('conectar_capilares_synthera_bulk')->nullable();                
+                $table->boolean('conectar_kit_fracionamento_1')->nullable();                
+                $table->boolean('fechar_bomba_peristaltica')->nullable();                
+            
+            // PAGINA 8
+                $table->boolean('pressionar_botao_pinch_close')->nullable();
+                $table->boolean('conectar_kit_fracionamento_2')->nullable();
+                $table->boolean('prender_capilares_parede_theodorico')->nullable();
+                $table->boolean('conectar_filtros_millex_gs')->nullable();
+                $table->boolean('verificar_linhas_conectadas')->nullable();
+                $table->boolean('verificar_conexoes_capilares')->nullable();
+                $table->boolean('verificar_agulha_succao')->nullable();
+                $table->boolean('fechar_porta')->nullable();
+                $table->boolean('programar_fracionamento_software')->nullable();
+                $table->boolean('imprimir_etiqueta_frascos')->nullable();
+                $table->boolean('alimentar_antecamara_frascos')->nullable();
+                $table->boolean('marcar_posicao_frascos')->nullable();
+                $table->boolean('pressionar_botao_from_synt')->nullable();
+                $table->boolean('pressionar_botao_bulk_dilution')->nullable();
+                $table->boolean('pressionar_botao_start')->nullable();
+                $table->unsignedBigInteger('id_usuario_verificado_p8')->nullable();
+                    $table->foreign('id_usuario_verificado_p8')->references('id')->on('users');
+
+                $table->string('atividade_fdg_18f')->nullable();
+                $table->string('volume_soro_fisiologico')->nullable();
+                $table->boolean('imprimir_anexar_relatorio_producao')->nullable();
+                $table->time('hora_inicio_p8')->nullable();
+                $table->time('hora_final_p8')->nullable();
+                $table->unsignedBigInteger('id_usuario_fracionamento_executado')->nullable();
+                    $table->foreign('id_usuario_fracionamento_executado')->references('id')->on('users');
+            
+                //PAGINA 9
+                    $table->string('ocorrencias_p9')->nullable();
+                    $table->time('ocorrencias_horario_p9')->nullable();
+                    $table->unsignedBigInteger('id_usuario_execucao_ocorrencias_p9')->nullable();
+                        $table->foreign('id_usuario_execucao_ocorrencias_p9')->references('id')->on('users');
+                    $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p9')->nullable();
+                        $table->foreign('id_usuario_verificacao_ocorrencias_p')->references('id')->on('users'); 
         });
     }
 
