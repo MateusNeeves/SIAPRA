@@ -926,10 +926,10 @@
                                 <tr>
                                     <th> Frascos 15mL estéreis e apirogênicos: </th>
                                     <td>
-                                        <input type="text" class="form-control" id="frascos_15ml_lote" name="frascos_15ml_lote">
+                                        <input type="number" min="0" class="form-control" id="frascos_15ml_qtd" name="frascos_15ml_qtd">
                                     </td>
                                     <td>
-                                        <input type="number" min="0" class="form-control" id="frascos_15ml_qtd" name="frascos_15ml_qtd">
+                                        <input type="text" class="form-control" id="frascos_15ml_lote" name="frascos_15ml_lote">
                                     </td>
                                     <td>
                                         <input type="date" class="form-control" id="frascos_15ml_data_validade" name="frascos_15ml_data_validade">
@@ -1168,13 +1168,13 @@
                                 <tr>
                                     <th> Atividade de FDG <sup>18</sup>F (mCi): </th>
                                     <td>
-                                        <input type="text" class="form-control" id="atividade_fdg_18f" name="atividade_fdg_18f">
+                                        <input type="number" min="0" class="form-control" id="atividade_fdg_18f" name="atividade_fdg_18f">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th> Volume de Soro Fisiológico adicionado (ml): </th>
                                     <td>
-                                        <input type="text" class="form-control" id="volume_soro_fisiologico" name="volume_soro_fisiologico">
+                                        <input type="number" min="0" class="form-control" id="volume_soro_fisiologico" name="volume_soro_fisiologico">
                                     </td>
                                 </tr>
                                 <tr>

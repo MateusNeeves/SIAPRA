@@ -162,8 +162,8 @@ return new class extends Migration
                 $table->date('soro_fisiologico_data_validade')->nullable();
                 $table->string('agulha_09x40_lote')->nullable();
                 $table->date('agulha_09x40_data_validade')->nullable();
-                $table->string('frascos_15ml_lote')->nullable();
                 $table->integer('frascos_15ml_qtd')->nullable();
+                $table->string('frascos_15ml_lote')->nullable();
                 $table->date('frascos_15ml_data_validade')->nullable();
                 $table->string('frascos_bulk_lote')->nullable();
                 $table->date('frascos_bulk_data_validade')->nullable();
@@ -204,21 +204,21 @@ return new class extends Migration
                 $table->unsignedBigInteger('id_usuario_verificado_p8')->nullable();
                     $table->foreign('id_usuario_verificado_p8')->references('id')->on('users');
 
-                $table->string('atividade_fdg_18f')->nullable();
-                $table->string('volume_soro_fisiologico')->nullable();
+                $table->decimal('atividade_fdg_18f')->nullable();
+                $table->decimal('volume_soro_fisiologico')->nullable();
                 $table->boolean('imprimir_anexar_relatorio_producao')->nullable();
                 $table->time('hora_inicio_p8')->nullable();
                 $table->time('hora_final_p8')->nullable();
                 $table->unsignedBigInteger('id_usuario_fracionamento_executado')->nullable();
                     $table->foreign('id_usuario_fracionamento_executado')->references('id')->on('users');
             
-                //PAGINA 9
-                    $table->string('ocorrencias_p9')->nullable();
-                    $table->time('ocorrencias_horario_p9')->nullable();
-                    $table->unsignedBigInteger('id_usuario_execucao_ocorrencias_p9')->nullable();
-                        $table->foreign('id_usuario_execucao_ocorrencias_p9')->references('id')->on('users');
-                    $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p9')->nullable();
-                        $table->foreign('id_usuario_verificacao_ocorrencias_p')->references('id')->on('users'); 
+            // PAGINA 9
+                $table->string('ocorrencias_p9')->nullable();
+                $table->time('ocorrencias_horario_p9')->nullable();
+                $table->unsignedBigInteger('id_usuario_execucao_ocorrencias_p9')->nullable();
+                    $table->foreign('id_usuario_execucao_ocorrencias_p9')->references('id')->on('users');
+                $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p9')->nullable();
+                    $table->foreign('id_usuario_verificacao_ocorrencias_p9')->references('id')->on('users'); 
         });
     }
 

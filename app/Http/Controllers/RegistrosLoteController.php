@@ -149,6 +149,73 @@ class RegistrosLoteController extends Controller
             $registroLote->id_usuario_execucao_ocorrencias_p6 = $request->id_usuario_execucao_ocorrencias_p6;
             $registroLote->id_usuario_verificacao_ocorrencias_p6 = $request->id_usuario_verificacao_ocorrencias_p6;
 
+        // PAGINA 7
+
+            $registroLote->kit_fracionamento_1_lote = $request->kit_fracionamento_1_lote;
+            $registroLote->kit_fracionamento_1_data_validade = $request->kit_fracionamento_1_data_validade;
+            $registroLote->kit_fracionamento_2_lote = $request->kit_fracionamento_2_lote;
+            $registroLote->kit_fracionamento_2_data_validade = $request->kit_fracionamento_2_data_validade;
+            $registroLote->filtro_millex_gs_lote = $request->filtro_millex_gs_lote;
+            $registroLote->filtro_millex_gs_data_validade = $request->filtro_millex_gs_data_validade;
+            $registroLote->filtro_millex_gv_lote = $request->filtro_millex_gv_lote;
+            $registroLote->filtro_millex_gv_data_validade = $request->filtro_millex_gv_data_validade;
+            $registroLote->soro_fisiologico_lote = $request->soro_fisiologico_lote;
+            $registroLote->soro_fisiologico_data_validade = $request->soro_fisiologico_data_validade;
+            $registroLote->agulha_09x40_lote = $request->agulha_09x40_lote;
+            $registroLote->agulha_09x40_data_validade = $request->agulha_09x40_data_validade;
+            $registroLote->frascos_15ml_lote = $request->frascos_15ml_lote;
+            $registroLote->frascos_15ml_qtd = $request->frascos_15ml_qtd;
+            $registroLote->frascos_15ml_data_validade = $request->frascos_15ml_data_validade;
+            $registroLote->frascos_bulk_lote = $request->frascos_bulk_lote;
+            $registroLote->frascos_bulk_data_validade = $request->frascos_bulk_data_validade;
+            $registroLote->id_usuario_separado_registrado_p7 = $request->id_usuario_separado_registrado_p7;
+            $registroLote->data_separado_registrado_p7 = $request->data_separado_registrado_p7;
+            $registroLote->id_usuario_recebido_conferido_p7 = $request->id_usuario_recebido_conferido_p7;
+            $registroLote->data_recebido_conferido_p7 = $request->data_recebido_conferido_p7;
+
+            $registroLote->ligar_theodorico = $request->has('ligar_theodorico') ? true : false;
+            $registroLote->colocar_castelo_chumbo_dws = $request->has('colocar_castelo_chumbo_dws') ? true : false;
+            $registroLote->pressionar_botao_park = $request->has('pressionar_botao_park') ? true : false;
+            $registroLote->pressionar_botao_pinch_open = $request->has('pressionar_botao_pinch_open') ? true : false;
+            $registroLote->retirar_kit_usado = $request->has('retirar_kit_usado') ? true : false;
+            $registroLote->realizar_limpeza_theodorico = $request->has('realizar_limpeza_theodorico') ? true : false;
+            $registroLote->conectar_capilares_synthera_bulk = $request->has('conectar_capilares_synthera_bulk') ? true : false;
+            $registroLote->conectar_kit_fracionamento_1 = $request->has('conectar_kit_fracionamento_1') ? true : false;
+            $registroLote->fechar_bomba_peristaltica = $request->has('fechar_bomba_peristaltica') ? true : false;
+        
+        // PAGINA 8
+
+            $registroLote->pressionar_botao_pinch_close = $request->has('pressionar_botao_pinch_close') ? true : false;
+            $registroLote->conectar_kit_fracionamento_2 = $request->has('conectar_kit_fracionamento_2') ? true : false;
+            $registroLote->prender_capilares_parede_theodorico = $request->has('prender_capilares_parede_theodorico') ? true : false;
+            $registroLote->conectar_filtros_millex_gs = $request->has('conectar_filtros_millex_gs') ? true : false;
+            $registroLote->verificar_linhas_conectadas = $request->has('verificar_linhas_conectadas') ? true : false;
+            $registroLote->verificar_conexoes_capilares = $request->has('verificar_conexoes_capilares') ? true : false;
+            $registroLote->verificar_agulha_succao = $request->has('verificar_agulha_succao') ? true : false;
+            $registroLote->fechar_porta = $request->has('fechar_porta') ? true : false;
+            $registroLote->programar_fracionamento_software = $request->has('programar_fracionamento_software') ? true : false;
+            $registroLote->imprimir_etiqueta_frascos = $request->has('imprimir_etiqueta_frascos') ? true : false;
+            $registroLote->alimentar_antecamara_frascos = $request->has('alimentar_antecamara_frascos') ? true : false;
+            $registroLote->marcar_posicao_frascos = $request->has('marcar_posicao_frascos') ? true : false;
+            $registroLote->pressionar_botao_from_synt = $request->has('pressionar_botao_from_synt') ? true : false;
+            $registroLote->pressionar_botao_bulk_dilution = $request->has('pressionar_botao_bulk_dilution') ? true : false;
+            $registroLote->pressionar_botao_start = $request->has('pressionar_botao_start') ? true : false;
+            $registroLote->id_usuario_verificado_p8 = $request->id_usuario_verificado_p8;
+            
+            $registroLote->atividade_fdg_18f = $request->atividade_fdg_18f;
+            $registroLote->volume_soro_fisiologico = $request->volume_soro_fisiologico;
+            $registroLote->imprimir_anexar_relatorio_producao = $request->has('imprimir_anexar_relatorio_producao') ? true : false;
+            $registroLote->hora_inicio_p8 = $request->hora_inicio_p8;
+            $registroLote->hora_final_p8 = $request->hora_final_p8;
+            $registroLote->id_usuario_fracionamento_executado = $request->id_usuario_fracionamento_executado;
+        
+        // PAGINA 9
+
+            $registroLote->ocorrencias_p9 = $request->ocorrencias_p9;
+            $registroLote->ocorrencias_horario_p9 = $request->ocorrencias_horario_p9;
+            $registroLote->id_usuario_execucao_ocorrencias_p9 = $request->id_usuario_execucao_ocorrencias_p9;
+            $registroLote->id_usuario_verificacao_ocorrencias_p9 = $request->id_usuario_verificacao_ocorrencias_p9;
+
 
         $registroLote->save();
 
@@ -214,22 +281,27 @@ class RegistrosLoteController extends Controller
             }
 
             // ---------------------------------------------------//
-            
-            $pdf->SetXY(150, 120);
-            $pdf->Write(10, $registro_lote->pressao_ar_comprimido . " bar");
 
-            $pdf->SetXY(150, 128);
-            $pdf->Write(10, $registro_lote->pressao_H . " bar");
-
-            $pdf->SetXY(150, 134);
-            $pdf->Write(10, $registro_lote->pressao_He_refrigeracao . " bar");
-
-            $pdf->SetXY(150, 140);
-            $pdf->Write(10, $registro_lote->pressao_He_analitico . " bar");
-
-            $pdf->SetXY(150, 147.5);
-            $pdf->Write(10, $registro_lote->radiacao_ambiental_lab . " " . chr(181) . "Sv/h");
-            
+            if ($registro_lote->pressao_ar_comprimido){
+                $pdf->SetXY(150, 120);
+                $pdf->Write(10, $registro_lote->pressao_ar_comprimido . " bar");
+            }
+            if ($registro_lote->pressao_H){
+                $pdf->SetXY(150, 128);
+                $pdf->Write(10, $registro_lote->pressao_H . " bar");
+            }
+            if ($registro_lote->pressao_He_refrigeracao){
+                $pdf->SetXY(150, 134);
+                $pdf->Write(10, $registro_lote->pressao_He_refrigeracao . " bar");
+            }
+            if ($registro_lote->pressao_He_analitico){
+                $pdf->SetXY(150, 140);
+                $pdf->Write(10, $registro_lote->pressao_He_analitico . " bar");
+            }
+            if ($registro_lote->radiacao_ambiental_lab){
+                $pdf->SetXY(150, 147.5);
+                $pdf->Write(10, $registro_lote->radiacao_ambiental_lab . " " . chr(181) . "Sv/h");
+            }
             if ($registro_lote->id_usuario_verificacao_p3){
                 $pdf->SetXY(58, 155.5);
                 $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_p3)->username . " - " . $registro_lote->id_usuario_verificacao_p3);
@@ -243,8 +315,10 @@ class RegistrosLoteController extends Controller
             $pdf->SetXY(56, 181.5);
             $pdf->Write(10, substr($registro_lote->hora_final_irradiacao_agua_enriquecida, 0, -3));
 
-            $pdf->SetXY(84, 181.5);
-            $pdf->Write(10, substr($registro_lote->ativ_teorica_F18, 0, -3) . " mCi");
+            if ($registro_lote->ativ_teorica_F18){
+                $pdf->SetXY(84, 181.5);
+                $pdf->Write(10, substr($registro_lote->ativ_teorica_F18, 0, -3) . " mCi");
+            }
             if ($registro_lote->id_usuario_irradiacao_agua_enriquecida){
                 $pdf->SetXY(127, 178);
                 $pdf->Write(10, User::find($registro_lote->id_usuario_irradiacao_agua_enriquecida)->username . " - " . $registro_lote->id_usuario_irradiacao_agua_enriquecida);
@@ -272,19 +346,22 @@ class RegistrosLoteController extends Controller
             $palavras = explode(" ", $texto);
             $linha1 = "";
             $restante = "";
+            $fim_Linha1 = false;
 
             foreach ($palavras as $palavra) {
-                if ($pdf->GetStringWidth($linha1 . " " . $palavra) < 130)
+                if (!$fim_Linha1 && $pdf->GetStringWidth($linha1 . " " . $palavra) < 130)
                     $linha1 .= " " . $palavra;
-                else
+                else{
+                    $fim_Linha1 = true;
                     $restante .= " " . $palavra;
+                }
             }
 
             $pdf->Write(6, trim($linha1));
 
             if (!empty($restante)) {
                 $pdf->SetXY(30, $pdf->GetY() + 6);
-                $pdf->MultiCell(160, 6, trim($restante), 0, 'L');
+                $pdf->MultiCell(158, 6, trim($restante), 0, 'L');
             }
 
             $pdf->SetXY(47, 241);
@@ -297,7 +374,7 @@ class RegistrosLoteController extends Controller
 
             // ---------------------------------------------------//
 
-            if ($registro_lote->logbook_anexado) {
+            if ($registro_lote->logbook_anexado != null && $registro_lote->logbook_anexado == true) {
                 $pdf->SetXY(105, 252.5);
                 $pdf->Write(10, "X");
 
@@ -311,7 +388,7 @@ class RegistrosLoteController extends Controller
                     $pdf->SetXY(140, 259);
                     $pdf->Write(10, User::find($registro_lote->id_usuario_logbook)->username . " - " . $registro_lote->id_usuario_logbook);
                 }
-            } else if ($registro_lote->logbook_anexado != null) {
+            } else if ($registro_lote->logbook_anexado != null && $registro_lote->logbook_anexado == false) {
                 $pdf->SetXY(151.5, 252.5);
                 $pdf->Write(10, "X");
             }
@@ -329,11 +406,11 @@ class RegistrosLoteController extends Controller
 
             // ---------------------------------------------------//
 
-            if ($registro_lote->modulo_sintese != null && !$registro_lote->modulo_sintese){
+            if ($registro_lote->modulo_sintese != null && $registro_lote->modulo_sintese == 0){
                 $pdf->SetXY(100.5, 77 );
                 $pdf->Write(10, "X");
             }
-            else if ($registro_lote->modulo_sintese != null){
+            else if ($registro_lote->modulo_sintese != null && $registro_lote->modulo_sintese == 1){
                 $pdf->SetXY(100.5, 84);
                 $pdf->Write(10, "X");
             }
@@ -343,94 +420,124 @@ class RegistrosLoteController extends Controller
             $pdf->SetXY(111.5, 117);
             $pdf->Write(10, $registro_lote->kryptofix222_lote);
 
-            $pdf->SetXY(168, 117);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->kryptofix222_data_validade)));
-            
+            if ($registro_lote->kryptofix222_data_validade){
+                $pdf->SetXY(168, 117);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->kryptofix222_data_validade)));
+            }
+
             $pdf->SetXY(111.5, 124.5);
             $pdf->Write(10, $registro_lote->triflato_manose_lote);
             
-            $pdf->SetXY(168, 124.5);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->triflato_manose_data_validade)));
-            
+            if ($registro_lote->triflato_manose_data_validade){
+                $pdf->SetXY(168, 124.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->triflato_manose_data_validade)));
+            }
+
             $pdf->SetXY(111.5, 132);
             $pdf->Write(10, $registro_lote->hidroxido_sodio_lote);
             
-            $pdf->SetXY(168, 132);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->hidroxido_sodio_data_validade)));
-            
+            if ($registro_lote->hidroxido_sodio_data_validade){
+                $pdf->SetXY(168, 132);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->hidroxido_sodio_data_validade)));
+            }
+
             $pdf->SetXY(111.5, 139);
             $pdf->Write(10, $registro_lote->agua_injetaveis_lote);
             
-            $pdf->SetXY(168, 139);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->agua_injetaveis_data_validade)));
-            
+            if ($registro_lote->agua_injetaveis_data_validade){
+                $pdf->SetXY(168, 139);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->agua_injetaveis_data_validade)));
+            }
+
             $pdf->SetXY(111.5, 146);
             $pdf->Write(10, $registro_lote->acetronitrila_anidra_lote);
             
-            $pdf->SetXY(168, 146);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->acetronitrila_anidra_data_validade)));
-            
+            if ($registro_lote->acetronitrila_anidra_data_validade){
+                $pdf->SetXY(168, 146);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->acetronitrila_anidra_data_validade)));
+            }
+
             $pdf->SetXY(111.5, 153);
             $pdf->Write(10, $registro_lote->ifp_synthera_lote);
             
-            $pdf->SetXY(168, 153);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->ifp_synthera_data_validade)));
+            if ($registro_lote->ifp_synthera_data_validade){
+                $pdf->SetXY(168, 153);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->ifp_synthera_data_validade)));
+            }
 
             // ---------------------------------------------------//
 
             $pdf->SetXY(111.5, 176);
             $pdf->Write(10, $registro_lote->sep_pak_lote);
             
-            $pdf->SetXY(168, 176);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->sep_pak_data_validade)));
+            if ($registro_lote->sep_pak_data_validade){
+                $pdf->SetXY(168, 176);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->sep_pak_data_validade)));
+            }
 
             $pdf->SetXY(111.5, 183.5);
             $pdf->Write(10, $registro_lote->coluna_scx_lote);
             
-            $pdf->SetXY(168, 183.5);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->coluna_scx_data_validade)));
+            if ($registro_lote->coluna_scx_data_validade){
+                $pdf->SetXY(168, 183.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->coluna_scx_data_validade)));
+            }
 
             $pdf->SetXY(111.5, 190.5);
             $pdf->Write(10, $registro_lote->coluna_c18_lote);
             
-            $pdf->SetXY(168, 190.5);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->coluna_c18_data_validade)));
+            if ($registro_lote->coluna_c18_data_validade){
+                $pdf->SetXY(168, 190.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->coluna_c18_data_validade)));
+            }
 
             $pdf->SetXY(111.5, 197.5);
             $pdf->Write(10, $registro_lote->coluna_alumina_lote);
             
-            $pdf->SetXY(168, 197.5);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->coluna_alumina_data_validade)));
+            if ($registro_lote->coluna_alumina_data_validade){
+                $pdf->SetXY(168, 197.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->coluna_alumina_data_validade)));
+            }
 
             $pdf->SetXY(111.5, 205);
             $pdf->Write(10, $registro_lote->seringa_3ml_lote);
             
-            $pdf->SetXY(168, 205);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->seringa_3ml_data_validade)));
+            if ($registro_lote->seringa_3ml_data_validade){
+                $pdf->SetXY(168, 205);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->seringa_3ml_data_validade)));
+            }
 
             $pdf->SetXY(111.5, 212);
             $pdf->Write(10, $registro_lote->agulha_05x25_lote);
             
-            $pdf->SetXY(168, 212);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->agulha_05x25_data_validade)));
+            if ($registro_lote->agulha_05x25_data_validade){
+                $pdf->SetXY(168, 212);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->agulha_05x25_data_validade)));
+            }
 
             $pdf->SetXY(111.5, 219.5);
             $pdf->Write(10, $registro_lote->agua_injetavel_seringa_lote);
             
-            $pdf->SetXY(168, 219.5);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->agua_injetavel_seringa_data_validade)));
+            if ($registro_lote->agua_injetavel_seringa_data_validade){
+                $pdf->SetXY(168, 219.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->agua_injetavel_seringa_data_validade)));
+            }
 
             $pdf->SetXY(111.5, 226.5);
             $pdf->Write(10, $registro_lote->etanol_seringa_lote);
             
-            $pdf->SetXY(168, 226.5);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->etanol_seringa_data_validade)));
+            if ($registro_lote->etanol_seringa_data_validade){
+                $pdf->SetXY(168, 226.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->etanol_seringa_data_validade)));
+            }
 
             $pdf->SetXY(111.5, 233.5);
             $pdf->Write(10, $registro_lote->NaHCO3_seringa_lote);
             
-            $pdf->SetXY(168, 233.5);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->NaHCO3_seringa_data_validade)));
+            if ($registro_lote->NaHCO3_seringa_data_validade){
+                $pdf->SetXY(168, 233.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->NaHCO3_seringa_data_validade)));
+            }
 
             // ---------------------------------------------------//
             
@@ -439,17 +546,21 @@ class RegistrosLoteController extends Controller
                 $pdf->Write(10, User::find($registro_lote->id_usuario_separado_registrado_p4)->username . " - " . $registro_lote->id_usuario_separado_registrado_p4);
             }
             
-            $pdf->SetXY(165, 241);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->data_separado_registrado_p4)));
+            if ($registro_lote->data_separado_registrado_p4){
+                $pdf->SetXY(165, 241);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->data_separado_registrado_p4)));
+            }
 
             if ($registro_lote->id_usuario_recebido_conferido_p4){
                 $pdf->SetXY(82, 248.5);
                 $pdf->Write(10, User::find($registro_lote->id_usuario_recebido_conferido_p4)->username . " - " . $registro_lote->id_usuario_recebido_conferido_p4);
             }
 
-            $pdf->SetXY(165, 248.5);
-            $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->data_recebido_conferido_p4)));
-
+            if ($registro_lote->data_recebido_conferido_p4){
+                $pdf->SetXY(165, 248.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->data_recebido_conferido_p4)));
+            }
+            
         // PÁGINA 5
             $pdf->AddPage();
             $tplIdx = $pdf->importPage(5);
@@ -603,32 +714,38 @@ class RegistrosLoteController extends Controller
 
             // ---------------------------------------------------//
 
-            $pdf->SetXY(30, 163.5);
-            $pdf->Write(10, substr($registro_lote->ativ_chegada_18F, 0, -3) . " mCi");
-
-            $pdf->SetXY(72.5, 163.5);
-            $pdf->Write(10, substr($registro_lote->ativ_residual_18F, 0, -3) . " mCi");
-
-            $pdf->SetXY(110, 163.5);
-            $pdf->Write(10, substr($registro_lote->ativ_modulo_sintese, 0, -3) . " mCi");
-
-            $pdf->SetXY(148, 163.5);
-            $pdf->Write(10, substr($registro_lote->ativ_modulo_fracionamento, 0, -3) . " mCi");
-
-            $pdf->SetXY(30, 178.5);
-            $pdf->Write(10, substr($registro_lote->hora_inicio_sintese, 0, -3) . " h");
-
-            $pdf->SetXY(72.5, 178.5);
-            $pdf->Write(10, substr($registro_lote->hora_final_sintese, 0, -3) . " h");
-
-            $pdf->SetXY(148, 174.5);
-            $pdf->Write(10, substr($registro_lote->rendimento_sintese, 0, -3) . " %");
-
+            if ($registro_lote->ativ_chegada_18F){
+                $pdf->SetXY(30, 163.5);
+                $pdf->Write(10, substr($registro_lote->ativ_chegada_18F, 0, -3) . " mCi");
+            }
+            if ($registro_lote->ativ_residual_18F){
+                $pdf->SetXY(72.5, 163.5);
+                $pdf->Write(10, substr($registro_lote->ativ_residual_18F, 0, -3) . " mCi");
+            }
+            if ($registro_lote->ativ_modulo_sintese){
+                $pdf->SetXY(110, 163.5);
+                $pdf->Write(10, substr($registro_lote->ativ_modulo_sintese, 0, -3) . " mCi");
+            }
+            if ($registro_lote->ativ_modulo_fracionamento){
+                $pdf->SetXY(148, 163.5);
+                $pdf->Write(10, substr($registro_lote->ativ_modulo_fracionamento, 0, -3) . " mCi");
+            }
+            if ($registro_lote->hora_inicio_sintese){
+                $pdf->SetXY(30, 178.5);
+                $pdf->Write(10, substr($registro_lote->hora_inicio_sintese, 0, -3) . " h");
+            }
+            if ($registro_lote->hora_final_sintese){
+                $pdf->SetXY(72.5, 178.5);
+                $pdf->Write(10, substr($registro_lote->hora_final_sintese, 0, -3) . " h");
+            }
+            if ($registro_lote->rendimento_sintese){
+                $pdf->SetXY(148, 174.5);
+                $pdf->Write(10, substr($registro_lote->rendimento_sintese, 0, -3) . " %");
+            }
             if ($registro_lote->id_usuario_execucao_p6){
                 $pdf->SetXY(61, 186.5);
                 $pdf->Write(10, User::find($registro_lote->id_usuario_execucao_p6)->username . " - " . $registro_lote->id_usuario_execucao_p6);
             }
-
             if ($registro_lote->id_usuario_verificacao_p6){
                 $pdf->SetXY(141, 186.5);
                 $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_p6)->username . " - " . $registro_lote->id_usuario_verificacao_p6);
@@ -643,19 +760,22 @@ class RegistrosLoteController extends Controller
             $palavras = explode(" ", $texto);
             $linha1 = "";
             $restante = "";
+            $fim_Linha1 = false;
 
             foreach ($palavras as $palavra) {
-                if ($pdf->GetStringWidth($linha1 . " " . $palavra) < 130)
+                if (!$fim_Linha1 && $pdf->GetStringWidth($linha1 . " " . $palavra) < 130)
                     $linha1 .= " " . $palavra;
-                else
+                else{
+                    $fim_Linha1 = true;
                     $restante .= " " . $palavra;
+                }
             }
 
             $pdf->Write(6, trim($linha1));
 
             if (!empty($restante)) {
                 $pdf->SetXY(30, $pdf->GetY() + 6);
-                $pdf->MultiCell(160, 7, trim($restante), 0, 'L');
+                $pdf->MultiCell(158, 7, trim($restante), 0, 'L');
             }
 
             $pdf->SetXY(30, 262);
@@ -674,6 +794,323 @@ class RegistrosLoteController extends Controller
         // PÁGINA 7
             $pdf->AddPage();
             $tplIdx = $pdf->importPage(7);
+            $pdf->useTemplate($tplIdx, 0, 0, 210);
+            
+            $pdf->SetXY(39, 51);
+            $pdf->Write(10, $lote);
+
+            $pdf->SetXY(155, 51);
+            $pdf->Write(10, $dia . "   " . $mes . "  " . $ano);
+
+            // ---------------------------------------------------//
+
+            $pdf->SetXY(110, 99);
+            $pdf->Write(10, $registro_lote->kit_fracionamento_1_lote);
+
+            if ($registro_lote->kit_fracionamento_1_data_validade){
+                $pdf->SetXY(160, 99);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->kit_fracionamento_1_data_validade)));
+            }
+
+            $pdf->SetXY(110, 106.5);
+            $pdf->Write(10, $registro_lote->kit_fracionamento_2_lote);
+
+            if ($registro_lote->kit_fracionamento_2_data_validade){
+                $pdf->SetXY(160, 106.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->kit_fracionamento_2_data_validade)));
+            }
+
+            $pdf->SetXY(110, 115);
+            $pdf->Write(10, $registro_lote->filtro_millex_gs_lote);
+
+            if ($registro_lote->filtro_millex_gs_data_validade){
+                $pdf->SetXY(160, 115);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->filtro_millex_gs_data_validade)));
+            }
+
+            $pdf->SetXY(110, 123.5);
+            $pdf->Write(10, $registro_lote->filtro_millex_gv_lote);
+
+            if ($registro_lote->filtro_millex_gv_data_validade){
+                $pdf->SetXY(160, 123.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->filtro_millex_gv_data_validade)));
+            }
+
+            $pdf->SetXY(110, 131);
+            $pdf->Write(10, $registro_lote->soro_fisiologico_lote);
+
+            if ($registro_lote->soro_fisiologico_data_validade){
+                $pdf->SetXY(160, 131);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->soro_fisiologico_data_validade)));
+            }
+
+            $pdf->SetXY(110, 138.5);
+            $pdf->Write(10, $registro_lote->agulha_09x40_lote);
+
+            if ($registro_lote->agulha_09x40_data_validade){
+                $pdf->SetXY(160, 138.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->agulha_09x40_data_validade)));
+            }
+
+            $pdf->SetXY(98.5, 146.5);
+            $pdf->Write(10, $registro_lote->frascos_15ml_qtd);
+
+            $pdf->SetXY(110, 146.5);
+            $pdf->Write(10, $registro_lote->frascos_15ml_lote);
+
+            if ($registro_lote->frascos_15ml_data_validade){
+                $pdf->SetXY(160, 146.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->frascos_15ml_data_validade)));
+            }
+
+            $pdf->SetXY(110, 155.5);
+            $pdf->Write(10, $registro_lote->frascos_bulk_lote);
+
+            if ($registro_lote->frascos_bulk_data_validade){
+                $pdf->SetXY(160, 155.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->frascos_bulk_data_validade)));
+            }
+
+            // ---------------------------------------------------//
+
+            if ($registro_lote->id_usuario_separado_registrado_p7){
+                $pdf->SetXY(82, 164);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_separado_registrado_p7)->username . " - " . $registro_lote->id_usuario_separado_registrado_p7);
+            }
+            
+            if ($registro_lote->data_separado_registrado_p7){
+                $pdf->SetXY(156, 164);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->data_separado_registrado_p7)));
+            }
+
+            if ($registro_lote->id_usuario_recebido_conferido_p7){
+                $pdf->SetXY(82, 171.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_recebido_conferido_p7)->username . " - " . $registro_lote->id_usuario_recebido_conferido_p7);
+            }
+
+            if ($registro_lote->data_recebido_conferido_p7){
+                $pdf->SetXY(156, 171.5);
+                $pdf->Write(10, date('d/m/Y', strtotime($registro_lote->data_recebido_conferido_p7)));
+            }
+
+            // ---------------------------------------------------//
+
+            if ($registro_lote->ligar_theodorico){
+                $pdf->SetXY(170.5, 195);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->colocar_castelo_chumbo_dws){
+                $pdf->SetXY(170.5, 202.5);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->pressionar_botao_park){
+                $pdf->SetXY(170.5, 209.5);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->pressionar_botao_pinch_open){
+                $pdf->SetXY(170.5, 217);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->retirar_kit_usado){
+                $pdf->SetXY(170.5, 224);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->realizar_limpeza_theodorico){
+                $pdf->SetXY(170.5, 231);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->conectar_capilares_synthera_bulk){
+                $pdf->SetXY(170.5, 238);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->conectar_kit_fracionamento_1){
+                $pdf->SetXY(170.5, 245.5);
+                $pdf->Write(10, "X");
+            }
+            
+            if ($registro_lote->fechar_bomba_peristaltica){
+                $pdf->SetXY(170.5, 253);
+                $pdf->Write(10, "X");
+            }
+    
+        // PÁGINA 8
+            $pdf->AddPage();
+            $tplIdx = $pdf->importPage(8);
+            $pdf->useTemplate($tplIdx, 0, 0, 210);
+            
+            $pdf->SetXY(39, 51);
+            $pdf->Write(10, $lote);
+
+            $pdf->SetXY(155, 51);
+            $pdf->Write(10, $dia . "   " . $mes . "  " . $ano);
+
+            // ---------------------------------------------------//
+
+            if ($registro_lote->pressionar_botao_pinch_close){
+                $pdf->SetXY(170.5, 69);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->conectar_kit_fracionamento_2){
+                $pdf->SetXY(170.5, 76);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->prender_capilares_parede_theodorico){
+                $pdf->SetXY(170.5, 83.5);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->conectar_filtros_millex_gs){
+                $pdf->SetXY(170.5, 91.5);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->verificar_linhas_conectadas){
+                $pdf->SetXY(170.5, 99.5);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->verificar_conexoes_capilares){
+                $pdf->SetXY(170.5, 107.5);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->verificar_agulha_succao){
+                $pdf->SetXY(170.5, 115.5);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->fechar_porta){
+                $pdf->SetXY(170.5, 123);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->programar_fracionamento_software){
+                $pdf->SetXY(170.5, 130);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->imprimir_etiqueta_frascos){
+                $pdf->SetXY(170.5, 137.5);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->alimentar_antecamara_frascos){
+                $pdf->SetXY(170.5, 144.5);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->marcar_posicao_frascos){
+                $pdf->SetXY(170.5, 151.5);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->pressionar_botao_from_synt){
+                $pdf->SetXY(170.5, 159);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->pressionar_botao_bulk_dilution){
+                $pdf->SetXY(170.5, 166);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->pressionar_botao_start){
+                $pdf->SetXY(170.5, 173.5);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->id_usuario_verificado_p8){
+                $pdf->SetXY(60, 180);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_verificado_p8)->username . " - " . $registro_lote->id_usuario_verificado_p8);
+            }
+
+            // ---------------------------------------------------//
+
+            $pdf->SetXY(103.5, 202.5);
+            $pdf->Write(10, substr($registro_lote->atividade_fdg_18f, 0, -3) . " mCi");
+
+            $pdf->SetXY(103.5, 210);
+            $pdf->Write(10, substr($registro_lote->volume_soro_fisiologico, 0, -3) . " ml");
+
+            
+            if ($registro_lote->imprimir_anexar_relatorio_producao){
+                $pdf->SetXY(143, 217.5);
+                $pdf->Write(10, "X");
+            }
+            
+            $pdf->SetXY(30, 232);
+            $pdf->Write(10, substr($registro_lote->hora_inicio_p8, 0, -3) . " h");
+            
+            $pdf->SetXY(65, 232);
+            $pdf->Write(10, substr($registro_lote->hora_final_p8, 0, -3) . " h");
+            
+            if ($registro_lote->id_usuario_fracionamento_executado){
+                $pdf->SetXY(104, 229.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_fracionamento_executado)->username . " - " . $registro_lote->id_usuario_fracionamento_executado);
+            }
+
+        // PÁGINA 9
+            $pdf->AddPage();
+            $tplIdx = $pdf->importPage(9);
+            $pdf->useTemplate($tplIdx, 0, 0, 210);
+            
+            $pdf->SetXY(39, 51);
+            $pdf->Write(10, $lote);
+
+            $pdf->SetXY(155, 51);
+            $pdf->Write(10, $dia . "   " . $mes . "  " . $ano);
+
+            // ---------------------------------------------------//
+
+            $pdf->SetXY(62, 129);
+
+            $texto = utf8_decode($registro_lote->ocorrencias_p9);
+
+            $palavras = explode(" ", $texto);
+            $linha1 = "";
+            $restante = "";
+            $fim_Linha1 = false;
+            foreach ($palavras as $palavra) {
+                if (!$fim_Linha1 && $pdf->GetStringWidth($linha1 . " " . $palavra) < 130)
+                    $linha1 .= " " . $palavra;
+                else{
+                    $fim_Linha1 = true;
+                    $restante .= " " . $palavra;
+                }
+            }
+
+            $pdf->Write(6, trim($linha1));
+
+            if (!empty($restante)) {
+                $pdf->SetXY(30, $pdf->GetY() + 6);
+                $pdf->MultiCell(158, 7, trim($restante), 0, 'L');
+            }
+
+            $pdf->SetXY(30, 212.5);
+            $pdf->Write(10, substr($registro_lote->ocorrencias_horario_p9, 0, -3));
+
+            if ($registro_lote->id_usuario_execucao_ocorrencias_p9){
+                $pdf->SetXY(60, 210);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_execucao_ocorrencias_p9)->username . " - " . $registro_lote->id_usuario_execucao_ocorrencias_p9);
+            }
+
+            if ($registro_lote->id_usuario_verificacao_ocorrencias_p9){
+                $pdf->SetXY(124, 210);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_ocorrencias_p9)->username . " - " . $registro_lote->id_usuario_verificacao_ocorrencias_p9);
+            }
+
+        // PÁGINA 10
+            $pdf->AddPage();
+            $tplIdx = $pdf->importPage(10);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
             $pdf->SetXY(39, 51);
