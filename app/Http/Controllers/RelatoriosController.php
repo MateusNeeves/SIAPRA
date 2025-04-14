@@ -145,20 +145,14 @@ class RelatoriosController extends Controller
 
             $inventario = DB::select(
                 "SELECT P.ID, P.NOME, P.ID_TIPO,
-                    COALESCE((
-                        SELECT SUM(L.QTD_ITENS_RECEBIDOS)
-                        FROM PRODUTOS_MOV_IN AS L
-                        WHERE L.ID_PRODUTO = P.ID 
-                        AND L.DATA_ENTREGA BETWEEN ? AND ?
-                    ), 0) AS QTD, 
-                    COALESCE((
-                        SELECT SUM(L.PRECO)
-                        FROM PRODUTOS_MOV_IN AS L
-                        WHERE L.ID_PRODUTO = P.ID 
-                        AND L.DATA_ENTREGA BETWEEN ? AND ?
-                    ), 0) AS VALOR_TOTAL
-                FROM PRODUTOS P", 
-                ["{$request->ano}-01-01", "{$request->ano}-12-31", "{$request->ano}-01-01", "{$request->ano}-12-31"]
+                        COALESCE(SUM(L.QTD_ITENS_RECEBIDOS), 0) AS QTD,
+                        COALESCE(SUM(L.PRECO), 0) AS VALOR_TOTAL
+                 FROM PRODUTOS P
+                 INNER JOIN PRODUTOS_MOV_IN L 
+                     ON L.ID_PRODUTO = P.ID 
+                 WHERE L.DATA_ENTREGA BETWEEN ? AND ?
+                 GROUP BY P.ID, P.NOME, P.ID_TIPO", 
+                ["{$request->ano}-01-01", "{$request->ano}-12-31"]
             );
 
             foreach ($inventario as $produto) {

@@ -424,7 +424,7 @@ class ProdutosController extends Controller
     }
 
     public function view_mov(Request $request){
-        $lotes_entrada = DB::select('SELECT ID, QTD_ITENS_RECEBIDOS, DATA_ENTREGA FROM PRODUTOS_MOV_IN WHERE ID_PRODUTO = ? ORDER BY DATA_ENTREGA', [$request->id_view]);
+        $lotes_entrada = DB::select('SELECT ID, QTD_ITENS_RECEBIDOS, DATA_ENTREGA FROM PRODUTOS_MOV_IN WHERE ID_PRODUTO = ? ORDER BY ID', [$request->id_view]);
         $lotes_entrada = json_decode(json_encode($lotes_entrada), true);
         
         $lotes_saida = [];
@@ -652,13 +652,14 @@ class ProdutosController extends Controller
         try{
             DB::beginTransaction();
 
-            $lote = Produto_Mov_In::findOrFail($request->id_exp)->nome;
+            $lote = Produto_Mov_In::findOrFail($request->id_exp);
 
 
             $mov = new Produto_Mov_Out;
     
             $mov->id_produtos_mov_in = $lote->id;
             $mov->id_destino = Dest_Produto::where('nome', 'VENCIDO')->get()[0]->id;
+
 
             $mov->qtd_itens_movidos = $lote->qtd_itens_estoque;
             $mov->data_mov_out = now();

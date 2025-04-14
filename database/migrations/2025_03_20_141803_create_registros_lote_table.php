@@ -40,7 +40,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('id_usuario_transferir_F18_sintese')->nullable();
                     $table->foreign('id_usuario_transferir_F18_sintese')->references('id')->on('users');
 
-                $table->string('ocorrencias_p3', 290)->nullable();
+                $table->string('ocorrencias_p3', 260)->nullable();
                 $table->time('ocorrencias_horario_p3')->nullable();
                 $table->unsignedBigInteger('id_usuario_ocorrencias_p3')->nullable();
                     $table->foreign('id_usuario_ocorrencias_p3')->references('id')->on('users');
@@ -142,7 +142,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('id_usuario_verificacao_p6')->nullable();
                     $table->foreign('id_usuario_verificacao_p6')->references('id')->on('users');
                 
-                $table->string('ocorrencias_p6', 550)->nullable();
+                $table->string('ocorrencias_p6', 520)->nullable();
                 $table->time('ocorrencias_horario_p6')->nullable();
                 $table->unsignedBigInteger('id_usuario_execucao_ocorrencias_p6')->nullable();
                     $table->foreign('id_usuario_execucao_ocorrencias_p6')->references('id')->on('users');
@@ -213,7 +213,7 @@ return new class extends Migration
                     $table->foreign('id_usuario_fracionamento_executado')->references('id')->on('users');
             
             // PAGINA 9
-                $table->string('ocorrencias_p9')->nullable();
+                $table->string('ocorrencias_p9', 820)->nullable();
                 $table->time('ocorrencias_horario_p9')->nullable();
                 $table->unsignedBigInteger('id_usuario_execucao_ocorrencias_p9')->nullable();
                     $table->foreign('id_usuario_execucao_ocorrencias_p9')->references('id')->on('users');

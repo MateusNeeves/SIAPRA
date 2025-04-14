@@ -192,7 +192,7 @@
                                 <tr>
                                     <th> Ocorrências: </th>
                                     <td>
-                                        <textarea class="form-control" id="ocorrencias_p3" name="ocorrencias_p3" maxlength="290"></textarea>
+                                        <textarea class="form-control" id="ocorrencias_p3" name="ocorrencias_p3" maxlength="260"></textarea>
                                     </td>
                                 </tr>
                                 <tr>
@@ -807,7 +807,7 @@
                                 <tr>
                                     <th> Ocorrências: </th>
                                     <td>
-                                        <textarea class="form-control" id="ocorrencias_p6" name="ocorrencias_p6" maxlength="550"></textarea>
+                                        <textarea class="form-control" id="ocorrencias_p6" name="ocorrencias_p6" maxlength="520"></textarea>
                                     </td>
                                 </tr>
                                 <tr>
@@ -1225,7 +1225,7 @@
                                 <tr>
                                     <th> Ocorrências: </th>
                                     <td>
-                                        <textarea class="form-control" id="ocorrencias_p9" name="ocorrencias_p9" maxlength="550"></textarea>
+                                        <textarea class="form-control" id="ocorrencias_p9" name="ocorrencias_p9" maxlength="820"></textarea>
                                     </td>
                                 </tr>
                                 <tr>
