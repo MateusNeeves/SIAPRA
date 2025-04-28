@@ -49,6 +49,10 @@ class DatabaseSeeder extends Seeder
             ['descricao' => 'Editar Tipo de Produto'],
             ['descricao' => 'Deletar Tipo de Produto'],
 
+            ['descricao' => 'Adicionar Unidade de Medida'],
+            ['descricao' => 'Editar Unidade de Medida'],
+            ['descricao' => 'Deletar Unidade de Medida'],
+
             ['descricao' => 'Adicionar Destino de Produto'],
             ['descricao' => 'Editar Destino de Produto'],
             ['descricao' => 'Deletar Destino de Produto'],

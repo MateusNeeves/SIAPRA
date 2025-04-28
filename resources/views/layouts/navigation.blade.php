@@ -70,6 +70,9 @@
                                     <x-dropdown-link class=" text-decoration-none" :href="route('dest_produtos')">
                                         {{ __('Destinos dos Produtos') }}
                                     </x-dropdown-link>
+                                    <x-dropdown-link class=" text-decoration-none" :href="route('unidades_medida')">
+                                        {{ __('Unidades de Medida') }}
+                                    </x-dropdown-link>
                                 @if (array_intersect(['Admin', 'Visualizador', 'Farmacêutico'], Auth::user()->getClassNamesAttribute()))
                                     <x-dropdown-link class=" text-decoration-none" :href="route('quarentena')">
                                         {{ __('Quarentena') }}

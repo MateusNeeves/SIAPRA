@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('unidades_medida', function (Blueprint $table) {
             $table->id();
-            $table->string('nome', 100);
-            $table->string('sigla', 20)->nullable();
+            $table->string('nome', 100)->unique();
+            $table->string('sigla', 20)->unique()->nullable();
         });
     }
 

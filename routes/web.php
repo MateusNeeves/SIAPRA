@@ -18,6 +18,7 @@ use App\Http\Controllers\PlanejamentosController;
 use App\Http\Controllers\RegistrosLoteController;
 use App\Http\Controllers\TiposProdutosController;
 use App\Http\Controllers\FracionamentosController;
+use App\Http\Controllers\UnidadesMedidaController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -111,7 +112,15 @@ Route::get('/', function () {
             Route::post('/tipos_produtos/cadastrar', [TiposProdutosController::class, 'store'])->middleware(['auth'])->name('tipos_produtos.store');
             Route::post('/tipos_produtos/editar', [TiposProdutosController::class, 'edit'])->middleware(['auth'])->name('tipos_produtos.edit');
             Route::put('/tipos_produtos/editar', [TiposProdutosController::class, 'update'])->middleware(['auth'])->name('tipos_produtos.update');
-            Route::delete('/tipos_produtos/deletar', [TiposProdutosController::class, 'destroy'])->middleware(['auth'])->name('tipos_produtos.destroy');
+            Route::delete('/tipos_produtos/deletar', [TiposProdutosController::class, 'destroy'])->middleware(['auth'])->name('tipos_produtos.destroy');  
+        
+        // Unidades de Medida
+            Route::get('/unidades_medida', [UnidadesMedidaController::class, 'index'])->middleware(['auth'])->name('unidades_medida');
+            Route::get('/unidades_medida/cadastrar', [UnidadesMedidaController::class, 'register'])->middleware(['auth'])->name('unidades_medida.register');
+            Route::post('/unidades_medida/cadastrar', [UnidadesMedidaController::class, 'store'])->middleware(['auth'])->name('unidades_medida.store');
+            Route::post('/unidades_medida/editar', [UnidadesMedidaController::class, 'edit'])->middleware(['auth'])->name('unidades_medida.edit');
+            Route::put('/unidades_medida/editar', [UnidadesMedidaController::class, 'update'])->middleware(['auth'])->name('unidades_medida.update');
+            Route::delete('/unidades_medida/deletar', [UnidadesMedidaController::class, 'destroy'])->middleware(['auth'])->name('unidades_medida.destroy');
         
         // Destino do Produto
             Route::get('/dest_produtos', [DestProdutosController::class, 'index'])->middleware(['auth'])->name('dest_produtos');
