@@ -26,6 +26,8 @@ return new class extends Migration
             $table->string('telefone');
             $table->string('email')->nullable();
             $table->string('site')->nullable();
+            $table->string('inscricao_estadual', 20)->nullable();
+            $table->string('inscricao_municipal', 20)->nullable();
         });
     }
 

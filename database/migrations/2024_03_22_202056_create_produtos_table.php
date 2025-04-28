@@ -16,11 +16,14 @@ return new class extends Migration
             $table->string('nome')->unique();
             $table->string('descricao');
             $table->unsignedBigInteger('id_tipo');
-            $table->integer('qtd_aceitavel');
-            $table->integer('qtd_minima');
+            $table->decimal('qtd_aceitavel', 10, 3);
+            $table->decimal('qtd_minima', 10, 3);
             $table->string('quarentena');
+            $table->unsignedBigInteger('id_unidade_medida');
+            $table->integer('epm');
 
             $table->foreign('id_tipo')->references('id')->on('tipos_produtos');
+            $table->foreign('id_unidade_medida')->references('id')->on('unidades_medida');
         });
     }
 

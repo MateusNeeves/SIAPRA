@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('telefone');
             $table->string('email')->nullable();
             $table->string('site')->nullable();
+            $table->string('linha_fornecimento')->nullable();
         });
     }
 
