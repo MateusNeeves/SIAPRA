@@ -1262,6 +1262,334 @@
                         </table>
                     </div>
 
+                    <div id="pagina8" style="display: none;">
+                        <h4 class="mt-4">5. Embalagem e Expedição </h4>
+
+                        <h6  class="mb-4 mt-5">5.1 Embalagem </h6>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Separar </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Qtd. </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Separado </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Conferido </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Embalagem (balde): </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="embalagem_balde_qtd" name="embalagem_balde_qtd">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="embalagem_balde_separado" name="embalagem_balde_separado">
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="embalagem_balde_conferido">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Embalagem (case/maleta): </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="embalagem_case_qtd" name="embalagem_case_qtd">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="embalagem_case_separado" name="embalagem_case_separado">
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="embalagem_case_conferido">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Etiquetas IT: </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="etiquetas_it_qtd" name="etiquetas_it_qtd">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="etiquetas_it_separado" name="etiquetas_it_separado">
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="etiquetas_it_conferido">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Bulas FDG <sup>18</sup>F: </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="bulas_fdg_qtd" name="bulas_fdg_qtd">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="bulas_fdg_separado" name="bulas_fdg_separado">
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="bulas_fdg_conferido">
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            Separado por: 
+                                            <select class="form-select ms-2" id="id_usuario_separado_embalagem_p10" name="id_usuario_separado_embalagem_p10">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div> 
+                                    </th>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            Hora:
+                                            <input type="time" class="ms-2 form-control" id="horario_separado_embalagem_p10" name="horario_separado_embalagem_p10">
+                                        </div> 
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            Conferido por:
+                                            <select class="form-select ms-2" id="id_usuario_conferido_embalagem_p10" name="id_usuario_conferido_embalagem_p10">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </th>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center"> 
+                                            Hora: 
+                                            <input type="time" class="form-control ms-2" id="horario_conferido_embalagem_p10" name="horario_conferido_embalagem_p10">
+                                        </div>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <h6  class="mb-4 mt-5">5.2 Expedição </h6>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Separar </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Qtd. </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Separado </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Conferido </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Declaração do Expedidor: </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="decl_exped_qtd" name="decl_exped_qtd">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="decl_exped_separado" name="decl_exped_separado">
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="decl_exped_conferido">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Ficha(s) de Emergência: </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="ficha_emerg_qtd" name="ficha_emerg_qtd">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="ficha_emerg_separado" name="ficha_emerg_separado">
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="ficha_emerg_conferido">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Nota(s) Fiscal(is): </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="nota_fiscal_qtd" name="nota_fiscal_qtd">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="nota_fiscal_separado" name="nota_fiscal_separado">
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="nota_fiscal_conferido">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Termo de Doação: </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="termo_doacao_qtd" name="termo_doacao_qtd">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="termo_doacao_separado" name="termo_doacao_separado">
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="termo_doacao_conferido">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Identificação do Veículo: </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="ident_veiculo_qtd" name="ident_veiculo_qtd">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="ident_veiculo_separado" name="ident_veiculo_separado">
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="ident_veiculo_conferido">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Formulário TAM: </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="form_tam_qtd" name="form_tam_qtd">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="form_tam_separado" name="form_tam_separado">
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="form_tam_conferido">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Formulário IATA: </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="form_iata_qtd" name="form_iata_qtd">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="form_iata_separado" name="form_iata_separado">
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input me-2" type="checkbox" name="form_iata_conferido">
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            Separado por: 
+                                            <select class="form-select ms-2" id="id_usuario_separado_expedicao_p10" name="id_usuario_separado_expedicao_p10">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div> 
+                                    </th>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            Hora:
+                                            <input type="time" class="ms-2 form-control" id="horario_separado_expedicao_p10" name="horario_separado_expedicao_p10">
+                                        </div> 
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            Conferido por:
+                                            <select class="form-select ms-2" id="id_usuario_conferido_expedicao_p10" name="id_usuario_conferido_expedicao_p10">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </th>
+                                    <th class="table-light" colspan="2" scope="col">
+                                        <div class="flex align-items-center"> 
+                                            Hora: 
+                                            <input type="time" class="form-control ms-2" id="horario_conferido_expedicao_p10" name="horario_conferido_expedicao_p10">
+                                        </div>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    
+                        <h6  class="mb-4 mt-5">5.3 Término do Procedimento de Embalagem/Expedição </h6>
+
+                        <table class="table table-bordered">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Horário: </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="horario_final_emb_exped" name="horario_final_emb_exped">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Executado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_execucao_p10" name="id_usuario_execucao_p10">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_p10" name="id_usuario_verificacao_p10">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <h6  class="mb-4 mt-5">5.4 Ocorrências no procedimento de Embalagem/Expedição </h6>
+
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Ocorrências: </th>
+                                    <td>
+                                        <textarea class="form-control" id="ocorrencias_p10" name="ocorrencias_p10" maxlength="200"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Horário: </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="ocorrencias_horario_p10" name="ocorrencias_horario_p10">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Executado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_execucao_ocorrencias_p10" name="id_usuario_execucao_ocorrencias_p10">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_ocorrencias_p10" name="id_usuario_verificacao_ocorrencias_p10">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
 
                     <!-- Botões de Navegação -->
                     <div class="text-center mt-5">
@@ -1277,7 +1605,7 @@
     <script>
         let paginaAtual = 1;
         let paginaAnterior = 1;
-        const totalPaginas = 7;
+        const totalPaginas = 8;
 
         function atualizarVisibilidade() {
             document.getElementById('pagina'+paginaAnterior).style.display = 'none';

@@ -219,6 +219,67 @@ return new class extends Migration
                     $table->foreign('id_usuario_execucao_ocorrencias_p9')->references('id')->on('users');
                 $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p9')->nullable();
                     $table->foreign('id_usuario_verificacao_ocorrencias_p9')->references('id')->on('users'); 
+
+            // PAGINA 10
+                $table->integer('embalagem_balde_qtd')->nullable();
+                $table->integer('embalagem_balde_separado')->nullable();
+                $table->boolean('embalagem_balde_conferido')->nullable();
+                $table->integer('embalagem_case_qtd')->nullable();
+                $table->integer('embalagem_case_separado')->nullable();
+                $table->boolean('embalagem_case_conferido')->nullable();
+                $table->integer('etiquetas_it_qtd')->nullable();
+                $table->integer('etiquetas_it_separado')->nullable();
+                $table->boolean('etiquetas_it_conferido')->nullable();
+                $table->integer('bulas_fdg_qtd')->nullable();
+                $table->integer('bulas_fdg_separado')->nullable();
+                $table->boolean('bulas_fdg_conferido')->nullable();
+                $table->unsignedBigInteger('id_usuario_separado_embalagem_p10')->nullable();
+                    $table->foreign('id_usuario_separado_embalagem_p10')->references('id')->on('users');
+                $table->time('horario_separado_embalagem_p10')->nullable();
+                $table->unsignedBigInteger('id_usuario_conferido_embalagem_p10')->nullable();
+                    $table->foreign('id_usuario_conferido_embalagem_p10')->references('id')->on('users');
+                $table->time('horario_conferido_embalagem_p10')->nullable();
+
+                $table->integer('decl_exped_qtd')->nullable();
+                $table->integer('decl_exped_separado')->nullable();
+                $table->boolean('decl_exped_conferido')->nullable();
+                $table->integer('ficha_emerg_qtd')->nullable();
+                $table->integer('ficha_emerg_separado')->nullable();
+                $table->boolean('ficha_emerg_conferido')->nullable();
+                $table->integer('nota_fiscal_qtd')->nullable();
+                $table->integer('nota_fiscal_separado')->nullable();
+                $table->boolean('nota_fiscal_conferido')->nullable();
+                $table->integer('termo_doacao_qtd')->nullable();
+                $table->integer('termo_doacao_separado')->nullable();
+                $table->boolean('termo_doacao_conferido')->nullable();
+                $table->integer('ident_veiculo_qtd')->nullable();
+                $table->integer('ident_veiculo_separado')->nullable();
+                $table->boolean('ident_veiculo_conferido')->nullable();
+                $table->integer('form_tam_qtd')->nullable();
+                $table->integer('form_tam_separado')->nullable();
+                $table->boolean('form_tam_conferido')->nullable();
+                $table->integer('form_iata_qtd')->nullable();
+                $table->integer('form_iata_separado')->nullable();
+                $table->boolean('form_iata_conferido')->nullable();
+                $table->unsignedBigInteger('id_usuario_separado_expedicao_p10')->nullable();
+                    $table->foreign('id_usuario_separado_expedicao_p10')->references('id')->on('users');
+                $table->time('horario_separado_expedicao_p10')->nullable();
+                $table->unsignedBigInteger('id_usuario_conferido_expedicao_p10')->nullable();
+                    $table->foreign('id_usuario_conferido_expedicao_p10')->references('id')->on('users');
+                $table->time('horario_conferido_expedicao_p10')->nullable();
+
+                $table->time('horario_final_emb_exped')->nullable();
+                $table->unsignedBigInteger('id_usuario_execucao_p10')->nullable();
+                    $table->foreign('id_usuario_execucao_p10')->references('id')->on('users');
+                $table->unsignedBigInteger('id_usuario_verificacao_p10')->nullable();
+                    $table->foreign('id_usuario_verificacao_p10')->references('id')->on('users');
+
+                $table->string('ocorrencias_p10', 200)->nullable();
+                $table->time('ocorrencias_horario_p10')->nullable();
+                $table->unsignedBigInteger('id_usuario_execucao_ocorrencias_p10')->nullable();
+                    $table->foreign('id_usuario_execucao_ocorrencias_p10')->references('id')->on('users');
+                $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p10')->nullable();
+                    $table->foreign('id_usuario_verificacao_ocorrencias_p10')->references('id')->on('users'); 
         });
     }
 
