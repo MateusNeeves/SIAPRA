@@ -4,8 +4,8 @@
     @php
         $title = ['Fabricantes', 'Fabricante'];
         $path = 'fabricantes';
-        $columns = ['#', 'Nome', 'País', 'CNPJ', 'Endereço', 'Contato', 'Telefone', 'Email', 'Site'];
-        $indexes = ['id', 'nome', 'pais', 'cnpj', 'endereco', 'nome_contato', 'telefone', 'email', 'site'];
+        $columns = ['#', 'Nome', 'País', 'CNPJ', 'Endereço', 'Contato', 'Telefone', 'Email', 'Site', 'Linha de Fornecimento'];
+        $indexes = ['id', 'nome', 'pais', 'cnpj', 'endereco', 'nome_contato', 'telefone', 'email', 'site', 'linha_fornecimento'];
         $infos = $fabricantes;
     @endphp
 @endsection
@@ -169,5 +169,11 @@
     <div class="mt-4">
         <x-input-label :value="__('Site')" />
         <x-text-input id="site" class="block mt-1 w-full" type="text" name="site" :value="old('site', $fabricante->site ?? '')"/>
+    </div>
+
+    <!-- Linha de Fornecimento -->
+    <div class="mt-4">
+        <x-input-label :value="__('Linha de Fornecimento')" />
+        <x-text-input id="linha_fornecimento" class="block mt-1 w-full" type="text" name="linha_fornecimento" :value="old('linha_fornecimento', $fabricante->linha_fornecimento ?? '')"/>
     </div>
 @endsection

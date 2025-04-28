@@ -24,6 +24,7 @@ class Fabricante extends Model
         'nome_contato',
         'email',
         'site',
-        'telefone'
+        'telefone',
+        'linha_fornecimento'
     ];
 }

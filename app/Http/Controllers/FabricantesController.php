@@ -64,6 +64,7 @@ class FabricantesController extends Controller
             $fabricante->telefone = $request->telefone;
             $fabricante->email = mb_strtolower($request->email);
             $fabricante->site = $request->site;
+            $fabricante->linha_fornecimento = $request->linha_fornecimento;
 
             if ($request->pais == "BRASIL"){
                 $fabricante->cnpj = $request->cnpj;
@@ -97,7 +98,8 @@ class FabricantesController extends Controller
                 "- Nome do Contato: " . ($fabricante->nome_contato ?: '(não informado)') . "\n" .
                 "- Telefone: {$fabricante->telefone}\n" .
                 "- Email: " . ($fabricante->email ?: '(não informado)') . "\n" .
-                "- Site: " . ($fabricante->site ?: '(não informado)');
+                "- Site: " . ($fabricante->site ?: '(não informado)') . "\n" .
+                "- Linha de Fornecimento: " . ($fabricante->linha_fornecimento ?: '(não informado)') . "\n";
 
             $log->save();
  
@@ -157,6 +159,7 @@ class FabricantesController extends Controller
                     'telefone' => $request->telefone,
                     'email' => mb_strtolower($request->email),
                     'site' => $request->site,
+                    'linha_fornecimento' => $request->linha_fornecimento,
                 ]);
             }
             else{
@@ -174,6 +177,7 @@ class FabricantesController extends Controller
                     'telefone' => $request->telefone,
                     'email' => mb_strtolower($request->email),
                     'site' => $request->site,
+                    'linha_fornecimento' => $request->linha_fornecimento,
                 ]);
             }
 
@@ -243,7 +247,8 @@ class FabricantesController extends Controller
                 "- Nome do Contato: " . ($fabricante->nome_contato ?: '(não informado)') . "\n" .
                 "- Telefone: {$fabricante->telefone}\n" .
                 "- Email: " . ($fabricante->email ?: '(não informado)') . "\n" .
-                "- Site: " . ($fabricante->site ?: '(não informado)');
+                "- Site: " . ($fabricante->site ?: '(não informado)') . "\n" .
+                "- Linha de Fornecimento: " . ($fabricante->linha_fornecimento ?: '(não informado)') . "\n";
             $log->save();
 
             DB::commit();
