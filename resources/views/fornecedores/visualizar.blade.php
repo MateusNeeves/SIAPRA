@@ -4,8 +4,8 @@
     @php
         $title = ['Fornecedores', 'Fornecedor'];
         $path = 'fornecedores';
-        $columns = ['#', 'Nome', 'País', 'CNPJ', 'Endereço', 'Contato', 'Telefone', 'Email', 'Site'];
-        $indexes = ['id', 'nome', 'pais', 'cnpj', 'endereco', 'nome_contato', 'telefone', 'email', 'site'];
+        $columns = ['#', 'Nome', 'País', 'CNPJ', 'Endereço', 'Contato', 'Telefone', 'Email', 'Site', 'Inscrição Estadual', 'Inscrição Municipal'];
+        $indexes = ['id', 'nome', 'pais', 'cnpj', 'endereco', 'nome_contato', 'telefone', 'email', 'site', 'inscricao_estadual', 'inscricao_municipal'];
         $infos = $fornecedores;
     @endphp
 @endsection
@@ -44,6 +44,8 @@
             var complementoField = document.getElementById('complemento-field');
             var cidadeField = document.getElementById('cidade-field');
             var estadoField = document.getElementById('estado-field');
+            var inscricao_estadualField = document.getElementById('inscricao_estadual-field');
+            var inscricao_municipalField = document.getElementById('inscricao_municipal-field');
             
             // Inputs individuais para adicionar/remover o 'required'
             var cnpjInput = document.getElementById('cnpj');
@@ -60,6 +62,8 @@
                 complementoField.style.display = "block";
                 cidadeField.style.display = "block";
                 estadoField.style.display = "block";
+                inscricao_estadualField.style.display = "block";
+                inscricao_municipalField.style.display = "block";
                 
                 cnpjInput.setAttribute('required', 'required');
                 cepInput.setAttribute('required', 'required');
@@ -73,6 +77,8 @@
                 complementoField.style.display = "none";
                 cidadeField.style.display = "none";
                 estadoField.style.display = "none";
+                inscricao_estadualField.style.display = "none";
+                inscricao_municipalField.style.display = "none";
                 
                 cnpjInput.removeAttribute('required');
                 cepInput.removeAttribute('required');
@@ -169,5 +175,17 @@
     <div class="mt-4">
         <x-input-label :value="__('Site')" />
         <x-text-input id="site" class="block mt-1 w-full" type="text" name="site" :value="old('site', $fornecedor->site ?? '')"/>
+    </div>
+
+    <!-- Inscrição Estadual -->
+    <div id="inscricao_estadual-field" class="mt-4" style="display:none;">
+        <x-input-label :value="__('Inscrição Estadual')" />
+        <x-text-input id="inscricao_estadual" class="block mt-1 w-full" type="text" name="inscricao_estadual" maxlength="20" :value="old('inscricao_estadual', $fornecedor->inscricao_estadual ?? '')"/>
+    </div>
+
+    <!-- Inscrição Municipal -->
+    <div id="inscricao_municipal-field" class="mt-4" style="display:none;">
+        <x-input-label :value="__('Inscrição Municipal')" />
+        <x-text-input id="inscricao_municipal" class="block mt-1 w-full" type="text" name="inscricao_municipal" maxlength="20" :value="old('inscricao_municipal', $fornecedor->inscricao_municipal ?? '')"/>
     </div>
 @endsection

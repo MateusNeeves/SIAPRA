@@ -27,5 +27,7 @@ class Fornecedor extends Model
         'email',
         'site',
         'telefone',
+        'inscricao_estadual',
+        'inscricao_municipal',
 ];
 }

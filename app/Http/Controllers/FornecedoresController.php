@@ -70,6 +70,8 @@ class FornecedoresController extends Controller
                 $fornecedor->complemento = mb_strtoupper($request->complemento);
                 $fornecedor->cidade = mb_strtoupper($request->cidade);
                 $fornecedor->estado = mb_strtoupper($request->estado);
+                $fornecedor->inscricao_estadual = $request->inscricao_estadual;
+                $fornecedor->inscricao_municipal = $request->inscricao_municipal;
             }
     
             $fornecedor->save();
@@ -95,7 +97,9 @@ class FornecedoresController extends Controller
                 "- Nome do Contato: " . ($fornecedor->nome_contato ?: '(não informado)') . "\n" .
                 "- Telefone: {$fornecedor->telefone}\n" .
                 "- Email: " . ($fornecedor->email ?: '(não informado)') . "\n" .
-                "- Site: " . ($fornecedor->site ?: '(não informado)');
+                "- Site: " . ($fornecedor->site ?: '(não informado)') . "\n" .
+                "- Inscrição Estadual: " . ($fornecedor->inscricao_estadual ?: '(não informado)') . "\n" .
+                "- Inscrição Municipal: " . ($fornecedor->inscricao_municipal ?: '(não informado)') . "\n";
 
             $log->save();
             
@@ -154,6 +158,8 @@ class FornecedoresController extends Controller
                     'telefone' => $request->telefone,
                     'email' => mb_strtolower($request->email),
                     'site' => $request->site,
+                    'inscricao_estadual' => $request->inscricao_estadual,
+                    'inscricao_municipal' => $request->inscricao_municipal,
                 ]);
             }
             else{
@@ -171,6 +177,8 @@ class FornecedoresController extends Controller
                     'telefone' => $request->telefone,
                     'email' => mb_strtolower($request->email),
                     'site' => $request->site,
+                    'inscricao_estadual' => null,
+                    'inscricao_municipal' => null,
                 ]);
             }
 
@@ -240,7 +248,9 @@ class FornecedoresController extends Controller
                 "- Nome do Contato: " . ($fornecedor->nome_contato ?: '(não informado)') . "\n" .
                 "- Telefone: {$fornecedor->telefone}\n" .
                 "- Email: " . ($fornecedor->email ?: '(não informado)') . "\n" .
-                "- Site: " . ($fornecedor->site ?: '(não informado)');
+                "- Site: " . ($fornecedor->site ?: '(não informado)') . "\n" .
+                "- Inscrição Estadual: " . ($fornecedor->inscricao_estadual ?: '(não informado)') . "\n" .
+                "- Inscrição Municipal: " . ($fornecedor->inscricao_municipal ?: '(não informado)') . "\n";
             $log->save();
 
             DB::commit();
