@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('qtd_minima', 10, 3);
             $table->string('quarentena');
             $table->unsignedBigInteger('id_unidade_medida');
-            $table->integer('epm');
+            $table->integer('epm')->nullable();
 
             $table->foreign('id_tipo')->references('id')->on('tipos_produtos');
             $table->foreign('id_unidade_medida')->references('id')->on('unidades_medida');

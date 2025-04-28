@@ -20,6 +20,8 @@ class Produto extends Model
         'qtd_aceitavel',
         'qtd_minima',
         'quarentena',
+        'epm',
+        'id_unidade_medida'
     ];
 
     public function tipos_clientes(): BelongsTo{

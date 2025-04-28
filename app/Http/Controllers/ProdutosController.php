@@ -15,6 +15,7 @@ use App\Models\Tipo_Produto;
 use Illuminate\Http\Request;
 use App\Models\Produto_Mov_In;
 use App\Models\Produto_Mov_Out;
+use App\Models\Unidade_Medida;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -24,12 +25,13 @@ function get_infos_store(){
     $tipos = Tipo_Produto::all();
     $fabricantes = Fabricante::all();
     $fornecedores = Fornecedor::all();
+    $unidades_medida = Unidade_Medida::all();
     
-    return ['tipos' =>  $tipos, 'fabricantes' => $fabricantes, 'fornecedores' => $fornecedores];
+    return ['tipos' =>  $tipos, 'fabricantes' => $fabricantes, 'fornecedores' => $fornecedores, 'unidades_medida' => $unidades_medida];
 }
 
 function get_infos_view(Request $request){
-    $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) WHERE P.ID = ?', [$request->id_view])[0];
+    $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, P.EPM, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADES_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA) WHERE P.ID = ?', [$request->id_view])[0];
             
     $forns = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
     $fornecedores = [];
@@ -52,7 +54,7 @@ function get_infos_view(Request $request){
 class ProdutosController extends Controller
 {
     public function index(){
-        $produtos = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID)');
+        $produtos = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, P.EPM, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADES_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA)');
         
         $produtos = json_decode(json_encode($produtos), true);
         return view('produtos/visualizar', ['produtos' => $produtos]);
@@ -102,6 +104,8 @@ class ProdutosController extends Controller
             $produto->qtd_aceitavel = $request->qtd_aceitavel;
             $produto->qtd_minima = $request->qtd_minima;
             $produto->quarentena = $request->quarentena;
+            $produto->id_unidade_medida = Unidade_Medida::where('nome', $request->unidade_medida)->first()->id;
+            $produto->epm = $request->epm;
     
             $produto->save();
 
@@ -160,7 +164,9 @@ class ProdutosController extends Controller
                 "- Qtd. Mínima: {$produto->qtd_minima}\n" .
                 "- Fabricantes: " . ($fabricantesLog === "" ? "(não informado)\n" : "\n".$fabricantesLog) .
                 "- Fornecedores: " . ($fornecedoresLog === "" ? "(não informado)\n" : "\n".$fornecedoresLog) .
-                "- Quarentena: {$produto->quarentena}\n";
+                "- Quarentena: {$produto->quarentena}\n" .
+                "- EPM: {$produto->epm}\n" .
+                "- Unidade de Medida: ID: {$produto->id_unidade_medida}, Nome: {$request->unidade_medida}\n";
 
             $log->save();
             
@@ -183,7 +189,7 @@ class ProdutosController extends Controller
     }
 
     public function edit(Request $request){
-        $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) WHERE P.ID = ?', [$request->id_edit])[0];
+        $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, P.EPM, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADES_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA) WHERE P.ID = ?', [$request->id_edit])[0];
                 
         $fornecedores = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
         $fornSelected = [];
@@ -243,7 +249,9 @@ class ProdutosController extends Controller
                     'id_tipo' => Tipo_Produto::where('nome', $request->tipo)->get()[0]->id,
                     'qtd_aceitavel' => $request->qtd_aceitavel,
                     'qtd_minima' => $request->qtd_minima,
-                    'quarentena' => $request->quarentena
+                    'quarentena' => $request->quarentena,
+                    'id_unidade_medida' => Unidade_Medida::where('nome', $request->unidade_medida)->get()[0]->id,
+                    'epm' => $request->epm
                 ]);
 
                 $produtoDepois = $produto->refresh()->toArray();
@@ -392,7 +400,10 @@ class ProdutosController extends Controller
                 $fornecedoresLog .= "&nbsp;&nbsp;&nbsp;&nbsp;ID: {$fornecedor->id}, Nome: {$fornecedor->nome}\n";
             }
 
+            
             $produto = Produto::find($request->id_delete);
+            $tipo_nome = Tipo_Produto::where('id', $produto->id_tipo)->first()->nome;
+            $unidade_medida_nome = Unidade_Medida::where('id', $produto->id_unidade_medida)->first()->nome;
             $produto->delete();
 
             $log = new Log();
@@ -405,12 +416,14 @@ class ProdutosController extends Controller
                 "- ID do Produto: {$produto->id}\n" .
                 "- Nome: {$produto->nome}\n" .
                 "- Descrição: {$produto->descricao}\n" .
-                "- Tipo: {$request->tipo} ID: {$produto->id_tipo}\n" .
+                "- Tipo: ID: {$produto->id_tipo}, Nome: {$tipo_nome}\n" .
                 "- Qtd. Aceitável: {$produto->qtd_aceitavel}\n" .
                 "- Qtd. Mínima: {$produto->qtd_minima}\n" . 
                 "- Fabricantes: " . ($fabricantesLog === "" ? "(não informado)\n" : "\n".$fabricantesLog) .
                 "- Fornecedores: " . ($fornecedoresLog === "" ? "(não informado)\n" : "\n".$fornecedoresLog) .
-                "- Quarentena: {$produto->quarentena}\n";
+                "- Quarentena: {$produto->quarentena}\n" .
+                "- EPM: {$produto->epm}\n" .
+                "- Unidade de Medida: ID: {$produto->id_unidade_medida}, Nome: {$unidade_medida_nome}\n";
             
                 $log->save();
 

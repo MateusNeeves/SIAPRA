@@ -4,8 +4,8 @@
     @php
         $title = ['Produtos', 'Produto'];
         $path = 'produtos';
-        $columns = ['#', 'Nome', 'Descrição', 'Tipo', 'Quantidade Aceitável', 'Quantidade Mínima', 'Quarentena?'];
-        $indexes = ['id', 'nome', 'descricao', 'tipo', 'qtd_aceitavel', 'qtd_minima', 'quarentena'];
+        $columns = ['#', 'Nome', 'Descrição', 'Tipo', 'Quantidade Aceitável', 'Quantidade Mínima', 'Quarentena?', 'EPM', 'Unidade de Medida'];
+        $indexes = ['id', 'nome', 'descricao', 'tipo', 'qtd_aceitavel', 'qtd_minima', 'quarentena', 'epm', 'unidade_medida'];
         $infos = $produtos;
     @endphp
 @endsection
@@ -18,6 +18,7 @@
         $fabSelected = Session::get('fabSelected') ?? null;
         $fornSelected = Session::get('fornSelected') ?? null;
         $tipos = Session::get('tipos') ?? [];
+        $unidades_medida = Session::get('unidades_medida') ?? [];
     @endphp
 
     <!-- Nome -->
@@ -66,13 +67,13 @@
     <!-- Quantidade Aceitável -->
     <div class="mt-4">
         <x-input-label :value="__('Quantidade Aceitável *')" />
-        <x-text-input id="qtd_aceitavel" class="block mt-1 w-full" type="number" name="qtd_aceitavel" :value="old('qtd_aceitavel', $produto->qtd_aceitavel ?? '')" required/>
+        <x-text-input id="qtd_aceitavel" class="block mt-1 w-full" type="number" step="0.001" name="qtd_aceitavel" :value="old('qtd_aceitavel', $produto->qtd_aceitavel ?? '')" required/>
     </div>
 
     <!-- Quantidade Mínima -->
     <div class="mt-4">
         <x-input-label :value="__('Quantidade Mínima *')" />
-        <x-text-input id="qtd_minima" class="block mt-1 w-full" type="number" name="qtd_minima" :value="old('qtd_minima', $produto->qtd_minima ?? '')" required/>
+        <x-text-input id="qtd_minima" class="block mt-1 w-full" type="number" step="0.001" name="qtd_minima" :value="old('qtd_minima', $produto->qtd_minima ?? '')" required/>
     </div>
 
     <!-- Quarentena -->
@@ -83,6 +84,23 @@
             <option value="Sim" {{"Sim" == (old('quarentena') ?? $produto->quarentena ?? "") ? "selected" : ""}}> Sim </option>
             <option value="Não" {{"Não" == (old('quarentena') ?? $produto->quarentena ?? "") ? "selected" : ""}}> Não </option>
         </select>
+    </div>
+
+    <!-- Unidade de Medida -->
+    <div class="mt-4">
+        <x-input-label :value="__('Unidade de Medida *')" />
+        <select id="unidade_medida" class="block mt-1 w-full border rounded" name="unidade_medida" required>
+            <option value="" hidden></option>
+            @foreach ($unidades_medida as $unidade_medida)
+                <option value="{{$unidade_medida['nome']}}" {{$unidade_medida['nome'] == (old('unidade_medida') ?? $produto->unidade_medida ?? "") ? "selected" : ""}}> {{$unidade_medida['nome']}} </option>
+            @endforeach
+        </select>
+    </div>
+
+    <!-- EPM -->
+    <div class="mt-4">
+        <x-input-label :value="__('EPM')" />
+        <x-text-input id="epm" class="block mt-1 w-full" type="number" name="epm" :value="old('epm', $produto->epm ?? '')"/>
     </div>
 
 @endsection
@@ -178,6 +196,18 @@
     <div class="mt-4">
         <x-input-label class="h6" :value="__('Quarentena?')" />
         <x-input-label class="mt-2 text-secondary" :value="__($produtoV->quarentena ?? '')" />
+    </div>
+    
+    <!-- Unidade de Medida -->
+    <div class="mt-4">
+        <x-input-label class="h6" :value="__('Unidade de Medida')" />
+        <x-input-label class="mt-2 text-secondary" :value="__($produtoV->unidade_medida ?? '')" />
+    </div>
+    
+    <!-- EPM -->
+    <div class="mt-4">
+        <x-input-label class="h6" :value="__('EPM')" />
+        <x-input-label class="mt-2 text-secondary" :value="__($produtoV->epm ?? '')" />
     </div>
 
     <!-- Lista de QTD em Estoque -->
