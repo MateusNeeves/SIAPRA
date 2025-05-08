@@ -1590,6 +1590,773 @@
                         </table>
                     </div>
 
+                    <div id="pagina9" style="display: none;">
+                        <h4 class="mb-4 mt-4">6. Registro de Análises de Controle de Qualidade Físico-Químico  </h4>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Ensaio </th>
+                                    <th class="table-light text-center text-dark" scope="col"colspan="2"> Especificação </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Código do Equipamento </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Resultado </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Data </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Analista </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th class="table-light"> Aspecto da solução: </th>
+                                    <td colspan="2"> <sup>a</sup>Análise visual Límpida, incolor ou ligeiramente amarelada. </td>
+                                    <td> N/A </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="aspecto_resultado" name="aspecto_resultado">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="aspecto_data" name="aspecto_data">
+                                    </td>
+                                    <td colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_aspecto" name="id_usuario_aspecto">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" rowspan="2"> pH: </th>
+                                    <td rowspan="2"> <sup>a</sup>Papel indicador </td>
+                                    <td> pH do Padrão 7,0 </td>
+                                    <td rowspan="2"> N/A </td>
+                                    <td>
+                                        <input type="number" step="0.1" class="form-control" id="ph_1_resultado" name="ph_1_resultado">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="ph_1_data" name="ph_1_data">
+                                    </td>
+                                    <td colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_ph_1 name="id_usuario_ph_1>
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> pH do FDG-<sup>18</sup>F 4,5 - 8,5 </td>
+                                    <td>
+                                        <input type="number" step="0.1" class="form-control" id="ph_2_resultado" name="ph_2_resultado">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="ph_2_data" name="ph_2_data">
+                                    </td>
+                                    <td colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_ph_2" name="id_usuario_ph_2">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" rowspan="2"> Pureza Radionuclídica: </th>
+                                    <td rowspan="2"> <sup>a</sup>Detector de germânio </td>
+                                    <td> Energia dos fótons em 511 keV com possível pico em 1022 keV </td>
+                                    <td rowspan="2"> CQFQ-DGE-001 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="pureza_radionuclidica_1_resultado" name="pureza_radionuclidica_1_resultado">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="pureza_radionuclidica_1_data" name="pureza_radionuclidica_1_data">
+                                    </td>
+                                    <td colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_pureza_radionuclidica_1" name="id_usuario_pureza_radionuclidica_1">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> Observação após 24 h. Impurezas ≤ 0,1% </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="pureza_radionuclidica_2_resultado" name="pureza_radionuclidica_2_resultado">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="pureza_radionuclidica_2_data" name="pureza_radionuclidica_2_data">
+                                    </td>
+                                    <td colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_pureza_radionuclidica_2" name="id_usuario_pureza_radionuclidica_2">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light"> Tempo de Meia Vida: </th>
+                                    <td colspan="2"> <sup>a</sup>Activímetro <br> 105 - 115 minutos </td>
+                                    <td> CQFQ-ACT-001 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="meia_vida_resultado" name="meia_vida_resultado">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="meia_vida_data" name="meia_vida_data">
+                                    </td>
+                                    <td colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_meia_vida" name="id_usuario_meia_vida">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light"> Solventes residuais: </th>
+                                    <td colspan="2"> <sup>b</sup> Cromatógrafo gasoso <br> Etanol ≤ 5000 µg/ml <br> Acetonitrila ≤ 400 µg/ml </td>
+                                    <td> CQFQ-CGS-001  </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="solventes_resultado" name="solventes_resultado">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="solventes_data" name="solventes_data">
+                                    </td>
+                                    <td colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_solventes" name="id_usuario_solventes">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <label class="text-sm"> 
+                            <sup>a</sup> British Pharmacopeia. Vol. III, 2009.
+                            <br>
+                            <sup>b</sup> USP Pharmacopeia. 31ª Ed. 2007.
+                        </label>
+
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Ocorrências: </th>
+                                    <td>
+                                        <textarea class="form-control" id="ocorrencias_p11" name="ocorrencias_p11" maxlength="220"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_ocorrencias_p11" name="id_usuario_verificacao_ocorrencias_p11">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div id="pagina10" style="display: none;">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Ensaio </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Especificação </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Código do Equipamento </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Resultado </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Data </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Analista </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th rowspan="2" class="table-light"> Pureza Radioquímica: </th>
+                                    <td> <sup>a</sup> HPLC <br> Tr <sup>18</sup>FDM / Tr <sup>18</sup>FDG ≅ 0,90 <br> <sup>18</sup>FDG+<sup>18</sup>FDM ≥ 95% <br> radioatividade total <sup>18</sup>FDM ≤ 10% radioatividade total </td>
+                                    <td>
+                                        <select class="form-select" id="pureza_radioquimica_a_codigo" name="pureza_radioquimica_a_codigo">
+                                                <option selected disabled>Selecione o código</option>
+                                                <option value="0">CQFQ-CCF-001</option>
+                                                <option value="1">CQFQ-CCF-002</option>
+                                            </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="pureza_radioquimica_a_resultado" name="pureza_radioquimica_a_resultado">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="pureza_radioquimica_a_data" name="pureza_radioquimica_a_data">
+                                    </td>
+                                    <td colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_pureza_radioquimica_a" name="id_usuario_pureza_radioquimica_a">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> <sup>b</sup>TLC <br> RF <sub>[FDG+FDM]</sub> = RF<sub>Padrão</sub> <br> 0,40 ≤ RF <sub>[FDG+FDM]</sub> ≤ 0,60 <br> <sup>18</sup>FDG <sup>18</sup>FDM ≥ 90% radioatividade total </td>
+                                    <td> CQFQ-CCF-001 </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="pureza_radioquimica_b_resultado" name="pureza_radioquimica_b_resultado">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="pureza_radioquimica_b_data" name="pureza_radioquimica_b_data">
+                                    </td>
+                                    <td colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_pureza_radioquimica_b" name="id_usuario_pureza_radioquimica_b">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light"> Pureza Química: </th>
+                                    <td> <sup>b</sup>Kryptofix-TLC - A intensidade da mancha referente à amostra de FDG deve ser menor que a mancha da solução padrão (≤ 0,50 µg/ml) </td>
+                                    <td> N/A </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="pureza_quimica_resultado" name="pureza_quimica_resultado">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="pureza_quimica_data" name="pureza_quimica_data">
+                                    </td>
+                                    <td colspan="2" scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_pureza_quimica" name="id_usuario_pureza_quimica">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <label class="text-sm"> 
+                            <sup>a</sup> British Pharmacopeia. Vol. III, 2009.
+                            <br>
+                            <sup>b</sup> USP Pharmacopeia. 31ª Ed. 2007.
+                        </label>
+
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Ocorrências: </th>
+                                    <td>
+                                        <textarea class="form-control" id="ocorrencias_p12" name="ocorrencias_p12" maxlength="220"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_ocorrencias_p12" name="id_usuario_verificacao_ocorrencias_p12">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Aprovado? </th>
+                                    <td>
+                                        <select class="form-select" id="aprovacao_fisico_quimico" name="aprovacao_fisico_quimico">
+                                            <option selected hidden></option>
+                                            <option value="0"> Nâo </option>
+                                            <option value="1"> Sim </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Data: </th>
+                                    <td>
+                                        <input type="date" class="form-control" id="data_aprovacao_fisico_quimico" name="data_aprovacao_fisico_quimico">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Farmacêutico Responsável: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_aprovacao_fisico_quimico" name="id_usuario_aprovacao_fisico_quimico">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div id="pagina11" style="display: none;">
+                        <h4 class="mt-4">7. Registro de Análises do Controle de Qualidade Microbiológico </h4>
+
+                        <h6  class="mb-4 mt-5">7.1 Endotoxinas </h6>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Ensaio </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Especificação </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Código do Equipamento </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Resultado </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Data </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Analista </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th class="table-light" rowspan="4"> <sup>a</sup>Endotoxinas: </th>
+                                    <td> < 25 EU/ml  </td>
+                                    <td rowspan="4">
+                                        <select class="form-select" id="endotoxinas_codigo" name="endotoxinas_codigo">
+                                            <option selected disabled>Selecione o código</option>
+                                            <option value="0">CQMB-END-001</option>
+                                            <option value="1">CQMB-END-002</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="endotoxinas_1_resultado" name="endotoxinas_1_resultado">
+                                    </td>
+                                    <td rowspan="4">
+                                        <input type="date" class="form-control" id="endotoxinas_data" name="endotoxinas_data">
+                                    </td>
+                                    <td rowspan="4" scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_endotoxinas" name="id_usuario_endotoxinas">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> Spike recovery: 50-200% </td>
+
+                                    <td>
+                                        <input type="text" class="form-control" id="endotoxinas_2_resultado" name="endotoxinas_2_resultado">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> Sample Rxn Time CV < 25% </td>
+
+                                    <td>
+                                        <input type="text" class="form-control" id="endotoxinas_3_resultado" name="endotoxinas_3_resultado">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> Spike Rxn Time CV < 25% </td>
+
+                                    <td>
+                                        <input type="text" class="form-control" id="endotoxinas_4_resultado" name="endotoxinas_4_resultado">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" class="table-light"> Código de Calibração (PTS): </th>
+                                    <td>
+                                        <input type="text" class="form-control" id="codigo_calibracao_pts" name="codigo_calibracao_pts">
+                                    </td>
+                                    <th colspan="2" class="table-light"> Lote do cartucho (PTS): </th>
+                                    <td>
+                                        <input type="text" class="form-control" id="lote_cartucho_pts" name="lote_cartucho_pts">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <label class="text-sm"> 
+                            <sup>a</sup> British Pharmacopeia. Vol. III, 2009.
+                        </label>
+
+                        <h6  class="mb-4 mt-5">7.1 Teste de Integridade de Membrana </h6>
+
+                        <table class="table table-bordered mb-4">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Equipamento </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Lote da Membrana </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Prazo de validade Membrana </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Fornecedor </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Analista </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control" id="membrana_equipamento" name="membrana_equipamento">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="membrana_lote" name="membrana_lote">
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="membrana_validade" name="membrana_validade">
+                                    </td>
+                                    <td>MILLIPORE (Millex GS)</td>
+                                    <td class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_membrana" name="id_usuario_membrana">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Pressão do teste de bolha fornecida pelo fabricante </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Pressão obtida no teste </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Analista </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control" id="pressao_teste_bolha_fornecida" name="pressao_teste_bolha_fornecida">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="pressao_teste_bolha_obtida" name="pressao_teste_bolha_obtida">
+                                    </td>
+                                    <td class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_pressao_teste_bolha" name="id_usuario_pressao_teste_bolha">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <label class="text-sm"> 
+                            Obs: <br>
+                            1. A pressão do teste deve ser superior ou igual à pressão especificada pelo fabricante. <br>
+                            2. Pelo menos 1 filtro deve estar dentro das especificações estabelecidas para aprovação do lote. 
+                        </label>
+                    
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Ocorrências: </th>
+                                    <td>
+                                        <textarea class="form-control" id="ocorrencias_p13" name="ocorrencias_p13" maxlength="220"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_ocorrencias_p13" name="id_usuario_verificacao_ocorrencias_p13">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Aprovado? </th>
+                                    <td>
+                                        <select class="form-select" id="aprovacao_microbiologico" name="aprovacao_microbiologico">
+                                            <option selected hidden></option>
+                                            <option value="0"> Nâo </option>
+                                            <option value="1"> Sim </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Data: </th>
+                                    <td>
+                                        <input type="date" class="form-control" id="data_aprovacao_microbiologico" name="data_aprovacao_microbiologico">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Farmacêutico Responsável: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_aprovacao_microbiologico" name="id_usuario_aprovacao_microbiologico">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div id="pagina12" style="display: none;">
+                        <h6  class="mb-4 mt-5">7.3 Esterilidade </h6>
+
+                        <table class="table table-bordered">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th class="table-light"> Data do início da análise: </th>
+                                    <td>
+                                        <input type="date" class="form-control" id="esterilidade_data_inicio_analise" name="esterilidade_data_inicio_analise">
+                                    </td>
+                                    <th class="table-light"> Analista: </th>
+                                    <td scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_esterilidade" name="id_usuario_esterilidade">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Ensaio </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Especificação </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Código do Equipamento </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Resultado </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Data </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Analista </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th class="table-light" rowspan="3"> Esterilidade: </th>
+                                    <td> 1º Controle: Ausência de turvação e/ou depósito. </td>
+                                    <td rowspan="3">
+                                        <select class="form-select" id="esterilidade_codigo" name="esterilidade_codigo">
+                                            <option selected disabled>Selecione o código</option>
+                                            <option value="1"> CQFQ-EST-001</option>
+                                            <option value="2"> CQFQ-EST-002</option>
+                                            <option value="3"> CQFQ-EST-003</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="esterilidade_1_resultado" name="esterilidade_1_resultado">
+                                    </td>
+                                    <td >
+                                        <input type="date" class="form-control" id="esterilidade_1_data" name="esterilidade_1_data">
+                                    </td>
+                                    <td scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_esterilidade_1" name="id_usuario_esterilidade_1">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> 2º Controle: Ausência de turvação e/ou depósito. </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="esterilidade_2_resultado" name="esterilidade_2_resultado">
+                                    </td>
+                                    <td >
+                                        <input type="date" class="form-control" id="esterilidade_2_data" name="esterilidade_2_data">
+                                    </td>
+                                    <td scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_esterilidade_2" name="id_usuario_esterilidade_2">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> 3º Controle: Ausência de turvação e/ou depósito. </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="esterilidade_3_resultado" name="esterilidade_3_resultado">
+                                    </td>
+                                    <td >
+                                        <input type="date" class="form-control" id="esterilidade_3_data" name="esterilidade_3_data">
+                                    </td>
+                                    <td scope="col">
+                                        <div class="flex align-items-center">
+                                            <select class="form-select ms-2" id="id_usuario_esterilidade_3" name="id_usuario_esterilidade_3">
+                                                <option selected disabled>Selecione um usuário</option>
+                                                @foreach($usuarios as $usuario)
+                                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Ocorrências: </th>
+                                    <td>
+                                        <textarea class="form-control" id="ocorrencias_p14" name="ocorrencias_p14" maxlength="260"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_ocorrencias_p14" name="id_usuario_verificacao_ocorrencias_p14">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Aprovado? </th>
+                                    <td>
+                                        <select class="form-select" id="aprovacao_esterilidade" name="aprovacao_esterilidade">
+                                            <option selected hidden></option>
+                                            <option value="0"> Nâo </option>
+                                            <option value="1"> Sim </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Data: </th>
+                                    <td>
+                                        <input type="date" class="form-control" id="data_aprovacao_esterilidade" name="data_aprovacao_esterilidade">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Farmacêutico Responsável: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_aprovacao_esterilidade" name="id_usuario_aprovacao_esterilidade">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div id="pagina13" style="display: none;">
+                        <h4 class="mt-4 mb-5">8. Registro de Aprovação/Reprovação de Lote de <sup>18</sup>FDG </h4>
+
+                        <div class="d-flex align-items-center">
+                            <h6 class="me-2"> Supervisor de Controle de Qualidade: </h6>
+                            <select class="form-select w-auto" id="id_usuario_supervisor_controle_qualidade" name="id_usuario_supervisor_controle_qualidade">
+                                <option selected disabled>Selecione um usuário</option>
+                                @foreach($usuarios as $usuario)
+                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="d-flex align-items-center mt-4">
+                            <h6 class="me-2"> O produto acabado atende aos critérios de aceitação estabelecidos nas farmacopéias oficiais nacionalmente aceitas? </h6>                            
+                            <select class="form-select w-auto" id="atendimento_criterios" name="atendimento_criterios">
+                                <option selected disabled></option>
+                                <option value="0">Não</option>
+                                <option value="1">Sim</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex align-items-center mt-4">
+                            <h6 class="me-2">O Lote está</h6>
+                            <select class="form-select w-auto" id="aprovacao_lote" name="aprovacao_lote">
+                                <option selected disabled></option>
+                                <option value="1">Aprovado</option>
+                                <option value="0">Reprovado</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <h6 class="me-2"> Responsável pela Garantia da Qualidade: </h6>
+                            <select class="form-select w-auto" id="id_usuario_resposavel_garantia_qualidade" name="id_usuario_resposavel_garantia_qualidade">
+                                <option selected disabled>Selecione um usuário</option>
+                                @foreach($usuarios as $usuario)
+                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="d-flex align-items-center mt-4">
+                            <h6 class="me-2">Hora da emissão do laudo:</h6>
+                            <input type="time" class="form-control w-auto" id="hora_emissao_laudo" name="hora_emissao_laudo">
+
+                        </div>
+                    </div>
+
 
                     <!-- Botões de Navegação -->
                     <div class="text-center mt-5">
@@ -1605,7 +2372,7 @@
     <script>
         let paginaAtual = 1;
         let paginaAnterior = 1;
-        const totalPaginas = 8;
+        const totalPaginas = 13;
 
         function atualizarVisibilidade() {
             document.getElementById('pagina'+paginaAnterior).style.display = 'none';

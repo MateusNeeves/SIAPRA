@@ -280,6 +280,134 @@ return new class extends Migration
                     $table->foreign('id_usuario_execucao_ocorrencias_p10')->references('id')->on('users');
                 $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p10')->nullable();
                     $table->foreign('id_usuario_verificacao_ocorrencias_p10')->references('id')->on('users'); 
+            
+            //PAGINA 11
+                $table->string('aspecto_resultado')->nullable();
+                $table->date('aspecto_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_aspecto')->nullable();
+                    $table->foreign('id_usuario_aspecto')->references('id')->on('users');
+                $table->decimal('ph_1_resultado', 3, 1)->nullable();
+                $table->date('ph_1_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_ph_1')->nullable();
+                    $table->foreign('id_usuario_ph_1')->references('id')->on('users');
+                $table->decimal('ph_2_resultado', 3, 1)->nullable();
+                $table->date('ph_2_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_ph_2')->nullable();
+                    $table->foreign('id_usuario_ph_2')->references('id')->on('users');
+                    $table->string('pureza_radionuclidica_1_resultado')->nullable();
+                $table->date('pureza_radionuclidica_1_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_pureza_radionuclidica_1')->nullable();
+                    $table->foreign('id_usuario_pureza_radionuclidica_1')->references('id')->on('users');
+                    $table->string('pureza_radionuclidica_2_resultado')->nullable();
+                $table->date('pureza_radionuclidica_2_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_pureza_radionuclidica_2')->nullable();
+                    $table->foreign('id_usuario_pureza_radionuclidica_2')->references('id')->on('users');
+                    $table->string('meia_vida_resultado')->nullable();
+                $table->date('meia_vida_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_meia_vida')->nullable();
+                    $table->foreign('id_usuario_meia_vida')->references('id')->on('users');
+                $table->string('solventes_resultado')->nullable();
+                $table->date('solventes_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_solventes')->nullable();
+                    $table->foreign('id_usuario_solventes')->references('id')->on('users');
+
+                $table->string('ocorrencias_p11', 220)->nullable();
+                $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p11')->nullable();
+                    $table->foreign('id_usuario_verificacao_ocorrencias_p11')->references('id')->on('users');
+        
+            //PAGINA 12 
+                $table->boolean('pureza_radioquimica_a_codigo')->nullable();
+                $table->string('pureza_radioquimica_a_resultado')->nullable();
+                $table->date('pureza_radioquimica_a_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_pureza_radioquimica_a')->nullable();
+                    $table->foreign('id_usuario_pureza_radioquimica_a')->references('id')->on('users');
+                $table->string('pureza_radioquimica_b_resultado')->nullable();
+                $table->date('pureza_radioquimica_b_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_pureza_radioquimica_b')->nullable();
+                    $table->foreign('id_usuario_pureza_radioquimica_b')->references('id')->on('users');
+                $table->string('pureza_quimica_resultado')->nullable();
+                $table->date('pureza_quimica_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_pureza_quimica')->nullable();
+                    $table->foreign('id_usuario_pureza_quimica')->references('id')->on('users');
+            
+                $table->string('ocorrencias_p12', 220)->nullable();
+                $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p11')->nullable();
+                    $table->foreign('id_usuario_verificacao_ocorrencias_p11')->references('id')->on('users');
+
+                $table->boolean('aprovacao_fisico_quimico')->nullable();
+                $table->date('data_aprovacao_fisico_quimico')->nullable();
+                $table->unsignedBigInteger('id_usuario_aprovacao_fisico_quimico')->nullable();
+                    $table->foreign('id_usuario_aprovacao_fisico_quimico')->references('id')->on('users');
+            
+            //PAGINA 13
+                $table->boolean('endotoxinas_codigo')->nullable();
+                $table->numeric('endotoxinas_1_resultado')->nullable();
+                $table->numeric('endotoxinas_2_resultado')->nullable();
+                $table->numeric('endotoxinas_3_resultado')->nullable();
+                $table->numeric('endotoxinas_4_resultado')->nullable();
+                $table->date('endotoxinas_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_endotoxinas')->nullable();
+                    $table->foreign('id_usuario_endotoxinas')->references('id')->on('users');
+                $table->string('codigo_calibracao_pts')->nullable();
+                $table->string('lote_cartucho_pts')->nullable();
+
+                $table->string('membrana_equipamento')->nullable();
+                $table->string('membrana_lote')->nullable();
+                $table->date('membrana_validade')->nullable();
+                $table->unsignedBigInteger('id_usuario_membrana')->nullable();
+                    $table->foreign('id_usuario_membrana')->references('id')->on('users');
+
+                $table->string('pressao_teste_bolha_fornecida')->nullable();
+                $table->string('pressao_teste_bolha_obtida')->nullable();
+                $table->unsignedBigInteger('id_usuario_pressao_teste_bolha')->nullable();
+                    $table->foreign('id_usuario_pressao_teste_bolha')->references('id')->on('users');
+
+                $table->string('ocorrencias_p13', 220)->nullable();
+                $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p13')->nullable();
+                    $table->foreign('id_usuario_verificacao_ocorrencias_p13')->references('id')->on('users');
+
+                $table->boolean('aprovacao_microbiologico')->nullable();
+                $table->date('data_aprovacao_microbiologico')->nullable();
+                $table->unsignedBigInteger('id_usuario_aprovacao_microbiologico')->nullable();
+                    $table->foreign('id_usuario_aprovacao_microbiologico')->references('id')->on('users');
+                
+            // PAGINA 14
+                $table->date('esterilidade_data_inicio_analise')->nullable();
+                $table->unsignedBigInteger('id_usuario_esterilidade')->nullable();
+                    $table->foreign('id_usuario_esterilidade')->references('id')->on('users');
+
+                $table->integer('esterilidade_codigo')->nullable();
+                $table->string('esterilidade_1_resultado')->nullable();
+                $table->date('esterilidade_1_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_esterilidade_1')->nullable();
+                    $table->foreign('id_usuario_esterilidade_1')->references('id')->on('users');
+                $table->string('esterilidade_2_resultado')->nullable();
+                $table->date('esterilidade_2_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_esterilidade_2')->nullable();
+                    $table->foreign('id_usuario_esterilidade_2')->references('id')->on('users');
+                $table->string('esterilidade_3_resultado')->nullable();
+                $table->date('esterilidade_3_data')->nullable();
+                $table->unsignedBigInteger('id_usuario_esterilidade_3')->nullable();
+                    $table->foreign('id_usuario_esterilidade_3')->references('id')->on('users');
+
+                $table->string('ocorrencias_p14', 260)->nullable();
+                $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p14')->nullable();
+                    $table->foreign('id_usuario_verificacao_ocorrencias_p14')->references('id')->on('users');
+
+                $table->boolean('aprovacao_esterilidade')->nullable();
+                $table->date('data_aprovacao_esterilidade')->nullable();
+                $table->unsignedBigInteger('id_usuario_aprovacao_esterilidade')->nullable();
+                    $table->foreign('id_usuario_aprovacao_esterilidade')->references('id')->on('users');
+
+            // PAGINA 15
+                $table->unsignedBigInteger('id_usuario_supervisor_controle_qualidade')->nullable();
+                    $table->foreign('id_usuario_supervisor_controle_qualidade')->references('id')->on('users');
+                $table->boolean('atendimento_criterios')->nullable();
+                $table->boolean('aprovacao_lote');
+                $table->unsignedBigInteger('id_usuario_resposavel_garantia_qualidade')->nullable();
+                    $table->foreign('id_usuario_resposavel_garantia_qualidade')->references('id')->on('users');
+                $table->time('hora_emissao_laudo')->nullable();
+            
         });
     }
 
