@@ -4,8 +4,8 @@
     @php
         $title = ['Produtos', 'Produto'];
         $path = 'produtos';
-        $columns = ['#', 'Nome', 'Descrição', 'Tipo', 'Quantidade Aceitável', 'Quantidade Mínima', 'Quarentena?', 'EPM', 'Unidade de Medida'];
-        $indexes = ['id', 'nome', 'descricao', 'tipo', 'qtd_aceitavel', 'qtd_minima', 'quarentena', 'epm', 'unidade_medida'];
+        $columns = ['#', 'Nome', 'Descrição', 'Tipo', 'Quantidade Aceitável', 'Quantidade Mínima', 'Quarentena?', 'Unidade de Medida'];
+        $indexes = ['id', 'nome', 'descricao', 'tipo', 'qtd_aceitavel', 'qtd_minima', 'quarentena', 'unidade_medida'];
         $infos = $produtos;
     @endphp
 @endsection
@@ -95,12 +95,6 @@
                 <option value="{{$unidade_medida['nome']}}" {{$unidade_medida['nome'] == (old('unidade_medida') ?? $produto->unidade_medida ?? "") ? "selected" : ""}}> {{$unidade_medida['nome']}} </option>
             @endforeach
         </select>
-    </div>
-
-    <!-- EPM -->
-    <div class="mt-4">
-        <x-input-label :value="__('EPM')" />
-        <x-text-input id="epm" class="block mt-1 w-full" type="number" name="epm" :value="old('epm', $produto->epm ?? '')"/>
     </div>
 
 @endsection
@@ -202,12 +196,6 @@
     <div class="mt-4">
         <x-input-label class="h6" :value="__('Unidade de Medida')" />
         <x-input-label class="mt-2 text-secondary" :value="__($produtoV->unidade_medida ?? '')" />
-    </div>
-    
-    <!-- EPM -->
-    <div class="mt-4">
-        <x-input-label class="h6" :value="__('EPM')" />
-        <x-input-label class="mt-2 text-secondary" :value="__($produtoV->epm ?? '')" />
     </div>
 
     <!-- Lista de QTD em Estoque -->

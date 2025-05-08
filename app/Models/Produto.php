@@ -20,7 +20,6 @@ class Produto extends Model
         'qtd_aceitavel',
         'qtd_minima',
         'quarentena',
-        'epm',
         'id_unidade_medida'
     ];
 

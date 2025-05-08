@@ -31,7 +31,7 @@ function get_infos_store(){
 }
 
 function get_infos_view(Request $request){
-    $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, P.EPM, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADES_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA) WHERE P.ID = ?', [$request->id_view])[0];
+    $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADES_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA) WHERE P.ID = ?', [$request->id_view])[0];
             
     $forns = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
     $fornecedores = [];
@@ -54,7 +54,7 @@ function get_infos_view(Request $request){
 class ProdutosController extends Controller
 {
     public function index(){
-        $produtos = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, P.EPM, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADES_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA)');
+        $produtos = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADES_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA)');
         
         $produtos = json_decode(json_encode($produtos), true);
         return view('produtos/visualizar', ['produtos' => $produtos]);
@@ -105,7 +105,6 @@ class ProdutosController extends Controller
             $produto->qtd_minima = $request->qtd_minima;
             $produto->quarentena = $request->quarentena;
             $produto->id_unidade_medida = Unidade_Medida::where('nome', $request->unidade_medida)->first()->id;
-            $produto->epm = $request->epm;
     
             $produto->save();
 
@@ -165,7 +164,6 @@ class ProdutosController extends Controller
                 "- Fabricantes: " . ($fabricantesLog === "" ? "(não informado)\n" : "\n".$fabricantesLog) .
                 "- Fornecedores: " . ($fornecedoresLog === "" ? "(não informado)\n" : "\n".$fornecedoresLog) .
                 "- Quarentena: {$produto->quarentena}\n" .
-                "- EPM: {$produto->epm}\n" .
                 "- Unidade de Medida: ID: {$produto->id_unidade_medida}, Nome: {$request->unidade_medida}\n";
 
             $log->save();
@@ -189,7 +187,7 @@ class ProdutosController extends Controller
     }
 
     public function edit(Request $request){
-        $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, P.EPM, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADES_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA) WHERE P.ID = ?', [$request->id_edit])[0];
+        $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADES_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA) WHERE P.ID = ?', [$request->id_edit])[0];
                 
         $fornecedores = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
         $fornSelected = [];
@@ -250,8 +248,7 @@ class ProdutosController extends Controller
                     'qtd_aceitavel' => $request->qtd_aceitavel,
                     'qtd_minima' => $request->qtd_minima,
                     'quarentena' => $request->quarentena,
-                    'id_unidade_medida' => Unidade_Medida::where('nome', $request->unidade_medida)->get()[0]->id,
-                    'epm' => $request->epm
+                    'id_unidade_medida' => Unidade_Medida::where('nome', $request->unidade_medida)->get()[0]->id
                 ]);
 
                 $produtoDepois = $produto->refresh()->toArray();
@@ -422,7 +419,6 @@ class ProdutosController extends Controller
                 "- Fabricantes: " . ($fabricantesLog === "" ? "(não informado)\n" : "\n".$fabricantesLog) .
                 "- Fornecedores: " . ($fornecedoresLog === "" ? "(não informado)\n" : "\n".$fornecedoresLog) .
                 "- Quarentena: {$produto->quarentena}\n" .
-                "- EPM: {$produto->epm}\n" .
                 "- Unidade de Medida: ID: {$produto->id_unidade_medida}, Nome: {$unidade_medida_nome}\n";
             
                 $log->save();
