@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 class DestProdutosController extends Controller
 {
     public function index(){
-        $dest_produtos = Dest_Produto::all();
+        $dest_produtos = Dest_Produto::where('nome', '!=', 'VENCIDO')->get();
         return view('dest_produtos/visualizar', ['dest_produtos' => $dest_produtos]);
     }
 
