@@ -4,7 +4,7 @@
     @php
         $title = ['Usuários', 'Usuário'];
         $path = 'usuarios';
-        $columns = ['#', 'Usuário', 'Nome', 'CPF', 'Email', 'Telefone', 'Classes'];
+        $columns = ['#', 'Usuário', 'Nome', 'CPF', 'Email', 'Telefone', 'Perfis'];
         $indexes = ['id', 'username', 'name', 'cpf', 'email', 'phone', 'classes'];
         $infos = $usuarios;
     @endphp
@@ -62,7 +62,7 @@
     <!-- Classes -->
     <div class="mt-4">
         <div class="flex justify-between mb-1">
-            <x-input-label :value="__('Classes *')" />
+            <x-input-label :value="__('Perfis *')" />
             <x-input-label :value="__('Selecione uma ou mais opções')" />
         </div>
         <select class="multiple-select block mt-1 w-full border rounded" name="classes[]" multiple required>
