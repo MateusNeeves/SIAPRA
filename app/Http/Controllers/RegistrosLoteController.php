@@ -216,7 +216,7 @@ class RegistrosLoteController extends Controller
             $registroLote->id_usuario_execucao_ocorrencias_p9 = $request->id_usuario_execucao_ocorrencias_p9;
             $registroLote->id_usuario_verificacao_ocorrencias_p9 = $request->id_usuario_verificacao_ocorrencias_p9;
 
-        //PAGINA 10
+        // PAGINA 10
 
             $registroLote->embalagem_balde_qtd = $request->embalagem_balde_qtd;
             $registroLote->embalagem_balde_separado = $request->embalagem_balde_separado;
@@ -270,7 +270,7 @@ class RegistrosLoteController extends Controller
             $registroLote->id_usuario_execucao_ocorrencias_p10 = $request->id_usuario_execucao_ocorrencias_p10;
             $registroLote->id_usuario_verificacao_ocorrencias_p10 = $request->id_usuario_verificacao_ocorrencias_p10;
 
-        //PAGINA 11
+        // PAGINA 11
             $registroLote->aspecto_resultado = $request->aspecto_resultado;
             $registroLote->aspecto_data = $request->aspecto_data;
             $registroLote->id_usuario_aspecto = $request->id_usuario_aspecto;
@@ -296,7 +296,7 @@ class RegistrosLoteController extends Controller
             $registroLote->ocorrencias_p11 = $request->ocorrencias_p11;
             $registroLote->id_usuario_verificacao_ocorrencias_p11 = $request->id_usuario_verificacao_ocorrencias_p11;
 
-        //PAGINA 12
+        // PAGINA 12
             $registroLote->pureza_radioquimica_a_codigo = $request->pureza_radioquimica_a_codigo;
             $registroLote->pureza_radioquimica_a_resultado = $request->pureza_radioquimica_a_resultado;
             $registroLote->pureza_radioquimica_a_data = $request->pureza_radioquimica_a_data;
@@ -358,7 +358,6 @@ class RegistrosLoteController extends Controller
             $registroLote->id_usuario_esterilidade_3 = $request->id_usuario_esterilidade_3;
 
             $registroLote->ocorrencias_p14 = $request->ocorrencias_p14;
-            $registroLote->id_usuario_verificacao_ocorrencias_p14 = $request->id_usuario_verificacao_ocorrencias_p14;
             
             $registroLote->aprovacao_esterilidade = $request->aprovacao_esterilidade;
             $registroLote->data_aprovacao_esterilidade = $request->data_aprovacao_esterilidade;
@@ -1493,6 +1492,544 @@ class RegistrosLoteController extends Controller
                 $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_ocorrencias_p10)->username . " - " . $registro_lote->id_usuario_verificacao_ocorrencias_p10);
             }
 
+        // PAGINA 11
+            $pdf->AddPage();
+            $tplIdx = $pdf->importPage(11);
+            $pdf->useTemplate($tplIdx, 0, 0, 210);
+            
+            $pdf->SetXY(39, 51);
+            $pdf->Write(10, $lote);
+
+            $pdf->SetXY(155, 51);
+            $pdf->Write(10, $dia . "   " . $mes . "  " . $ano);
+
+            // ---------------------------------------------------//
+        
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetXY(121.5, 99);
+            $pdf->Write(10, $registro_lote->aspecto_resultado);
+
+            $pdf->SetXY(144, 99);
+            $pdf->Write(10, $registro_lote->aspecto_data);
+
+            if ($registro_lote->id_usuario_aspecto){
+                $pdf->SetXY(168, 99);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_aspecto)->username . " - " . $registro_lote->id_usuario_aspecto);
+            }
+
+            $pdf->SetXY(121.5, 114.5);
+            $pdf->Write(10, $registro_lote->ph_1_resultado);
+
+            $pdf->SetXY(144, 114.5);
+            $pdf->Write(10, $registro_lote->ph_1_data);
+
+            if ($registro_lote->id_usuario_ph_1){
+                $pdf->SetXY(168, 114.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_ph_1)->username . " - " . $registro_lote->id_usuario_ph_1);
+            }
+
+            $pdf->SetXY(121.5, 124.5);
+            $pdf->Write(10, $registro_lote->ph_2_resultado);
+
+            $pdf->SetXY(144, 124.5);
+            $pdf->Write(10, $registro_lote->ph_2_data);
+
+            if ($registro_lote->id_usuario_ph_2){
+                $pdf->SetXY(168, 124.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_ph_2)->username . " - " . $registro_lote->id_usuario_ph_2);
+            }
+
+            $pdf->SetXY(121.5, 140.5);
+            $pdf->Write(10, $registro_lote->pureza_radionuclidica_1_resultado);
+
+            $pdf->SetXY(144, 140.5);
+            $pdf->Write(10, $registro_lote->pureza_radionuclidica_1_data);
+
+            if ($registro_lote->id_usuario_pureza_radionuclidica_1){
+                $pdf->SetXY(168, 140.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_pureza_radionuclidica_1)->username . " - " . $registro_lote->id_usuario_pureza_radionuclidica_1);
+            }
+
+            $pdf->SetXY(121.5, 160);
+            $pdf->Write(10, $registro_lote->pureza_radionuclidica_2_resultado);
+
+            $pdf->SetXY(144, 160);
+            $pdf->Write(10, $registro_lote->pureza_radionuclidica_2_data);
+
+            if ($registro_lote->id_usuario_pureza_radionuclidica_2){
+                $pdf->SetXY(168, 160);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_pureza_radionuclidica_2)->username . " - " . $registro_lote->id_usuario_pureza_radionuclidica_2);
+            }
+
+            $pdf->SetXY(121.5, 180);
+            $pdf->Write(10, $registro_lote->meia_vida_resultado);
+
+            $pdf->SetXY(144, 180);
+            $pdf->Write(10, $registro_lote->meia_vida_data);
+
+            if ($registro_lote->id_usuario_meia_vida){
+                $pdf->SetXY(168, 180);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_meia_vida)->username . " - " . $registro_lote->id_usuario_meia_vida);
+            }
+
+            $pdf->SetXY(121.5, 206);
+            $pdf->Write(10, $registro_lote->solventes_resultado);
+
+            $pdf->SetXY(144, 206);
+            $pdf->Write(10, $registro_lote->solventes_data);
+
+            if ($registro_lote->id_usuario_solventes){
+                $pdf->SetXY(168, 206);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_solventes)->username . " - " . $registro_lote->id_usuario_solventes);
+            }
+
+            $pdf->SetFont('Arial', '', 12   );
+
+            // ---------------------------------------------------//
+
+            $pdf->SetXY(57, 239);
+
+            $texto = utf8_decode($registro_lote->ocorrencias_p11);
+
+            $palavras = explode(" ", $texto);
+            $linha1 = "";
+            $restante = "";
+            $fim_Linha1 = false;
+            foreach ($palavras as $palavra) {
+                if (!$fim_Linha1 && $pdf->GetStringWidth($linha1 . " " . $palavra) < 130)
+                    $linha1 .= " " . $palavra;
+                else{
+                    $fim_Linha1 = true;
+                    $restante .= " " . $palavra;
+                }
+            }
+
+            $pdf->Write(6, trim($linha1));
+
+            if (!empty($restante)) {
+                $pdf->SetXY(30, $pdf->GetY() + 6);
+                $pdf->MultiCell(158, 7, trim($restante), 0, 'L');
+            }
+
+            if ($registro_lote->id_usuario_verificacao_ocorrencias_p11){
+                $pdf->SetXY(139, 255.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_ocorrencias_p11)->username . " - " . $registro_lote->id_usuario_verificacao_ocorrencias_p11);
+            }
+
+        // PAGINA 12
+
+            $pdf->AddPage();
+            $tplIdx = $pdf->importPage(12);
+            $pdf->useTemplate($tplIdx, 0, 0, 210);
+            
+            $pdf->SetXY(39, 51);
+            $pdf->Write(10, $lote);
+
+            $pdf->SetXY(155, 51);
+            $pdf->Write(10, $dia . "   " . $mes . "  " . $ano);
+
+            // ---------------------------------------------------//
+
+            if ($registro_lote->pureza_radioquimica_a_codigo == false){
+                $pdf->SetXY(114.5, 87);
+                $pdf->Write(10, "X");
+            }
+            else{
+                $pdf->SetXY(114.5, 94.5);
+                $pdf->Write(10, "X");
+            }
+
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetXY(121.5, 92);
+            $pdf->Write(10, $registro_lote->pureza_radioquimica_a_resultado);
+
+            $pdf->SetXY(144, 92);
+            $pdf->Write(10, $registro_lote->pureza_radioquimica_a_data);
+
+            if ($registro_lote->id_usuario_pureza_radioquimica_a){
+                $pdf->SetXY(165, 92);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_pureza_radioquimica_a)->username . " - " . $registro_lote->id_usuario_pureza_radioquimica_a);
+            }
+
+            $pdf->SetXY(121.5, 125);
+            $pdf->Write(10, $registro_lote->pureza_radioquimica_b_resultado);
+
+            $pdf->SetXY(144, 125);
+            $pdf->Write(10, $registro_lote->pureza_radioquimica_b_data);
+            
+            if ($registro_lote->id_usuario_pureza_radioquimica_b){
+                $pdf->SetXY(165, 125);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_pureza_radioquimica_b)->username . " - " . $registro_lote->id_usuario_pureza_radioquimica_b);
+            }
+
+            $pdf->SetXY(121.5, 156);
+            $pdf->Write(10, $registro_lote->pureza_quimica_resultado);
+
+            $pdf->SetXY(144, 156);
+            $pdf->Write(10, $registro_lote->pureza_quimica_data);
+
+            if ($registro_lote->id_usuario_pureza_quimica){
+                $pdf->SetXY(165, 156);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_pureza_quimica)->username . " - " . $registro_lote->id_usuario_pureza_quimica);
+            }
+
+            $pdf->SetFont('Arial', '', 12);
+
+            // ---------------------------------------------------//
+
+            $pdf->SetXY(57, 192);
+
+            $texto = utf8_decode($registro_lote->ocorrencias_p12);
+
+            $palavras = explode(" ", $texto);
+            $linha1 = "";
+            $restante = "";
+            $fim_Linha1 = false;
+            foreach ($palavras as $palavra) {
+                if (!$fim_Linha1 && $pdf->GetStringWidth($linha1 . " " . $palavra) < 130)
+                    $linha1 .= " " . $palavra;
+                else{
+                    $fim_Linha1 = true;
+                    $restante .= " " . $palavra;
+                }
+            }
+
+            $pdf->Write(6, trim($linha1));
+
+            if (!empty($restante)) {
+                $pdf->SetXY(30, $pdf->GetY() + 6);
+                $pdf->MultiCell(158, 7, trim($restante), 0, 'L');
+            }
+
+            if ($registro_lote->id_usuario_verificacao_ocorrencias_p12){
+                $pdf->SetXY(139, 209);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_ocorrencias_p12)->username . " - " . $registro_lote->id_usuario_verificacao_ocorrencias_p12);
+            }
+
+            // ---------------------------------------------------//
+
+            if ($registro_lote->aprovacao_fisico_quimico == true){
+                $pdf->SetXY(77, 237.5);
+                $pdf->Write(10, "X");
+            }
+            else{
+                $pdf->SetXY(157.5, 237.5);
+                $pdf->Write(10, "X");
+            }
+
+            $pdf->SetXY(42, 248);
+            $pdf->Write(10, $registro_lote->data_aprovacao_fisico_quimico);
+
+            if ($registro_lote->id_usuario_aprovacao_fisico_quimico){
+                $pdf->SetXY(121, 248);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_aprovacao_fisico_quimico)->username . " - " . $registro_lote->id_usuario_aprovacao_fisico_quimico);
+            }
+        
+        // PÁGINA 13
+
+            $pdf->AddPage();
+            $tplIdx = $pdf->importPage(13);
+            $pdf->useTemplate($tplIdx, 0, 0, 210);
+            
+            $pdf->SetXY(39, 51);
+            $pdf->Write(10, $lote);
+
+            $pdf->SetXY(155, 51);
+            $pdf->Write(10, $dia . "   " . $mes . "  " . $ano);
+
+            // ---------------------------------------------------//
+
+            if ($registro_lote->endotoxinas_codigo == false){
+                $pdf->SetXY(110, 106);
+                $pdf->Write(10, "X");
+            }
+            else{
+                $pdf->SetXY(110, 110.5);
+                $pdf->Write(10, "X");
+            }
+
+            $pdf->SetFont('Arial', '', 10);
+            if ($registro_lote->endotoxinas_1_resultado){
+                $pdf->SetXY(130, 95);
+                $pdf->Write(10, $registro_lote->endotoxinas_1_resultado .  " EU/ml");
+            }
+
+            if ($registro_lote->endotoxinas_2_resultado){
+                $pdf->SetXY(130, 102);
+                $pdf->Write(10, $registro_lote->endotoxinas_2_resultado . " %");
+            }
+            if ($registro_lote->endotoxinas_3_resultado){
+                $pdf->SetXY(130, 109);
+                $pdf->Write(10, $registro_lote->endotoxinas_3_resultado . " %");
+            }
+            if ($registro_lote->endotoxinas_4_resultado){   
+                $pdf->SetXY(130, 116);
+                $pdf->Write(10, $registro_lote->endotoxinas_4_resultado . " %");
+            }
+
+            $pdf->SetFont('Arial', '', 9);
+            $pdf->SetXY(153, 105);
+            $pdf->Write(10, $registro_lote->endotoxinas_data);
+
+            if ($registro_lote->id_usuario_endotoxinas){
+                $pdf->SetXY(171, 105);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_endotoxinas)->username . " - " . $registro_lote->id_usuario_endotoxinas);
+            }
+            $pdf->SetFont('Arial', '', 12);
+
+            $pdf->SetXY(53, 127);
+            $pdf->Write(10, $registro_lote->codigo_calibracao_pts);
+
+            $pdf->SetXY(153.5, 127);
+            $pdf->Write(10, $registro_lote->lote_cartucho_pts);
+
+            // ---------------------------------------------------//
+
+            $pdf->SetFont('Arial', '', 11);
+            $pdf->SetXY(30, 170);
+            $pdf->Write(10, $registro_lote->membrana_equipamento);
+
+            $pdf->SetXY(61, 170);
+            $pdf->Write(10, $registro_lote->membrana_lote);
+
+            $pdf->SetXY(92.5, 170);
+            $pdf->Write(10, $registro_lote->membrana_validade);
+
+            if ($registro_lote->id_usuario_membrana){
+                $pdf->SetXY(153, 170);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_membrana)->username . " - " . $registro_lote->id_usuario_membrana);
+            }
+
+             // ---------------------------------------------------//
+
+            $pdf->SetXY(30, 199);
+            $pdf->Write(10, $registro_lote->pressao_teste_bolha_fornecida);
+
+            $pdf->SetXY(78, 199);
+            $pdf->Write(10, $registro_lote->pressao_teste_bolha_obtida);
+
+            if ($registro_lote->id_usuario_pressao_teste_bolha){
+                $pdf->SetXY(123, 199);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_pressao_teste_bolha)->username . " - " . $registro_lote->id_usuario_pressao_teste_bolha);
+            }
+
+            $pdf->SetFont('Arial', '', 12);
+
+            // ---------------------------------------------------//
+
+            $pdf->SetXY(57, 223);
+
+            $texto = utf8_decode($registro_lote->ocorrencias_p13);
+
+            $palavras = explode(" ", $texto);
+            $linha1 = "";
+            $restante = "";
+            $fim_Linha1 = false;
+            foreach ($palavras as $palavra) {
+                if (!$fim_Linha1 && $pdf->GetStringWidth($linha1 . " " . $palavra) < 130)
+                    $linha1 .= " " . $palavra;
+                else{
+                    $fim_Linha1 = true;
+                    $restante .= " " . $palavra;
+                }
+            }
+
+            $pdf->Write(6, trim($linha1));
+
+            if (!empty($restante)) {
+                $pdf->SetXY(30, $pdf->GetY() + 6);
+                $pdf->MultiCell(158, 7, trim($restante), 0, 'L');
+            }
+
+            if ($registro_lote->id_usuario_verificacao_ocorrencias_p13){
+                $pdf->SetXY(139, 241);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_verificacao_ocorrencias_p13)->username . " - " . $registro_lote->id_usuario_verificacao_ocorrencias_p13);
+            }
+
+            // ---------------------------------------------------//
+
+            if ($registro_lote->aprovacao_microbiologico == true){
+                $pdf->SetXY(77, 250.5);
+                $pdf->Write(10, "X");
+            }
+            else{
+                $pdf->SetXY(157.5, 250.5);
+                $pdf->Write(10, "X");
+            }
+
+            $pdf->SetXY(42, 261);
+            $pdf->Write(10, $registro_lote->data_aprovacao_microbiologico);
+
+            if ($registro_lote->id_usuario_aprovacao_microbiologico){
+                $pdf->SetXY(121, 261);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_aprovacao_microbiologico)->username . " - " . $registro_lote->id_usuario_aprovacao_microbiologico);
+            }
+
+        // PAGINA 14
+
+            $pdf->AddPage();
+            $tplIdx = $pdf->importPage(14);
+            $pdf->useTemplate($tplIdx, 0, 0, 210);
+            
+            $pdf->SetXY(39, 51);
+            $pdf->Write(10, $lote);
+
+            $pdf->SetXY(155, 51);
+            $pdf->Write(10, $dia . "   " . $mes . "  " . $ano);
+
+            // ---------------------------------------------------//
+
+            $pdf->SetXY(76, 75.5);
+            $pdf->Write(10, $registro_lote->esterilidade_data_inicio_analise);
+
+            if ($registro_lote->id_usuario_esterilidade){
+                $pdf->SetXY(127, 75.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_esterilidade)->username . " - " . $registro_lote->id_usuario_esterilidade);
+            }
+
+            // ---------------------------------------------------//
+
+            if ($registro_lote->esterilidade_codigo == 1){
+                $pdf->SetXY(90, 124);
+                $pdf->Write(10, "X");
+            }
+            else if ($registro_lote->esterilidade_codigo == 2){
+                $pdf->SetXY(90, 129.5);
+                $pdf->Write(10, "X");
+            }
+            else if ($registro_lote->esterilidade_codigo == 3){
+                $pdf->SetXY(90, 135);
+                $pdf->Write(10, "X");
+            }
+
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetXY(122, 112);
+            $pdf->Write(10, $registro_lote->esterilidade_1_resultado);
+
+            $pdf->SetXY(144, 112);
+            $pdf->Write(10, $registro_lote->esterilidade_1_data);
+            
+            if ($registro_lote->id_usuario_esterilidade_1){
+                $pdf->SetXY(164, 112);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_esterilidade_1)->username . " - " . $registro_lote->id_usuario_esterilidade_1);
+            }
+           
+            $pdf->SetXY(122, 132);
+            $pdf->Write(10, $registro_lote->esterilidade_2_resultado);
+
+            $pdf->SetXY(144, 132);
+            $pdf->Write(10, $registro_lote->esterilidade_2_data);
+            
+            if ($registro_lote->id_usuario_esterilidade_2){
+                $pdf->SetXY(164, 132);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_esterilidade_2)->username . " - " . $registro_lote->id_usuario_esterilidade_2);
+            }
+           
+            $pdf->SetXY(122, 152);
+            $pdf->Write(10, $registro_lote->esterilidade_3_resultado);
+
+            $pdf->SetXY(144, 152);
+            $pdf->Write(10, $registro_lote->esterilidade_3_data);
+            
+            if ($registro_lote->id_usuario_esterilidade_3){
+                $pdf->SetXY(164, 152);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_esterilidade_3)->username . " - " . $registro_lote->id_usuario_esterilidade_3);
+            }
+
+            $pdf->SetFont('Arial', '', 12);
+
+            // ---------------------------------------------------//
+           
+            $pdf->SetXY(57, 177);
+
+            $texto = utf8_decode($registro_lote->ocorrencias_p14);
+
+            $palavras = explode(" ", $texto);
+            $linha1 = "";
+            $restante = "";
+            $fim_Linha1 = false;
+            foreach ($palavras as $palavra) {
+                if (!$fim_Linha1 && $pdf->GetStringWidth($linha1 . " " . $palavra) < 130)
+                    $linha1 .= " " . $palavra;
+                else{
+                    $fim_Linha1 = true;
+                    $restante .= " " . $palavra;
+                }
+            }
+
+            $pdf->Write(6, trim($linha1));
+
+            if (!empty($restante)) {
+                $pdf->SetXY(30, $pdf->GetY() + 6);
+                $pdf->MultiCell(158, 7, trim($restante), 0, 'L');
+            }
+
+            // ---------------------------------------------------//
+
+            if ($registro_lote->aprovacao_esterilidade == true){
+                $pdf->SetXY(77, 212.5);
+                $pdf->Write(10, "X");
+            }
+            else{
+                $pdf->SetXY(157.5, 212.5);
+                $pdf->Write(10, "X");
+            }
+
+            $pdf->SetXY(42, 222.5);
+            $pdf->Write(10, $registro_lote->data_aprovacao_esterilidade);
+
+            if ($registro_lote->id_usuario_aprovacao_esterilidade){
+                $pdf->SetXY(121, 222.5);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_aprovacao_esterilidade)->username . " - " . $registro_lote->id_usuario_aprovacao_esterilidade);
+            }
+
+        // PAGINA 15
+
+            $pdf->AddPage();
+            $tplIdx = $pdf->importPage(15);
+            $pdf->useTemplate($tplIdx, 0, 0, 210);
+            
+            $pdf->SetXY(39, 51);
+            $pdf->Write(10, $lote);
+
+            $pdf->SetXY(155, 51);
+            $pdf->Write(10, $dia . "   " . $mes . "  " . $ano);
+
+            // ---------------------------------------------------//
+
+            if ($registro_lote->id_usuario_supervisor_controle_qualidade){
+                $pdf->SetXY(51, 86);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_supervisor_controle_qualidade)->username . " - " . $registro_lote->id_usuario_supervisor_controle_qualidade);
+            }
+
+            if ($registro_lote->atendimento_criterios == true){
+                $pdf->SetXY(30.5, 113.5);
+                $pdf->Write(10, "X");
+            }
+            else{
+                $pdf->SetXY(46.5, 113.5);
+                $pdf->Write(10, "X");
+            }
+
+            $pdf->SetXY(44, 131);
+            $pdf->Write(10, $lote);
+
+            if ($registro_lote->aprovacao_lote == true){
+                $pdf->SetXY(89, 131.5);
+                $pdf->Write(10, "X");
+            }
+            else{
+                $pdf->SetXY(120.5, 131.5);
+                $pdf->Write(10, "X");
+            }
+
+            if ($registro_lote->id_usuario_resposavel_garantia_qualidade){
+                $pdf->SetXY(52, 160);
+                $pdf->Write(10, User::find($registro_lote->id_usuario_resposavel_garantia_qualidade)->username . " - " . $registro_lote->id_usuario_resposavel_garantia_qualidade);
+            }
+
+            $pdf->SetXY(80, 173);
+            $pdf->Write(10, substr($registro_lote->hora_emissao_laudo, 0, -3));
 
         $pdf->Output('registro_de_lote_preenchido.pdf', 'I');
     }
