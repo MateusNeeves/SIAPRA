@@ -1639,7 +1639,7 @@
                                     </td>
                                     <td colspan="2" scope="col">
                                         <div class="flex align-items-center">
-                                            <select class="form-select ms-2" id="id_usuario_ph_1 name="id_usuario_ph_1>
+                                            <select class="form-select ms-2" id="id_usuario_ph_1" name="id_usuario_ph_1">
                                                 <option selected disabled>Selecione um usuário</option>
                                                 @foreach($usuarios as $usuario)
                                                     <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>

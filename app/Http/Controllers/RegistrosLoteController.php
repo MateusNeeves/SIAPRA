@@ -270,7 +270,108 @@ class RegistrosLoteController extends Controller
             $registroLote->id_usuario_execucao_ocorrencias_p10 = $request->id_usuario_execucao_ocorrencias_p10;
             $registroLote->id_usuario_verificacao_ocorrencias_p10 = $request->id_usuario_verificacao_ocorrencias_p10;
 
-        $registroLote->save();
+        //PAGINA 11
+            $registroLote->aspecto_resultado = $request->aspecto_resultado;
+            $registroLote->aspecto_data = $request->aspecto_data;
+            $registroLote->id_usuario_aspecto = $request->id_usuario_aspecto;
+            $registroLote->ph_1_resultado = $request->ph_1_resultado;
+            $registroLote->ph_1_data = $request->ph_1_data;
+            $registroLote->id_usuario_ph_1 = $request->id_usuario_ph_1;
+            $registroLote->ph_2_resultado = $request->ph_2_resultado;
+            $registroLote->ph_2_data = $request->ph_2_data;
+            $registroLote->id_usuario_ph_2 = $request->id_usuario_ph_2;
+            $registroLote->pureza_radionuclidica_1_resultado = $request->pureza_radionuclidica_1_resultado;
+            $registroLote->pureza_radionuclidica_1_data = $request->pureza_radionuclidica_1_data;
+            $registroLote->id_usuario_pureza_radionuclidica_1 = $request->id_usuario_pureza_radionuclidica_1;
+            $registroLote->pureza_radionuclidica_2_resultado = $request->pureza_radionuclidica_2_resultado;
+            $registroLote->pureza_radionuclidica_2_data = $request->pureza_radionuclidica_2_data;
+            $registroLote->id_usuario_pureza_radionuclidica_2 = $request->id_usuario_pureza_radionuclidica_2;
+            $registroLote->meia_vida_resultado = $request->meia_vida_resultado;
+            $registroLote->meia_vida_data = $request->meia_vida_data;
+            $registroLote->id_usuario_meia_vida = $request->id_usuario_meia_vida;
+            $registroLote->solventes_resultado = $request->solventes_resultado;
+            $registroLote->solventes_data = $request->solventes_data;
+            $registroLote->id_usuario_solventes = $request->id_usuario_solventes;
+
+            $registroLote->ocorrencias_p11 = $request->ocorrencias_p11;
+            $registroLote->id_usuario_verificacao_ocorrencias_p11 = $request->id_usuario_verificacao_ocorrencias_p11;
+
+        //PAGINA 12
+            $registroLote->pureza_radioquimica_a_codigo = $request->pureza_radioquimica_a_codigo;
+            $registroLote->pureza_radioquimica_a_resultado = $request->pureza_radioquimica_a_resultado;
+            $registroLote->pureza_radioquimica_a_data = $request->pureza_radioquimica_a_data;
+            $registroLote->id_usuario_pureza_radioquimica_a = $request->id_usuario_pureza_radioquimica_a;
+            $registroLote->pureza_radioquimica_b_resultado = $request->pureza_radioquimica_b_resultado;
+            $registroLote->pureza_radioquimica_b_data = $request->pureza_radioquimica_b_data;
+            $registroLote->id_usuario_pureza_radioquimica_b = $request->id_usuario_pureza_radioquimica_b;
+            $registroLote->pureza_quimica_resultado = $request->pureza_quimica_resultado;
+            $registroLote->pureza_quimica_data = $request->pureza_quimica_data;
+            $registroLote->id_usuario_pureza_quimica = $request->id_usuario_pureza_quimica;
+            
+            $registroLote->ocorrencias_p12 = $request->ocorrencias_p12;
+            $registroLote->id_usuario_verificacao_ocorrencias_p12 = $request->id_usuario_verificacao_ocorrencias_p12;
+            
+            $registroLote->aprovacao_fisico_quimico = $request->aprovacao_fisico_quimico;
+            $registroLote->data_aprovacao_fisico_quimico = $request->data_aprovacao_fisico_quimico;
+            $registroLote->id_usuario_aprovacao_fisico_quimico = $request->id_usuario_aprovacao_fisico_quimico;
+
+        // PÁGINA 13
+            $registroLote->endotoxinas_codigo = $request->endotoxinas_codigo;
+            $registroLote->endotoxinas_1_resultado = $request->endotoxinas_1_resultado;
+            $registroLote->endotoxinas_2_resultado = $request->endotoxinas_2_resultado;
+            $registroLote->endotoxinas_3_resultado = $request->endotoxinas_3_resultado;
+            $registroLote->endotoxinas_4_resultado = $request->endotoxinas_4_resultado;
+            $registroLote->endotoxinas_data = $request->endotoxinas_data;
+            $registroLote->id_usuario_endotoxinas = $request->id_usuario_endotoxinas;
+            $registroLote->codigo_calibracao_pts = $request->codigo_calibracao_pts;
+            $registroLote->lote_cartucho_pts = $request->lote_cartucho_pts;
+
+            $registroLote->membrana_equipamento = $request->membrana_equipamento;
+            $registroLote->membrana_lote = $request->membrana_lote;
+            $registroLote->membrana_validade = $request->membrana_validade;
+            $registroLote->id_usuario_membrana = $request->id_usuario_membrana;
+
+            $registroLote->pressao_teste_bolha_fornecida = $request->pressao_teste_bolha_fornecida;
+            $registroLote->pressao_teste_bolha_obtida = $request->pressao_teste_bolha_obtida;
+            $registroLote->id_usuario_pressao_teste_bolha = $request->id_usuario_pressao_teste_bolha;
+
+            $registroLote->ocorrencias_p13 = $request->ocorrencias_p13;
+            $registroLote->id_usuario_verificacao_ocorrencias_p13 = $request->id_usuario_verificacao_ocorrencias_p13;
+            
+            $registroLote->aprovacao_microbiologico = $request->aprovacao_microbiologico;
+            $registroLote->data_aprovacao_microbiologico = $request->data_aprovacao_microbiologico;
+            $registroLote->id_usuario_aprovacao_microbiologico = $request->id_usuario_aprovacao_microbiologico;
+
+        // PÁGINA 14
+            $registroLote->esterilidade_data_inicio_analise = $request->esterilidade_data_inicio_analise;
+            $registroLote->id_usuario_esterilidade = $request->id_usuario_esterilidade;
+
+            $registroLote->esterilidade_codigo = $request->esterilidade_codigo;
+            $registroLote->esterilidade_1_resultado = $request->esterilidade_1_resultado;
+            $registroLote->esterilidade_1_data = $request->esterilidade_1_data;
+            $registroLote->id_usuario_esterilidade_1 = $request->id_usuario_esterilidade_1;
+            $registroLote->esterilidade_2_resultado = $request->esterilidade_2_resultado;
+            $registroLote->esterilidade_2_data = $request->esterilidade_2_data;
+            $registroLote->id_usuario_esterilidade_2 = $request->id_usuario_esterilidade_2;
+            $registroLote->esterilidade_3_resultado = $request->esterilidade_3_resultado;
+            $registroLote->esterilidade_3_data = $request->esterilidade_3_data;
+            $registroLote->id_usuario_esterilidade_3 = $request->id_usuario_esterilidade_3;
+
+            $registroLote->ocorrencias_p14 = $request->ocorrencias_p14;
+            $registroLote->id_usuario_verificacao_ocorrencias_p14 = $request->id_usuario_verificacao_ocorrencias_p14;
+            
+            $registroLote->aprovacao_esterilidade = $request->aprovacao_esterilidade;
+            $registroLote->data_aprovacao_esterilidade = $request->data_aprovacao_esterilidade;
+            $registroLote->id_usuario_aprovacao_esterilidade = $request->id_usuario_aprovacao_esterilidade;
+
+        // PÁGINA 15
+            $registroLote->id_usuario_supervisor_controle_qualidade = $request->id_usuario_supervisor_controle_qualidade;
+            $registroLote->atendimento_criterios = $request->atendimento_criterios;
+            $registroLote->aprovacao_lote = $request->aprovacao_lote;
+            $registroLote->id_usuario_resposavel_garantia_qualidade = $request->id_usuario_resposavel_garantia_qualidade;
+            $registroLote->hora_emissao_laudo = $request->hora_emissao_laudo;
+
+            $registroLote->save();
 
         return redirect()->route('registros_lote')->with('alert-success', 'Registro de lote salvo com sucesso.');
     }

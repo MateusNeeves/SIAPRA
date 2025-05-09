@@ -294,15 +294,15 @@ return new class extends Migration
                 $table->date('ph_2_data')->nullable();
                 $table->unsignedBigInteger('id_usuario_ph_2')->nullable();
                     $table->foreign('id_usuario_ph_2')->references('id')->on('users');
-                    $table->string('pureza_radionuclidica_1_resultado')->nullable();
+                $table->string('pureza_radionuclidica_1_resultado')->nullable();
                 $table->date('pureza_radionuclidica_1_data')->nullable();
                 $table->unsignedBigInteger('id_usuario_pureza_radionuclidica_1')->nullable();
                     $table->foreign('id_usuario_pureza_radionuclidica_1')->references('id')->on('users');
-                    $table->string('pureza_radionuclidica_2_resultado')->nullable();
+                $table->string('pureza_radionuclidica_2_resultado')->nullable();
                 $table->date('pureza_radionuclidica_2_data')->nullable();
                 $table->unsignedBigInteger('id_usuario_pureza_radionuclidica_2')->nullable();
                     $table->foreign('id_usuario_pureza_radionuclidica_2')->references('id')->on('users');
-                    $table->string('meia_vida_resultado')->nullable();
+                $table->string('meia_vida_resultado')->nullable();
                 $table->date('meia_vida_data')->nullable();
                 $table->unsignedBigInteger('id_usuario_meia_vida')->nullable();
                     $table->foreign('id_usuario_meia_vida')->references('id')->on('users');
@@ -331,8 +331,8 @@ return new class extends Migration
                     $table->foreign('id_usuario_pureza_quimica')->references('id')->on('users');
             
                 $table->string('ocorrencias_p12', 220)->nullable();
-                $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p11')->nullable();
-                    $table->foreign('id_usuario_verificacao_ocorrencias_p11')->references('id')->on('users');
+                $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p12')->nullable();
+                    $table->foreign('id_usuario_verificacao_ocorrencias_p12')->references('id')->on('users');
 
                 $table->boolean('aprovacao_fisico_quimico')->nullable();
                 $table->date('data_aprovacao_fisico_quimico')->nullable();
@@ -341,10 +341,10 @@ return new class extends Migration
             
             //PAGINA 13
                 $table->boolean('endotoxinas_codigo')->nullable();
-                $table->numeric('endotoxinas_1_resultado')->nullable();
-                $table->numeric('endotoxinas_2_resultado')->nullable();
-                $table->numeric('endotoxinas_3_resultado')->nullable();
-                $table->numeric('endotoxinas_4_resultado')->nullable();
+                $table->decimal('endotoxinas_1_resultado')->nullable();
+                $table->decimal('endotoxinas_2_resultado')->nullable();
+                $table->decimal('endotoxinas_3_resultado')->nullable();
+                $table->decimal('endotoxinas_4_resultado')->nullable();
                 $table->date('endotoxinas_data')->nullable();
                 $table->unsignedBigInteger('id_usuario_endotoxinas')->nullable();
                     $table->foreign('id_usuario_endotoxinas')->references('id')->on('users');
@@ -403,7 +403,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('id_usuario_supervisor_controle_qualidade')->nullable();
                     $table->foreign('id_usuario_supervisor_controle_qualidade')->references('id')->on('users');
                 $table->boolean('atendimento_criterios')->nullable();
-                $table->boolean('aprovacao_lote');
+                $table->boolean('aprovacao_lote')->nullable();
                 $table->unsignedBigInteger('id_usuario_resposavel_garantia_qualidade')->nullable();
                     $table->foreign('id_usuario_resposavel_garantia_qualidade')->references('id')->on('users');
                 $table->time('hora_emissao_laudo')->nullable();
