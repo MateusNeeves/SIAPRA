@@ -391,9 +391,7 @@ return new class extends Migration
                     $table->foreign('id_usuario_esterilidade_3')->references('id')->on('users');
 
                 $table->string('ocorrencias_p14', 260)->nullable();
-                $table->unsignedBigInteger('id_usuario_verificacao_ocorrencias_p14')->nullable();
-                    $table->foreign('id_usuario_verificacao_ocorrencias_p14')->references('id')->on('users');
-
+              
                 $table->boolean('aprovacao_esterilidade')->nullable();
                 $table->date('data_aprovacao_esterilidade')->nullable();
                 $table->unsignedBigInteger('id_usuario_aprovacao_esterilidade')->nullable();
