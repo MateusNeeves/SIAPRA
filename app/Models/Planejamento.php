@@ -14,6 +14,7 @@ class Planejamento extends Model
     protected $fillable = [
         'id_usuario',
         'data_producao',
+        'lote',
         'fator_seguranca',
         'ativ_dose',
         'tempo_exames',

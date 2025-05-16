@@ -163,10 +163,17 @@ class PlanejamentosController extends Controller
 
             try{
                 DB::beginTransaction();
+                
+                $lotes = Planejamento::select('lote')->where('data_producao', $request->data_producao)->get()->pluck('lote')->toArray();
+                $ultimoLote = max($lotes);
+                preg_match('/(\d+)$/', $ultimoLote, $matches);
+                $ultimoNumero = isset($matches[1]) ? intval($matches[1]) : null;
+                $proximoNumero = ($ultimoNumero ?? 0) + 1;
 
                 $planejamento = new Planejamento;
                 $planejamento->id_usuario = Auth::user()->id;
                 $planejamento->data_producao = $request->data_producao;
+                $planejamento->lote = Carbon::createFromFormat('d/m/Y', $request->data_producao)->format('Y_m_d') . '-' . $proximoNumero;
                 $planejamento->fator_seguranca = $request->fator_seguranca;
                 $planejamento->ativ_dose = $request->ativ_dose;
                 $planejamento->tempo_exames = $request->tempo_exames;
@@ -209,6 +216,7 @@ class PlanejamentosController extends Controller
                     "- ID do Planejamento: {$planejamento->id}\n" .
                     "- Usuário: ID: {$planejamento->id_usuario}, Username: {$user_username}\n"  .
                     "- Data da Produção: {$planejamento->data_producao}\n" .
+                    "- Lote: {$planejamento->lote}\n" .
                     "- Fator de Segurança: {$planejamento->fator_seguranca}\n" .
                     "- Atividade Por Dose: {$planejamento->ativ_dose}\n" .
                     "- Tempo Entre Exames: {$planejamento->tempo_exames}\n" .
@@ -241,7 +249,7 @@ class PlanejamentosController extends Controller
             }
             catch (\Exception $exception) {
                 DB::rollback();
-                return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception->getMessage())->withInput(); 
+                return redirect()->back()->with('alert-danger', 'Ocorreu um erro na inserção no banco de dados: ' . $exception)->withInput(); 
             }
         }   
     }
@@ -272,6 +280,7 @@ class PlanejamentosController extends Controller
                 "- ID do Planejamento: {$planejamento->id}\n" .
                 "- Usuário: ID: {$planejamento->id_usuario}, Username: {$user_username}\n"  .
                 "- Data da Produção: {$planejamento->data_producao}\n" .
+                "- Lote: {$planejamento->lote}\n" .
                 "- Fator de Segurança: {$planejamento->fator_seguranca}\n" .
                 "- Atividade Por Dose: {$planejamento->ativ_dose}\n" .
                 "- Tempo Entre Exames: {$planejamento->tempo_exames}\n" .

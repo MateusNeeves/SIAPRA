@@ -26,7 +26,7 @@ class FracionamentosController extends Controller{
     public function show(Request $request){
         // $fracionamentos = Fracionamento::where('data_producao', $request->data_producao)->get();
 
-        $fracionamentos = collect(DB::select('SELECT F.ID, P.ATIV_EOB, F.ATIV_EOB_REAL, F.ATIV_EOS_NEC, F.ATIV_EOS_REAL, F.VOL_EOS, F.ATIV_ESP, F.FIM_SINTESE
+        $fracionamentos = collect(DB::select('SELECT F.ID, P.LOTE, P.ATIV_EOB, F.ATIV_EOB_REAL, F.ATIV_EOS_NEC, F.ATIV_EOS_REAL, F.VOL_EOS, F.ATIV_ESP, F.FIM_SINTESE
         FROM PLANEJAMENTOS P INNER JOIN FRACIONAMENTOS F ON (P.ID = F.ID_PLANEJAMENTO)
         WHERE P.DATA_PRODUCAO = ?'
         , [$request->data_producao]));
@@ -148,6 +148,7 @@ class FracionamentosController extends Controller{
                 $log->descricao = 
                     "Fracionamento adicionado:\n" .
                     "- ID: {$fracionamento->id}\n" .
+                    "- Lote: {$planejamento->lote}\n" .
                     "- Usuário: ID: {$fracionamento->id_usuario}, Username: {$user_username}\n"  .
                     "- Atividade EOB Real: {$fracionamento->ativ_eob_real}\n" .
                     "- Atividade EOS Necessária: {$fracionamento->ativ_eos_nec}\n" .
