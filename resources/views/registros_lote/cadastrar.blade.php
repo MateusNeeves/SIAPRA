@@ -3,7 +3,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 bg-white overflow-hidden shadow-sm sm:rounded-lg p-5">
             <div class="container justify-content-center">
                 <div class="pb-4 m-5 text-gray-900 text-center h3">
-                    {{ 'Novo Registro de Lote' }}
+                    {{ 'Registro de Lote - ' . $lote->lote }}
                 </div>
 
                 <form action="{{ route('registros_lote.store') }}" method="POST">

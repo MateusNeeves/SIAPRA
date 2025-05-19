@@ -12,13 +12,16 @@ use Illuminate\Support\Facades\Auth;
 class RegistrosLoteController extends Controller
 {
     public function index(){
-        $datas = Registro_Lote::select('data_fabricacao')->distinct()->pluck('data_fabricacao');
-        return view('registros_lote/visualizar', ['datas' => $datas]);
+        $lotes = Planejamento::select('lote', 'data_producao')->get();
+        return view('registros_lote/visualizar', ['lotes' => $lotes]);
+        // $datas = Registro_Lote::select('data_fabricacao')->distinct()->pluck('data_fabricacao');
+        // return view('registros_lote/visualizar', ['datas' => $datas]);
     }
 
-    public function register(){
+    public function register(Request $request){
+        $lote = Planejamento::where('lote', $request->loteSelect)->first();
         $usuarios = User::all();
-        return view('registros_lote/cadastrar', ['usuarios' => $usuarios]);
+        return view('registros_lote/cadastrar', ['lote' => $lote, 'usuarios' => $usuarios]);
     }
 
     public function store(Request $request){

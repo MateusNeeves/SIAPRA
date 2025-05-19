@@ -6,64 +6,72 @@
                     {{'Registros de Lote'}}
                 </div>
 
-                <form method="POST" action="{{route('registros_lote.make_pdf')}}">
-                    @csrf
-                    @if (array_intersect(['Admin', 'Produção', 'Farmacêutico'], Auth::user()->getClassNamesAttribute()))
-                        <div class="flex justify-content-center mb-5">
-                            <a class="btn btn-orange" href="{{route('registros_lote.register')}}">
-                                {{ __('Criar/Continuar Registro de Lote') }}
-                            </a>
-                        </div>
-                    @endif
-                    <div class="flex justify-content-center mb-5">
+                <form method="GET" action="{{route('registros_lote.register')}}">
+                    <div class="flex justify-content-center align-items-center mb-4">
+                        <label class="me-4"> Selecione a Data de Fabricação do Lote: </label>
                         <div class="position-relative" style="width: 220px">
-                            <input class="btn-orange border rounded border-dark placeholder-visible pe-3"  type="text" id="datePicker" name="data_fabricacao" value="{{old('data_fabricacao')}}" placeholder="Selecionar Data" readonly required style="">
-                            <i class="bi bi-calendar3-week input-icon"></i>
+                            <input class="btn-orange border rounded border-dark placeholder-visible pe-3" type="date" id="data_fabricacao" name="data_fabricacao" value="{{ old('data_fabricacao') }}" required>
                         </div>
-                        
-                        <script>
-                            document.addEventListener("DOMContentLoaded", function() {
-                                // Obtém as datas do backend passadas pelo Blade
-                                const datas = @json($datas);
-                                var field = document.getElementById('datePicker');
-                                var button = document.getElementById('visualizar_button');
 
-                                const datePicker = new Pikaday({
-                                    field: field,
-                                    onSelect: function(date) {
-                                        field.value = moment(date).format('DD/MM/YYYY');
-                                    },
-                                    disableDayFn: function(date) {
-                                        const dateString = date.toISOString().split('T')[0];
-                                        return !datas.includes(dateString);
-                                    },
-                                    i18n: {
-                                        previousMonth: 'Mês anterior',
-                                        nextMonth: 'Próximo mês',
-                                        months: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-                                        weekdays: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'],
-                                        weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
-                                    }
-                                });
-                                if (field.value) {
-                                    datePicker.setDate(moment(field.value, 'DD/MM/YYYY').toDate());
-                                };
-                            });
-                            
-                            document.getElementById('datePicker').addEventListener('change', function() {
-                                if (document.getElementById('datePicker').value) {
-                                    document.getElementById('visualizar_button').disabled = false;
-                                }
-                            });
-          
-                        </script>
-
-                        <button>
-                            <button disabled class="btn btn-orange  ms-3" id="visualizar_button" style="width: 250px">
-                                {{ __('Visualizar Registro de Lote') }}
-                            </button>
+                    </div>
+                    <div class="flex justify-content-center align-items-center mb-4">
+                        <!-- Select para IDs dos lotes filtrados -->
+                        <select id="loteSelect" name="loteSelect" class="form-select ms-3" style="width: 200px" disabled>
+                            <option hidden value="">Selecione um Lote</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-content-center align-items-center mb-4">
+                        <button disabled class="btn btn-orange ms-3" id="visualizar_button" style="width: 250px">
+                            {{ __('Visualizar Registro de Lote') }}
                         </button>
                     </div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            // Lotes vindos do backend
+                            const lotes = @json($lotes);
+                            const datePicker = document.getElementById('data_fabricacao');
+                            const visualizarButton = document.getElementById('visualizar_button');
+                            const loteSelect = document.getElementById('loteSelect');
+
+                            // Inicialmente desabilita botão e select
+                            visualizarButton.disabled = true;
+                            loteSelect.disabled = true;
+
+                            // Evento ao mudar a data
+                            datePicker.addEventListener('change', function () {
+                                const selectedDate = datePicker.value;
+                                loteSelect.innerHTML = '<option hidden value="">Selecione um Lote</option>'; // limpa
+
+                                if (selectedDate) {
+                                    // Filtra os lotes pela data selecionada
+                                    const lotesFiltrados = lotes.filter(lote => lote.data_producao === selectedDate);
+
+                                    // Preenche o select com os IDs dos lotes
+                                    lotesFiltrados.forEach(lote => {
+                                        const option = document.createElement('option');
+                                        option.value = lote.lote;
+                                        option.textContent = lote.lote;
+                                        loteSelect.appendChild(option);
+                                    });
+
+                                    // Ativa o select se houver lotes, mas não ativa o botão ainda
+                                    loteSelect.disabled = lotesFiltrados.length === 0;
+                                    visualizarButton.disabled = true;
+                                } else {
+                                    loteSelect.disabled = true;
+                                    visualizarButton.disabled = true;
+                                }
+                            });
+
+                            // Evento ao selecionar um lote
+                            loteSelect.addEventListener('change', function () {
+                                // Habilita o botão apenas se um valor válido for selecionado
+                                visualizarButton.disabled = loteSelect.value === "";
+                            });
+                        });
+                    </script>
+
 
                 </form>
 

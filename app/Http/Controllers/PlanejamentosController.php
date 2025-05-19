@@ -165,9 +165,11 @@ class PlanejamentosController extends Controller
                 DB::beginTransaction();
                 
                 $lotes = Planejamento::select('lote')->where('data_producao', $request->data_producao)->get()->pluck('lote')->toArray();
-                $ultimoLote = max($lotes);
-                preg_match('/(\d+)$/', $ultimoLote, $matches);
-                $ultimoNumero = isset($matches[1]) ? intval($matches[1]) : null;
+                if ($lotes){
+                    $ultimoLote = max($lotes);
+                    preg_match('/(\d+)$/', $ultimoLote, $matches);
+                    $ultimoNumero = isset($matches[1]) ? intval($matches[1]) : null;
+                }
                 $proximoNumero = ($ultimoNumero ?? 0) + 1;
 
                 $planejamento = new Planejamento;
