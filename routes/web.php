@@ -82,7 +82,7 @@ Route::get('/', function () {
     Route::middleware(CheckUserClasses::class.':Admin,Visualizador,Produção,Farmacêutico')->group(function () {
         //Registros de Lote
             Route::get('/registros_lote', [RegistrosLoteController::class, 'index'])->middleware(['auth'])->name('registros_lote');
-            Route::post('/registros_lote', [RegistrosLoteController::class, 'make_pdf'])->middleware(['auth'])->name('registros_lote.make_pdf');
+            Route::get('/registros_lote/pdf', [RegistrosLoteController::class, 'make_pdf'])->middleware(['auth'])->name('registros_lote.make_pdf');
             Route::get('/registros_lote/cadastrar', [RegistrosLoteController::class, 'register'])->middleware(['auth'])->name('registros_lote.register');
             Route::post('/registros_lote/cadastrar', [RegistrosLoteController::class, 'store'])->middleware(['auth'])->name('registros_lote.store');
     });

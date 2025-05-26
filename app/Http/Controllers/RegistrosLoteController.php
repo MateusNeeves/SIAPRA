@@ -28,6 +28,8 @@ class RegistrosLoteController extends Controller
             ];
         }
 
+        // return response()->json($registro);
+
         $usuarios = User::all();
         return view('registros_lote/cadastrar', ['registro' => $registro, 'usuarios' => $usuarios]);
     }
@@ -378,7 +380,7 @@ class RegistrosLoteController extends Controller
             $modifiedFields['id_usuario_supervisor_controle_qualidade'] = $request->id_usuario_supervisor_controle_qualidade;
             $modifiedFields['atendimento_criterios'] = $request->atendimento_criterios;
             $modifiedFields['aprovacao_lote'] = $request->aprovacao_lote;
-            $modifiedFields['id_usuario_resposavel_garantia_qualidade'] = $request->id_usuario_resposavel_garantia_qualidade;
+            $modifiedFields['id_usuario_resposavel_garantia_qualidade'] = Auth::id();
             $modifiedFields['hora_emissao_laudo'] = $request->hora_emissao_laudo;
             
             $modifiedFields['completed'] = true;
@@ -393,7 +395,7 @@ class RegistrosLoteController extends Controller
     }
     
     public function make_pdf(Request $request){
-        $registro_lote = Registro_Lote::where('data_fabricacao', $request->data_fabricacao)->get()[0];
+        $registro_lote = Registro_Lote::where('lote', $request->lote)->get()[0];
 
         $pdf = new FPDI();
         
@@ -412,7 +414,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(1);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -423,7 +425,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(2);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -434,7 +436,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(3);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -543,8 +545,7 @@ class RegistrosLoteController extends Controller
             }
 
             // ---------------------------------------------------//
-
-            if ($registro_lote->logbook_anexado != null && $registro_lote->logbook_anexado == true) {
+            if ($registro_lote->logbook_anexado === true) {
                 $pdf->SetXY(105, 252.5);
                 $pdf->Write(10, "X");
 
@@ -558,7 +559,7 @@ class RegistrosLoteController extends Controller
                     $pdf->SetXY(140, 259);
                     $pdf->Write(10, User::find($registro_lote->id_usuario_logbook)->username . " - " . $registro_lote->id_usuario_logbook);
                 }
-            } else if ($registro_lote->logbook_anexado != null && $registro_lote->logbook_anexado == false) {
+            } else if ($registro_lote->logbook_anexado === false) {
                 $pdf->SetXY(151.5, 252.5);
                 $pdf->Write(10, "X");
             }
@@ -568,7 +569,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(4);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -576,11 +577,11 @@ class RegistrosLoteController extends Controller
 
             // ---------------------------------------------------//
 
-            if ($registro_lote->modulo_sintese != null && $registro_lote->modulo_sintese == 0){
+            if ($registro_lote->modulo_sintese === false){
                 $pdf->SetXY(100.5, 77 );
                 $pdf->Write(10, "X");
             }
-            else if ($registro_lote->modulo_sintese != null && $registro_lote->modulo_sintese == 1){
+            else if ($registro_lote->modulo_sintese === true){
                 $pdf->SetXY(100.5, 84);
                 $pdf->Write(10, "X");
             }
@@ -736,7 +737,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(5);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -844,7 +845,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(6);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -966,7 +967,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(7);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -1115,7 +1116,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(8);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -1240,7 +1241,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(9);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -1290,7 +1291,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(10);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -1514,7 +1515,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(11);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -1639,7 +1640,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(12);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -1647,11 +1648,11 @@ class RegistrosLoteController extends Controller
 
             // ---------------------------------------------------//
 
-            if ($registro_lote->pureza_radioquimica_a_codigo == false){
+            if ($registro_lote->pureza_radioquimica_a_codigo === false){
                 $pdf->SetXY(114.5, 87);
                 $pdf->Write(10, "X");
             }
-            else{
+            else if ($registro_lote->pureza_radioquimica_a_codigo === true){
                 $pdf->SetXY(114.5, 94.5);
                 $pdf->Write(10, "X");
             }
@@ -1725,11 +1726,11 @@ class RegistrosLoteController extends Controller
 
             // ---------------------------------------------------//
 
-            if ($registro_lote->aprovacao_fisico_quimico == true){
+            if ($registro_lote->aprovacao_fisico_quimico === true){
                 $pdf->SetXY(77, 237.5);
                 $pdf->Write(10, "X");
             }
-            else{
+            else if ($registro_lote->aprovacao_fisico_quimico === false){
                 $pdf->SetXY(157.5, 237.5);
                 $pdf->Write(10, "X");
             }
@@ -1748,7 +1749,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(13);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -1756,11 +1757,11 @@ class RegistrosLoteController extends Controller
 
             // ---------------------------------------------------//
 
-            if ($registro_lote->endotoxinas_codigo == false){
+            if ($registro_lote->endotoxinas_codigo === false){
                 $pdf->SetXY(110, 106);
                 $pdf->Write(10, "X");
             }
-            else{
+            else if ($registro_lote->endotoxinas_codigo === true){
                 $pdf->SetXY(110, 110.5);
                 $pdf->Write(10, "X");
             }
@@ -1865,11 +1866,11 @@ class RegistrosLoteController extends Controller
 
             // ---------------------------------------------------//
 
-            if ($registro_lote->aprovacao_microbiologico == true){
+            if ($registro_lote->aprovacao_microbiologico === true){
                 $pdf->SetXY(77, 250.5);
                 $pdf->Write(10, "X");
             }
-            else{
+            else if ($registro_lote->aprovacao_microbiologico === false){
                 $pdf->SetXY(157.5, 250.5);
                 $pdf->Write(10, "X");
             }
@@ -1888,7 +1889,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(14);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -1983,11 +1984,11 @@ class RegistrosLoteController extends Controller
 
             // ---------------------------------------------------//
 
-            if ($registro_lote->aprovacao_esterilidade == true){
+            if ($registro_lote->aprovacao_esterilidade === true){
                 $pdf->SetXY(77, 212.5);
                 $pdf->Write(10, "X");
             }
-            else{
+            else if ($registro_lote->aprovacao_esterilidade === false){
                 $pdf->SetXY(157.5, 212.5);
                 $pdf->Write(10, "X");
             }
@@ -2006,7 +2007,7 @@ class RegistrosLoteController extends Controller
             $tplIdx = $pdf->importPage(15);
             $pdf->useTemplate($tplIdx, 0, 0, 210);
             
-            $pdf->SetXY(39, 51);
+            $pdf->SetXY(39, 50);
             $pdf->Write(10, $lote);
 
             $pdf->SetXY(155, 51);
@@ -2019,23 +2020,23 @@ class RegistrosLoteController extends Controller
                 $pdf->Write(10, User::find($registro_lote->id_usuario_supervisor_controle_qualidade)->username . " - " . $registro_lote->id_usuario_supervisor_controle_qualidade);
             }
 
-            if ($registro_lote->atendimento_criterios == true){
+            if ($registro_lote->atendimento_criterios === true){
                 $pdf->SetXY(30.5, 113.5);
                 $pdf->Write(10, "X");
             }
-            else{
+            else if ($registro_lote->atendimento_criterios === false){
                 $pdf->SetXY(46.5, 113.5);
                 $pdf->Write(10, "X");
             }
 
-            $pdf->SetXY(44, 131);
+            $pdf->SetXY(44, 130);
             $pdf->Write(10, $lote);
 
-            if ($registro_lote->aprovacao_lote == true){
+            if ($registro_lote->aprovacao_lote === true){
                 $pdf->SetXY(89, 131.5);
                 $pdf->Write(10, "X");
             }
-            else{
+            else if ($registro_lote->aprovacao_lote === false){
                 $pdf->SetXY(120.5, 131.5);
                 $pdf->Write(10, "X");
             }
