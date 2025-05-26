@@ -22,7 +22,7 @@ class PedidosController extends Controller
                                         FROM PEDIDOS P INNER JOIN CLIENTES C ON (P.ID_CLIENTE = C.ID) INNER JOIN USERS U ON (P.ID_USUARIO = U.ID)'));
         // ALTERANDO FORMATO DA DATA E HORA
         foreach ($pedidos as $idx => $pedido) {
-            $pedidos[$idx]->data_solicitacao = Carbon::createFromFormat('Y-m-d H:i:s',  $pedido->data_solicitacao)->format('d/m/Y H:i');
+            $pedidos[$idx]->data_solicitacao = Carbon::createFromFormat('Y-m-d',  $pedido->data_solicitacao)->format('d/m/Y');
             $pedidos[$idx]->data_entrega = Carbon::createFromFormat('Y-m-d',  $pedido->data_entrega)->format('d/m/Y');
         }
         $pedidos = json_decode(json_encode($pedidos), true);

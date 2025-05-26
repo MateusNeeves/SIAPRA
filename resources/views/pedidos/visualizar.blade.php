@@ -36,7 +36,7 @@
     <!-- Data Solicitação -->
     <div class="mt-4">
         <x-input-label :value="__('Data Solicitação *')" />
-        <x-text-input id="data_solicitacao" class="block mt-1 w-full" type="datetime-local" name="data_solicitacao" :value="old('data_solicitacao', $pedido->data_solicitacao ?? '')" required/>
+        <x-text-input id="data_solicitacao" class="block mt-1 w-full" type="date" name="data_solicitacao" :value="old('data_solicitacao', $pedido->data_solicitacao ?? '')" required/>
     </div>
 
     <!-- Data Entrega -->

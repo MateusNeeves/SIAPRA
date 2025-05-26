@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_cliente');
             $table->unsignedBigInteger('id_usuario');
             $table->integer('qtd_doses');
-            $table->timestamp('data_solicitacao');
+            $table->date('data_solicitacao');
             $table->date('data_entrega');
     
             $table->foreign('id_cliente')->references('id')->on('clientes');
