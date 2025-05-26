@@ -90,6 +90,9 @@ class DatabaseSeeder extends Seeder
 
         // FRACIONAMENTO
             ['descricao' => 'Adicionar Fracionamento'],
+
+        // REGISTRO DE LOTE
+            ['descricao' => 'Finalizar Registro de Lote'],
         ]);
 
         DB::table('parametros')->insert(

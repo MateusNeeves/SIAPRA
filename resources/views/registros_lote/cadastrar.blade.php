@@ -75,8 +75,8 @@
                         <div class="d-flex justify-content-center">
                             <form action="{{ route('registros_lote.make_pdf') }}">
                                 <input type="text" name="lote" value="{{ $registro['lote'] }}" hidden>
-                                <button type="submit" class="btn btn-orange" id="visualizar_button" style="width: 250px">
-                                    {{ __('Visualizar Registro de Lote') }}
+                                <button type="submit" class="btn btn-orange" id="visualizar_button" >
+                                    {{ __('Exportar como PDF') }}
                                 </button>
                             </form>
                         </div>

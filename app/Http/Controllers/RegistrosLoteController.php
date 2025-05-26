@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Log;
+use App\Models\Acao;
 use App\Models\User;
 use setasign\Fpdi\Fpdi;
 use App\Models\Planejamento;
 use Illuminate\Http\Request;
 use App\Models\Registro_Lote;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -384,12 +387,37 @@ class RegistrosLoteController extends Controller
             $modifiedFields['hora_emissao_laudo'] = $request->hora_emissao_laudo;
             
             $modifiedFields['completed'] = true;
+
+            DB::beginTransaction();
+
+            $registro_lote = Registro_Lote::UpdateOrCreate(
+                ['lote' => $request->lote],
+                $modifiedFields
+            );
+
+            $log = new Log();
+
+            $log->id_user = Auth::user()->id;
+            $log->id_acao = Acao::where('descricao', 'Finalizar Registro de Lote')->first()["id"];
+            $log->tipo = "Info";
+            $log->data_hora = now();
+            $log->descricao = 
+                "Registro de Lote Finalizado:\n" .
+                "- ID: {$registro_lote->id}\n" .
+                "- Lote: {$registro_lote->lote}\n";
+
+            $log->save();
+
+            DB::commit();
+        }
+        
+        else {
+            $registro_lote = Registro_Lote::UpdateOrCreate(
+                ['lote' => $request->lote],
+                $modifiedFields
+            );
         }
 
-        $registro_lote = Registro_Lote::UpdateOrCreate(
-            ['lote' => $request->lote],
-            $modifiedFields
-        );
         
         return redirect()->back()->with('alert-success', 'Registro de lote salvo com sucesso.')->withInput();
     }
