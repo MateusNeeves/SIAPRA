@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('registros_lote', function (Blueprint $table) {
             $table->id();
             $table->boolean('completed')->default(false);
-            $table->string('lote');
+            $table->string('lote')->unique();
             $table->date('data_fabricacao');
 
             // PAGINA 3

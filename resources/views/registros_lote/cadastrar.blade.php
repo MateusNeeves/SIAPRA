@@ -1,36 +1,79 @@
 <x-app-layout>
     <div class="w-100 py-16">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 bg-white overflow-hidden shadow-sm sm:rounded-lg p-5">
+        <div class="w-75 mx-auto sm:px-6 lg:px-8 bg-white overflow-hidden shadow-sm sm:rounded-lg p-5">
             <div class="container justify-content-center">
-                <div class="pb-4 m-5 text-gray-900 text-center h3">
-                    {{ 'Registro de Lote - ' . $lote->lote }}
+                <div class="pb-4 text-gray-900 text-center h3">
+                    {{ 'Registro de Lote - ' . $registro['lote'] }}
                 </div>
 
-                <form action="{{ route('registros_lote.store') }}" method="POST">
-                    @csrf
+                <!-- Menu de navegação -->
+                <div class="nav nav-tabs mb-5 d-flex text-sm justify-content-center" id="formMenu" role="tablist">
+                    <button class="nav-link active" id="dados-lote-tab" data-bs-toggle="tab" type="button" role="tab" onclick="mudarPagina('formDados')">
+                        Dados do Lote
+                    </button>
+                    <button class="nav-link" id="irradiacao-tab" data-bs-toggle="tab" type="button" role="tab" onclick="mudarPagina('formIrradiacao')">
+                        Irradiação
+                    </button>
+                    <button class="nav-link" id="sintese-tab" data-bs-toggle="tab" type="button" role="tab" onclick="mudarPagina('formSintese')">
+                        Síntese
+                    </button>
+                    <button class="nav-link" id="fracionamento-tab" data-bs-toggle="tab" type="button" role="tab" onclick="mudarPagina('formFracionamento')">
+                        Fracionamento
+                    </button>
+                    <button class="nav-link" id="embalagem-tab" data-bs-toggle="tab" type="button" role="tab" onclick="mudarPagina('formExpedicao')">
+                        Embalagem e Expedição
+                    </button>
+                    <button class="nav-link" id="cq-fisico-quimico-tab" data-bs-toggle="tab" type="button" role="tab" onclick="mudarPagina('formCQFQ')">
+                        CQ Físico-Químico
+                    </button>
+                    <button class="nav-link" id="cq-microbiologico-tab" data-bs-toggle="tab" type="button" role="tab" onclick="mudarPagina('formCQM')">
+                        CQ Microbiológico
+                    </button>
+                    @if (array_intersect(['Admin', 'Farmacêutico'], Auth::user()->getClassNamesAttribute()))
+                        <button class="nav-link" id="aprovacao-tab" data-bs-toggle="tab" type="button" role="tab" onclick="mudarPagina('formAprovacao')">
+                            Aprovação de Lote
+                        </button>
+                    @endif
+                </div>
 
-                    <!-- Páginas do Formulário -->
-                    <div id="pagina1">
-                        <h4 class="mt-4 mb-5">1. Dados do Lote</h4>
-                        <table class="table table-bordered">
-                            <tbody class="text-center">
-                                <tr>
-                                    <th> Lote: </th>
-                                    <td>
-                                        <input type="text" class="form-control" id="lote" name="lote" required>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th> Data de Fabricação: </th>
-                                    <td>
-                                        <input type="date" class="form-control" id="data_fabricacao" name="data_fabricacao" required>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- Dados do Lote -->
+                <div id="formDados" style="display: none;">
+                    <div class="container p-4 border rounded mb-5">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="border p-3 rounded h-100">
+                                    <h6 class="border-bottom pb-2">Lote</h6>
+                                    <p class="h4">{{ $registro['lote'] }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border p-3 rounded h-100">
+                                    <h6 class="border-bottom pb-2">Data da Produção</h6>
+                                    <p class="h4">{{ \Carbon\Carbon::parse($registro['data_fabricacao'])->format('d/m/Y') }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border p-3 rounded h-100">
+                                    <h6 class="border-bottom pb-2">Status do Registro</h6>
+                                    <p class="h4">
+                                        @if(!isset($registro['completed']))
+                                            <span class="badge bg-secondary">Não Iniciado</span>
+                                        @elseif(!$registro['completed'])
+                                            <span class="badge bg-warning text-dark">Em Andamento</span>
+                                        @else
+                                            <span class="badge bg-success">Finalizado</span>
+                                        @endif
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                    <div id="pagina2" style="display: none;">
+                <!-- Irradiação -->
+                <form action="{{ route('registros_lote.store') }}" method="POST" id="formIrradiacao" style="display: none;">
+                    @csrf
+                    <div>
                         <h4  class="mt-4 mb-5">2. Irradiação</h4>
 
                         <table class="table table-bordered">
@@ -259,7 +302,15 @@
 
                     </div>
 
-                    <div id="pagina3" style="display: none;">
+                    <div class="text-center mt-5">
+                        <button type="submit" name="action" value="partialIrradiacao" class="btn btn-orange px-5">Salvar Relatório Parcial</button>
+                    </div>
+                </form>
+                
+                <!-- Sintese -->
+                <form action="{{ route('registros_lote.store') }}" method="POST" id="formSintese" style="display: none;">
+                    @csrf
+                    <div>
                         <h4 class="mt-4">3. Síntese</h4>
 
                         <table class="table table-bordered">
@@ -495,9 +546,6 @@
                             </tfoot>
                         </table>
                     
-                    </div>
-
-                    <div id="pagina4" style="display: none;">
                         <h6  class="mb-4 mt-5">3.2 Realizar montagem do KIT SYNTHERA </h6>
 
                         <table class="table table-bordered">
@@ -720,9 +768,6 @@
                             </tfoot>
                         </table>
 
-                    </div>
-
-                    <div id="pagina5" style="display: none;">
                         <h6 class="mt-5 border border-black py-1 fw-bold text-center mx-auto" style="max-width: 70%;">
                             <span class="fw-normal">ATENÇÃO!</span> Caso algum problema seja verificado, checar medidas para resolução, no POP correspondente à atividade, antes de seguir para próxima ação.
                         </h6>
@@ -844,7 +889,15 @@
                         </table>
                     </div>
 
-                    <div id="pagina6" style="display: none;">
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn btn-orange px-5" name="action" value="partialSintese">Salvar Relatório Parcial</button>
+                    </div>
+                </form>
+
+                <!-- Fracionamento -->
+                <form action="{{ route('registros_lote.store') }}" method="POST" id="formFracionamento" style="display: none;">
+                    @csrf
+                    <div>
                         <h4 class="mt-4">4. Fracionamento</h4>
 
                         <h6 class="my-4 py-1 text-center mx-auto" style="max-width: 70%;">
@@ -987,7 +1040,80 @@
                                 </tr>
                             </tfoot>
                         </table>
+                    
+                        <h6  class="mb-4 mt-5">4.2 Realizar fracionamento </h6>
 
+                        <table class="table table-bordered">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Início (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_inicio_fracionamento" name="hora_inicio_fracionamento">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Final (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_final_fracionamento" name="hora_final_fracionamento">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Executado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_execucao_fracionamento" name="id_usuario_execucao_fracionamento">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>   
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <table class="table table-bordered mt-5">
+                            <thead>
+                                <tr class="">
+                                    <th class="table-light text-center text-dark" scope="col"> Registrar </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Especificações </th>
+                                    <th class="table-light text-center text-dark" scope="col"> Medida </th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Temperatura do Laboratório de Produção: </th>
+                                    <td> 15 a 25ºC </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="temperatura_lab_producao" name="temperatura_lab_producao">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Umidade do Laboratório de Produção:  </th>
+                                    <td> 30 a 70% UR </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="umidade_lab_producao" name="umidade_lab_producao">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_p8" name="id_usuario_verificacao_p8">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>    
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <h6  class="mb-4 mt-5">4.3 Check-list para fracionamento </h6>
+                        
                         <table class="table table-bordered">
                             <thead>
                                 <tr class="">
@@ -997,147 +1123,117 @@
                             </thead>
                             <tbody class="text-center">
                                 <tr>
-                                    <th> Ligar Theodorico, iniciar programa Movicon: </th>
+                                    <th> Limpeza da Célula: </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="ligar_theodorico">
+                                        <input class="form-check-input me-2" type="checkbox" name="limpeza_celula">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Colocar castelo de chumbo no DWS e marcar sua posição no software </th>
+                                    <th> Verificar volume de H<sub>2</sub><sup>18</sup>O no frasco de recuperação </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="colocar_castelo_chumbo_dws">
+                                        <input class="form-check-input me-2" type="checkbox" name="verif_volume_H218O">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Pressionar o botão "Park" no painel Movicon </th>
+                                    <th> Verificar frasco de rejeitos </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_botao_park">
+                                        <input class="form-check-input me-2" type="checkbox" name="verif_frasco_rejeitos">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Pressionar a botão "Pinch Open" no painel Movicon </th>
+                                    <th> Verificar bolsa de ar </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_botao_pinch_open">
+                                        <input class="form-check-input me-2" type="checkbox" name="verif_bolsa_ar">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Retirar kit usado do Theodorico </th>
+                                    <th> Abrir válvula de Ar comprimido (7-7,5 bar) </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="retirar_kit_usado">
+                                        <input class="form-check-input me-2" type="checkbox" name="abrir_valvula_ar_comprimido">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Realizar limpeza do Theodorico </th>
+                                    <th> Abrir válvula de Nitrogênio (17,5 psi) </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="realizar_limpeza_theodorico">
+                                        <input class="form-check-input me-2" type="checkbox" name="abrir_valvula_nitrogenio">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Conectar capilares do Synthera ao "Bulk" usando agulhas </th>
+                                    <th> Verificar posicionamento dos capilares no frasco em "V" </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="conectar_capilares_synthera_bulk">
+                                        <input class="form-check-input me-2" type="checkbox" name="verif_pos_capilares">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Conectar kit de fracionamento (parte 1) </th>
+                                    <th> Ligar Cx. Controle do Synthera </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="conectar_kit_fracionamento_1">
+                                        <input class="form-check-input me-2" type="checkbox" name="ligar_controle_synthera">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Fechar bomba peristáltica </th>
+                                    <th> Ligar NoteBook do Synthera </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="fechar_bomba_peristaltica">
+                                        <input class="form-check-input me-2" type="checkbox" name="ligar_notebook_synthera">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Pressionar a botão "Pinch Close" no painel Movicon </th>
+                                    <th> Iniciar programa MPB </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_botao_pinch_close">
+                                        <input class="form-check-input me-2" type="checkbox" name="iniciar_programa_mpb">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Conectar kit de fracionamento (parte 2) </th>
+                                    <th> Retirar o IFP "usado" (se ainda presente) </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="conectar_kit_fracionamento_2">
+                                        <input class="form-check-input me-2" type="checkbox" name="retirar_ifp_usado">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Prender os capilares nas paredes do Theodorico </th>
+                                    <th> Inserir o IFP no Synthera, pressionar os dois botões LOAD </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="prender_capilares_parede_theodorico">
+                                        <input class="form-check-input me-2" type="checkbox" name="inserir_ifp_synthera">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Conectar os filtros "Millex GS" entre as partes 1 e 2 do kit de fracionamento  </th>
+                                    <th> Inserir o IFP no Synthera, pressionar os dois botões LOAD </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="conectar_filtros_millex_gs">
+                                        <input class="form-check-input me-2" type="checkbox" name="inserir_ifp_synthera">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Verificar se todas as linhas estão corretamente conectadas </th>
+                                    <th> Conectar a linha de transferência do produto final ao THEODORICO </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="verificar_linhas_conectadas">
+                                        <input class="form-check-input me-2" type="checkbox" name="conectar_theodorico">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> IVerificar se todas as conexões dos capilares e agulhas estão bem ajustadas </th>
+                                    <th> Iniciar auto-teste pressionando o botão START (no PC) </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="verificar_conexoes_capilares">
+                                        <input class="form-check-input me-2" type="checkbox" name="iniciar_auto_teste">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Verificar se a agulha sucção do radiofármaco toca o fundo do "Bulk" </th>
+                                    <th> Efetuar diluição do triflato de manose </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="verificar_agulha_succao">
+                                        <input class="form-check-input me-2" type="checkbox" name="efetuar_diluicao_triflato_manose">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Fechar porta. Pressionar "Inflate" e "Ventilation" </th>
+                                    <th> Remover BLOCO VERMELHO de Segurança das agulhas e prender o capilar </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="fechar_porta">
+                                        <input class="form-check-input me-2" type="checkbox" name="remover_bloco_vermelho">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Programar o fracionamento no software </th>
+                                    <th> Fechar as portas da BBS (acionar "LOCKED / VENTILATION") </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="programar_fracionamento_software">
+                                        <input class="form-check-input me-2" type="checkbox" name="fechar_portas_bbs">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Imprimir etiquetas dos frascos e colá-las </th>
+                                    <th> Ao chegar o radioisótopo, pressionar o botão "START"(verde) na caixa de controle  </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="imprimir_etiqueta_frascos">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th> Alimentar antecâmara com frascos. Rótulo virado para fora </th>
-                                    <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="alimentar_antecamara_frascos">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th> Marcar, no software, a posição dos frascos </th>
-                                    <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="marcar_posicao_frascos">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th> Ao chegar radiofármaco, pressionar botão "From SYNT" </th>
-                                    <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_botao_from_synt">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th> Pressionar botão "Bulk Dilution", escrever o volume e confirmar </th>
-                                    <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_botao_bulk_dilution">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th> Pressionar botão "Start" </th>
-                                    <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_botao_start">
+                                        <input class="form-check-input me-2" type="checkbox" name="pressionar_start">
                                     </td>
                                 </tr>
                             </tbody>
@@ -1145,7 +1241,7 @@
                                 <tr>
                                     <th class="table-light" scope="col"> Verificado Por: </th>
                                     <td colspan="2" class="table-light" scope="col">
-                                        <select class="form-select" id="id_usuario_verificado_p8" name="id_usuario_verificado_p8">
+                                        <select class="form-select" id="id_usuario_verificacao_acoes" name="id_usuario_verificacao_acoes">
                                             <option selected disabled>Selecione um usuário</option>
                                             @foreach($usuarios as $usuario)
                                                 <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
@@ -1156,82 +1252,56 @@
                             </tfoot>
                         </table>
 
-                    </div>
+                        <h6 class="mt-5 border border-black py-1 fw-bold text-center mx-auto" style="max-width: 70%;">
+                            <span class="fw-normal">ATENÇÃO!</span> Caso algum problema seja verificado, checar medidas para resolução, no POP correspondente à atividade, antes de seguir para próxima ação.
+                        </h6>
 
-                    <div id="pagina7" style="display: none;">
                         <h6 class="my-4 py-1 text-center mx-auto" style="max-width: 70%;">
-                            * Anotar a atividade de FDG 18F que chega ao módulo de fracionamento.
+                            *Verificar, no calibrador de dose, a Atividade do <sup>18</sup>F que chega ao módulo de síntese: Atividade de chegada menos a Atividade residual. 
                         </h6>
 
                         <table class="table table-bordered">
                             <tbody class="text-center">
                                 <tr>
-                                    <th> Atividade de FDG <sup>18</sup>F (mCi): </th>
+                                    <th> Atividade de CHEGADA do <sup>18</sup>F (mCi): </th>
                                     <td>
-                                        <input type="number" min="0" class="form-control" id="atividade_fdg_18f" name="atividade_fdg_18f">
+                                        <input type="number" min="0" class="form-control" id="ativ_chegada_18F" name="ativ_chegada_18F">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Volume de Soro Fisiológico adicionado (ml): </th>
+                                    <th> Atividade RESIDUAL do <sup>18</sup> (mCi): </th>
                                     <td>
-                                        <input type="number" min="0" class="form-control" id="volume_soro_fisiologico" name="volume_soro_fisiologico">
+                                        <input type="number" min="0" class="form-control" id="ativ_residual_18F" name="ativ_residual_18F">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Imprimir e anexar relatório de produção: </th>
+                                    <th> Atividade no MÓDULO DE SÍNTESE (mCi): </th>
                                     <td>
-                                        <input class="form-check-input me-2" type="checkbox" name="imprimir_anexar_relatorio_producao">
+                                        <input type="number" min="0" class="form-control" id="ativ_modulo_sintese" name="ativ_modulo_sintese">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Início do Fracionamento (h): </th>
+                                    <th> Atividade no MODÚLO DE FRACIONAMENTO (mCi): </th>
                                     <td>
-                                        <input type="time" class="form-control" id="hora_inicio_p8" name="hora_inicio_p8">
-                                    </td>
-                                </tr>
-                                    <th> Final do Fracionamento (h): </th>
-                                    <td>
-                                        <input type="time" class="form-control" id="hora_final_p8" name="hora_final_p8">
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot class="text-center">
-                                <tr>
-                                    <th class="table-light" scope="col"> Fracionamento Executado Por: </th>
-                                    <td colspan="5" class="table-light" scope="col">
-                                        <select class="form-select" id="id_usuario_fracionamento_executado" name="id_usuario_fracionamento_executado">
-                                            <option selected disabled>Selecione um usuário</option>
-                                            @foreach($usuarios as $usuario)
-                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
-                                            @endforeach
-                                        </select>   
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-
-                        <h6 class="my-5 text-center mx-auto" style="max-width: 70%;">
-                            * Divide-se a atividade de FDG-18 que chegou ao módulo de fracionamento pela Atividade do <sup>18</sup>F que seguiu para módulo de síntese. O resultado deve ser multiplicado por 100. 
-                        </h6>
-
-                        <h6 class="mt-5 border border-black py-1 fw-bold text-center mx-auto" style="max-width: 70%;">
-                            ATENÇÃO! Caso algum problema seja verificado, checar medidas para resolução no POP correspondente à atividade, antes de seguir para próxima ação.
-                            <br><br>
-                            Ao final de cada envase, colar as etiquetas correspondentes, colocar o medicamento dos clientes no pass through de Expedição e as amostras destinadas à realização de análises de Controle de Qualidade devem ser colocadas no pass through do Controle de Qualidade Microbiológico. 
-                        </h6>
-
-                        <table class="table table-bordered mt-5">
-                            <tbody class="text-center">
-                                <tr>
-                                    <th> Ocorrências: </th>
-                                    <td>
-                                        <textarea class="form-control" id="ocorrencias_p9" name="ocorrencias_p9" maxlength="820"></textarea>
+                                        <input type="number" min="0" class="form-control" id="ativ_modulo_fracionamento" name="ativ_modulo_fracionamento">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th> Horário: </th>
+                                    <th> Início da Síntese (h): </th>
                                     <td>
-                                        <input type="time" class="form-control" id="ocorrencias_horario_p9" name="ocorrencias_horario_p9">
+                                        <input type="time" class="form-control" id="hora_inicio_sintese" name="hora_inicio_sintese">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Final da Síntese (h): </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="hora_final_sintese" name="hora_final_sintese">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> RENDIMENTO DA SÍNTESE (%) : </th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" id="rendimento_sintese" name="rendimento_sintese">
                                     </td>
                                 </tr>
                             </tbody>
@@ -1239,7 +1309,48 @@
                                 <tr>
                                     <th class="table-light" scope="col"> Executado Por: </th>
                                     <td colspan="5" class="table-light" scope="col">
-                                        <select class="form-select" id="id_usuario_execucao_ocorrencias_p9" name="id_usuario_execucao_ocorrencias_p9">
+                                        <select class="form-select" id="id_usuario_execucao_p6" name="id_usuario_execucao_p6">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>   
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light" scope="col"> Verificado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_verificacao_p6" name="id_usuario_verificacao_p6">
+                                            <option selected disabled>Selecione um usuário</option>
+                                            @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                            @endforeach
+                                        </select>   
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <table class="table table-bordered mt-5">
+                            <tbody class="text-center">
+                                <tr>
+                                    <th> Ocorrências: </th>
+                                    <td>
+                                        <textarea class="form-control" id="ocorrencias_p6" name="ocorrencias_p6" maxlength="520"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th> Horário: </th>
+                                    <td>
+                                        <input type="time" class="form-control" id="ocorrencias_horario_p6" name="ocorrencias_horario_p6">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <th class="table-light" scope="col"> Executado Por: </th>
+                                    <td colspan="5" class="table-light" scope="col">
+                                        <select class="form-select" id="id_usuario_execucao_ocorrencias_p6" name="id_usuario_execucao_ocorrencias_p6">
                                             <option selected disabled>Selecione um usuário</option>
                                             @foreach($usuarios as $usuario)
                                                 <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
@@ -1250,7 +1361,7 @@
                                 <tr>
                                     <th class="table-light" scope="col"> Verificado Por: </th>
                                     <td colspan="5" class="table-light" scope="col">
-                                        <select class="form-select" id="id_usuario_verificacao_ocorrencias_p9" name="id_usuario_verificacao_ocorrencias_p9">
+                                        <select class="form-select" id="id_usuario_verificacao_ocorrencias_p6" name="id_usuario_verificacao_ocorrencias_p6">
                                             <option selected disabled>Selecione um usuário</option>
                                             @foreach($usuarios as $usuario)
                                                 <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
@@ -1262,7 +1373,15 @@
                         </table>
                     </div>
 
-                    <div id="pagina8" style="display: none;">
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn btn-orange px-5" name="action" value="partialFracionamento">Salvar Relatório Parcial</button>
+                    </div>
+                </form>
+
+                <!-- Embalagem e Expedicao -->
+                <form action="{{ route('registros_lote.store') }}" method="POST" id="formExpedicao" style="display: none;">
+                    @csrf
+                    <div>
                         <h4 class="mt-4">5. Embalagem e Expedição </h4>
 
                         <h6  class="mb-4 mt-5">5.1 Embalagem </h6>
@@ -1590,7 +1709,15 @@
                         </table>
                     </div>
 
-                    <div id="pagina9" style="display: none;">
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn btn-orange px-5" name="action" value="partialExpedicao">Salvar Relatório Parcial</button>
+                    </div>
+                </form>
+
+                <!-- Registro de Análises de Controle de Qualidade Físico-Químico -->
+                <form action="{{ route('registros_lote.store') }}" method="POST" id="formCQFQ" style="display: none;">
+                    @csrf
+                    <div>
                         <h4 class="mb-4 mt-4">6. Registro de Análises de Controle de Qualidade Físico-Químico  </h4>
 
                         <table class="table table-bordered">
@@ -1781,9 +1908,6 @@
                                 </tr>
                             </tfoot>
                         </table>
-                    </div>
-
-                    <div id="pagina10" style="display: none;">
                         <table class="table table-bordered">
                             <thead>
                                 <tr class="">
@@ -1933,7 +2057,15 @@
                         </table>
                     </div>
 
-                    <div id="pagina11" style="display: none;">
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn btn-orange px-5" name="action" value="partialCQFQ">Salvar Relatório Parcial</button>
+                    </div>
+                </form>
+
+                <!-- Registro de Análises do Controle de Qualidade Microbiológico -->
+                <form action="{{ route('registros_lote.store') }}" method="POST" id="formCQM" style="display: none;">
+                    @csrf
+                    <div>
                         <h4 class="mt-4">7. Registro de Análises do Controle de Qualidade Microbiológico </h4>
 
                         <h6  class="mb-4 mt-5">7.1 Endotoxinas </h6>
@@ -2142,9 +2274,6 @@
                                 </tr>
                             </tfoot>
                         </table>
-                    </div>
-
-                    <div id="pagina12" style="display: none;">
                         <h6  class="mb-4 mt-5">7.3 Esterilidade </h6>
 
                         <table class="table table-bordered">
@@ -2309,96 +2438,224 @@
                         </table>
                     </div>
 
-                    <div id="pagina13" style="display: none;">
-                        <h4 class="mt-4 mb-5">8. Registro de Aprovação/Reprovação de Lote de <sup>18</sup>FDG </h4>
-
-                        <div class="d-flex align-items-center">
-                            <h6 class="me-2"> Supervisor de Controle de Qualidade: </h6>
-                            <select class="form-select w-auto" id="id_usuario_supervisor_controle_qualidade" name="id_usuario_supervisor_controle_qualidade">
-                                <option selected disabled>Selecione um usuário</option>
-                                @foreach($usuarios as $usuario)
-                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="d-flex align-items-center mt-4">
-                            <h6 class="me-2"> O produto acabado atende aos critérios de aceitação estabelecidos nas farmacopéias oficiais nacionalmente aceitas? </h6>                            
-                            <select class="form-select w-auto" id="atendimento_criterios" name="atendimento_criterios">
-                                <option selected disabled></option>
-                                <option value="0">Não</option>
-                                <option value="1">Sim</option>
-                            </select>
-                        </div>
-
-                        <div class="d-flex align-items-center mt-4">
-                            <h6 class="me-2">O Lote está</h6>
-                            <select class="form-select w-auto" id="aprovacao_lote" name="aprovacao_lote">
-                                <option selected disabled></option>
-                                <option value="1">Aprovado</option>
-                                <option value="0">Reprovado</option>
-                            </select>
-                        </div>
-
-                        <div class="d-flex align-items-center">
-                            <h6 class="me-2"> Responsável pela Garantia da Qualidade: </h6>
-                            <select class="form-select w-auto" id="id_usuario_resposavel_garantia_qualidade" name="id_usuario_resposavel_garantia_qualidade">
-                                <option selected disabled>Selecione um usuário</option>
-                                @foreach($usuarios as $usuario)
-                                    <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="d-flex align-items-center mt-4">
-                            <h6 class="me-2">Hora da emissão do laudo:</h6>
-                            <input type="time" class="form-control w-auto" id="hora_emissao_laudo" name="hora_emissao_laudo">
-
-                        </div>
-                    </div>
-
-
-                    <!-- Botões de Navegação -->
                     <div class="text-center mt-5">
-                        <button type="button" id="btn-voltar" class="btn btn-secondary px-5" onclick="voltarPagina()">Voltar</button>
-                        <button type="button" id="btn-proximo" class="btn btn-orange px-5" onclick="proximaPagina()">Próximo</button>
-                        <button type="submit" id="btn-salvar" class="btn btn-orange px-5">Salvar Registro</button>
+                        <button type="submit" class="btn btn-orange px-5" name="action" value="partialCQM">Salvar Relatório Parcial</button>
                     </div>
                 </form>
+
+                <!-- Registro de Aprovação/Reprovação de Lote de 18FDG -->
+                @if (array_intersect(['Admin', 'Farmacêutico'], Auth::user()->getClassNamesAttribute()))
+                    <form action="{{ route('registros_lote.store') }}" method="POST" id="formAprovacao" style="display: none;">
+                        @csrf
+                        <div>
+                            <h4 class="mt-4 mb-5">8. Registro de Aprovação/Reprovação de Lote de <sup>18</sup>FDG </h4>
+
+                            <div class="d-flex align-items-center">
+                                <h6 class="me-2"> Supervisor de Controle de Qualidade: </h6>
+                                <select class="form-select w-auto" id="id_usuario_supervisor_controle_qualidade" name="id_usuario_supervisor_controle_qualidade" onchange="updateSaveButtonState()">
+                                    <option selected disabled value="">Selecione um usuário</option>
+                                    @foreach($usuarios as $usuario)
+                                        <option value="{{ $usuario->id }}">{{ $usuario->username }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="d-flex align-items-center mt-4">
+                                <h6 class="me-2"> O produto acabado atende aos critérios de aceitação estabelecidos nas farmacopéias oficiais nacionalmente aceitas? </h6>                            
+                                <select class="form-select w-auto" id="atendimento_criterios" name="atendimento_criterios" onchange="updateSaveButtonState()">
+                                    <option selected disabled value=""></option>
+                                    <option value="0">Não</option>
+                                    <option value="1">Sim</option>
+                                </select>
+                            </div>
+
+                            <div class="d-flex align-items-center mt-4">
+                                <h6 class="me-2">O Lote está</h6>
+                                <select class="form-select w-auto" id="aprovacao_lote" name="aprovacao_lote" onchange="updateSaveButtonState()">
+                                    <option selected disabled value=""></option>
+                                    <option value="1">Aprovado</option>
+                                    <option value="0">Reprovado</option>
+                                </select>
+                            </div>
+
+                            <div class="d-flex align-items-center mt-4">
+                                <h6 class="me-2">Hora da emissão do laudo:</h6>
+                                <input type="time" class="form-control w-auto" id="hora_emissao_laudo" name="hora_emissao_laudo" onchange="updateSaveButtonState()" oninput="updateSaveButtonState()">
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <button disabled type="button" onclick="$('#confirmModal').modal('show')" class="btn btn-orange px-5">Salvar Relatório Final</button>
+                        </div>
+                    </form>
+                @endif
             </div>
         </div>
     </div>
 
     <script>
-        let paginaAtual = 1;
-        let paginaAnterior = 1;
-        const totalPaginas = 13;
+        
+        function mudarPagina(pagina) {
+            // Esconder todos os formulários
+            document.getElementById('formDados').style.display = 'none';
+            document.getElementById('formIrradiacao').style.display = 'none';
+            document.getElementById('formSintese').style.display = 'none';
+            document.getElementById('formFracionamento').style.display = 'none';
+            document.getElementById('formExpedicao').style.display = 'none';
+            document.getElementById('formCQFQ').style.display = 'none';
+            document.getElementById('formCQM').style.display = 'none';
 
-        function atualizarVisibilidade() {
-            document.getElementById('pagina'+paginaAnterior).style.display = 'none';
-            document.getElementById('pagina'+paginaAtual).style.display = 'block';
+            if (document.getElementById('formAprovacao')) {
+                document.getElementById('formAprovacao').style.display = 'none';
+            }
+
+            // Remover classe active de todas as abas
+            document.querySelectorAll('.nav-link').forEach(item => {
+                item.classList.remove('active');
+            });
             
-            document.getElementById('btn-voltar').style.display = (paginaAtual > 1) ? 'inline-block' : 'none';
-            document.getElementById('btn-proximo').style.display = (paginaAtual < totalPaginas) ? 'inline-block' : 'none';
-            document.getElementById('btn-salvar').style.display = (paginaAtual === totalPaginas) ? 'inline-block' : 'none';
-        }
+            // Exibir apenas o formulário selecionado
+            document.getElementById(pagina).style.display = 'block';
 
-        function proximaPagina() {
-            if (paginaAtual < totalPaginas) {
-                paginaAnterior = paginaAtual;
-                paginaAtual++;
-                atualizarVisibilidade();
+            // Adicionar campo oculto com o valor do lote
+            const form = document.getElementById(pagina);
+            if (!form.querySelector('input[name="lote"]')) {
+                const loteCampo = document.createElement('input');
+                loteCampo.type = 'hidden';
+                loteCampo.name = 'lote';
+                loteCampo.value = '{{ $registro["lote"] }}';
+                form.appendChild(loteCampo);
+            }
+            
+            // Adicionar classe active na aba selecionada
+            switch(pagina) {
+                case 'formDados':
+                    document.getElementById('dados-lote-tab').classList.add('active');
+                    break;
+                case 'formIrradiacao':
+                    document.getElementById('irradiacao-tab').classList.add('active');
+                    break;
+                case 'formSintese':
+                    document.getElementById('sintese-tab').classList.add('active');
+                    break;
+                case 'formFracionamento':
+                    document.getElementById('fracionamento-tab').classList.add('active');
+                    break;
+                case 'formExpedicao':
+                    document.getElementById('embalagem-tab').classList.add('active');
+                    break;
+                case 'formCQFQ':
+                    document.getElementById('cq-fisico-quimico-tab').classList.add('active');
+                    break;
+                case 'formCQM':
+                    document.getElementById('cq-microbiologico-tab').classList.add('active');
+                    break;
+                case 'formAprovacao':
+                    document.getElementById('aprovacao-tab').classList.add('active');
+                    break;
             }
         }
 
-        function voltarPagina() {
-            if (paginaAtual > 1) {
-                paginaAnterior = paginaAtual;
-                paginaAtual--;
-                atualizarVisibilidade();
+        function submitInfos() {
+            // Get the form and password value
+            const form = document.getElementById('formAprovacao');
+            const passwordValue = document.getElementById('password').value;
+            
+            // Create hidden password input if it doesn't exist or update it
+            let passwordInput = form.querySelector('input[name="password"]');
+            if (!passwordInput) {
+                passwordInput = document.createElement('input');
+                passwordInput.type = 'hidden';
+                passwordInput.name = 'password';
+                form.appendChild(passwordInput);
+            }
+            passwordInput.value = passwordValue;
+            
+            // Create hidden action input if it doesn't exist or update it
+            let actionInput = form.querySelector('input[name="action"]');
+            if (!actionInput) {
+                actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                form.appendChild(actionInput);
+            }
+            actionInput.value = 'totalAprovacao';
+            
+            // Submit the form
+            form.submit();
+        }
+
+        function updateSaveButtonState() {
+            // Get all required fields in the approval form
+            const supervisorSelected = document.getElementById('id_usuario_supervisor_controle_qualidade').value !== "" 
+                                    && !document.getElementById('id_usuario_supervisor_controle_qualidade').disabled;
+            const criteriosSelected = document.getElementById('atendimento_criterios').value !== "" 
+                                && !document.getElementById('atendimento_criterios').disabled;
+            const aprovacaoSelected = document.getElementById('aprovacao_lote').value !== "" 
+                                && !document.getElementById('aprovacao_lote').disabled;
+            const horaEmissao = document.getElementById('hora_emissao_laudo').value !== "" 
+                            && !document.getElementById('hora_emissao_laudo').disabled;
+            
+            // Get the save button
+            const saveButton = document.querySelector('#formAprovacao button[type="button"]');
+            
+            // Enable the button only if all fields are filled
+            if (supervisorSelected && criteriosSelected && aprovacaoSelected && horaEmissao) {
+                saveButton.disabled = false;
+            } else {
+                saveButton.disabled = true;
             }
         }
-        atualizarVisibilidade();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if the modal should be shown first
+            if ("{{ Session::has('modal') && Session::get('modal') == '#confirmModal' ? 'true' : 'false' }}" === "true") {
+                mudarPagina('formAprovacao');
+                $('#confirmModal').modal('show');
+            } else {
+                mudarPagina('formDados');
+            }
+            
+            // Initialize button state if on approval form
+            if (document.getElementById('formAprovacao')) {
+                updateSaveButtonState();
+            }
+        });
 
     </script>
+        
+
+    <!-- Modal CONFIRMAR FINALIZACAO DO REGISTRO -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmar Finalização do Relatório de Registro de Lote</h1>
+                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div>
+                    <div class="modal-body">
+                        @if (Session::has('modal') && Session::get('modal') == '#confirmModal')
+                            <div class="flash-message">
+                                @foreach (['danger', 'warning', 'success', 'info', 'dark'] as $msg)
+                                    @if(Session::has('alert-' . $msg))
+                                        <div class="w-100">
+                                            <p class="alert alert-{{ $msg }}">
+                                                {!! Session::get('alert-' . $msg) !!}
+                                            </p>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
+                        <input type="password" class="form-control mt-2" id="password" name="password" placeholder="Digite sua senha">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar </button>
+                        <button type="button" class="btn btn-danger" id="submitBtn" onclick="preventDoubleClick('submitBtn'); submitInfos();">Confirmar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>

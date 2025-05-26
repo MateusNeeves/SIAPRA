@@ -73,16 +73,17 @@
                                     <x-dropdown-link class=" text-decoration-none" :href="route('unidades_medida')">
                                         {{ __('Unidades de Medida') }}
                                     </x-dropdown-link>
+                                @endif
                                 @if (array_intersect(['Admin', 'Visualizador', 'Farmacêutico'], Auth::user()->getClassNamesAttribute()))
                                     <x-dropdown-link class=" text-decoration-none" :href="route('quarentena')">
                                         {{ __('Quarentena') }}
                                     </x-dropdown-link>
                                 @endif
+                                @if (array_intersect(['Admin', 'Almoxarife', 'Visualizador'], Auth::user()->getClassNamesAttribute()))
                                     <x-dropdown-link class=" text-decoration-none" :href="route('relatorios')">
                                         {{ __('Relatórios') }}
                                     </x-dropdown-link>
                                 @endif
-                                
                             </x-slot>
                         </x-dropdown>
                     </div>
@@ -107,7 +108,7 @@
                 @endif
 
                 <!-- Produção -->
-                @if (array_intersect(['Admin', 'Visualizador', 'Produção'], Auth::user()->getClassNamesAttribute()))
+                @if (array_intersect(['Admin', 'Visualizador', 'Produção', 'Farmacêutico'], Auth::user()->getClassNamesAttribute()))
                     <div class="hidden sm:flex sm:items-center sm:ms-10" id="producao">
                         <x-dropdown align="left" width="48">
                             <x-slot name="trigger" class="h-100">
@@ -123,18 +124,22 @@
                             </x-slot>
 
                             <x-slot name="content" >
-                                <x-dropdown-link class=" text-decoration-none" :href="route('fracionamentos')">
-                                    {{ __('Fracionamento') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link class=" text-decoration-none" :href="route('parametros')">
-                                    {{ __('Parâmetros') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link class=" text-decoration-none" :href="route('planejamentos')">
-                                    {{ __('Planejamento') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link class=" text-decoration-none" :href="route('registros_lote')">
-                                    {{ __('Registros de Lote') }}
-                                </x-dropdown-link>
+                                @if (array_intersect(['Admin', 'Visualizador', 'Produção'], Auth::user()->getClassNamesAttribute()))
+                                    <x-dropdown-link class=" text-decoration-none" :href="route('fracionamentos')">
+                                        {{ __('Fracionamento') }}
+                                    </x-dropdown-link>
+                                    <x-dropdown-link class=" text-decoration-none" :href="route('parametros')">
+                                        {{ __('Parâmetros') }}
+                                    </x-dropdown-link>
+                                    <x-dropdown-link class=" text-decoration-none" :href="route('planejamentos')">
+                                        {{ __('Planejamento') }}
+                                    </x-dropdown-link>
+                                @endif
+                                @if (array_intersect(['Admin', 'Visualizador', 'Produção', 'Farmacêutico'], Auth::user()->getClassNamesAttribute()))
+                                    <x-dropdown-link class=" text-decoration-none" :href="route('registros_lote')">
+                                        {{ __('Registros de Lote') }}
+                                    </x-dropdown-link>
+                                @endif
                             </x-slot>
 
                         </x-dropdown>

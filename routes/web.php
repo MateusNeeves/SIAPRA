@@ -77,16 +77,15 @@ Route::get('/', function () {
             Route::post('/fracionamentos', [FracionamentosController::class, 'show'])->middleware(['auth'])->name('fracionamentos.show');
             Route::get('/fracionamentos/cadastrar', [FracionamentosController::class, 'register'])->middleware(['auth'])->name('fracionamentos.register');
             Route::post('/fracionamentos/cadastrar', [FracionamentosController::class, 'store'])->middleware(['auth'])->name('fracionamentos.store');
-       
+        });
+
+    Route::middleware(CheckUserClasses::class.':Admin,Visualizador,Produção,Farmacêutico')->group(function () {
         //Registros de Lote
             Route::get('/registros_lote', [RegistrosLoteController::class, 'index'])->middleware(['auth'])->name('registros_lote');
             Route::post('/registros_lote', [RegistrosLoteController::class, 'make_pdf'])->middleware(['auth'])->name('registros_lote.make_pdf');
             Route::get('/registros_lote/cadastrar', [RegistrosLoteController::class, 'register'])->middleware(['auth'])->name('registros_lote.register');
             Route::post('/registros_lote/cadastrar', [RegistrosLoteController::class, 'store'])->middleware(['auth'])->name('registros_lote.store');
-
-
     });
-    
 
 // Almoxarifado
     Route::middleware(CheckUserClasses::class.':Admin,Almoxarife,Visualizador')->group(function () {
@@ -155,7 +154,7 @@ Route::get('/', function () {
         
         });
 
-    Route::middleware(CheckUserClasses::class.':Admin, Visualizador, Farmacêutico')->group(function () {
+    Route::middleware(CheckUserClasses::class.':Admin,Visualizador,Farmacêutico')->group(function () {
         // Quarentena
             Route::get('/quarentena', [QuarentenaController::class, 'index'])->middleware(['auth'])->name('quarentena');
             Route::post('/quarentena', [QuarentenaController::class, 'remove'])->middleware(['auth'])->name('quarentena.remove');

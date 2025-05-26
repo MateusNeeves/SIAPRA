@@ -8,6 +8,7 @@ use App\Models\Planejamento;
 use Illuminate\Http\Request;
 use App\Models\Registro_Lote;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class RegistrosLoteController extends Controller
 {
@@ -19,363 +20,376 @@ class RegistrosLoteController extends Controller
     }
 
     public function register(Request $request){
-        $lote = Planejamento::where('lote', $request->loteSelect)->first();
+        $registro = Registro_Lote::where('lote', $request->loteSelect)->first();
+        if (!$registro) {
+            $registro = [
+                'lote' => $request->loteSelect,
+                'data_fabricacao' => $request->data_fabricacao, 
+            ];
+        }
+
         $usuarios = User::all();
-        return view('registros_lote/cadastrar', ['lote' => $lote, 'usuarios' => $usuarios]);
+        return view('registros_lote/cadastrar', ['registro' => $registro, 'usuarios' => $usuarios]);
     }
 
     public function store(Request $request){
-        // SALVANDO O REGISTRO DE LOTE
-            $registroLote = new Registro_Lote();
-
-            $registroLote->lote = $request->lote;
-            $registroLote->data_fabricacao = $request->data_fabricacao;
+        $dataParts = explode('-', $request->lote)[0]; // Gets "YYYY_MM_DD"
+        $formattedDate = str_replace('_', '-', $dataParts); // Convert to "YYYY-MM-DD"
         
-        // PAGINA 3
-
-            $registroLote->lote_agua_enriquecida = $request->lote_agua_enriquecida;
-            $registroLote->id_usuario_lote_agua_enriquecida = $request->id_usuario_lote_agua_enriquecida;
-            
-            $registroLote->pressao_ar_comprimido = $request->pressao_ar_comprimido;
-            $registroLote->pressao_H = $request->pressao_H;
-            $registroLote->pressao_He_refrigeracao = $request->pressao_He_refrigeracao;
-            $registroLote->pressao_He_analitico = $request->pressao_He_analitico;
-            $registroLote->radiacao_ambiental_lab = $request->radiacao_ambiental_lab;
-            $registroLote->id_usuario_verificacao_p3 = $request->id_usuario_verificacao_p3;
-
-            $registroLote->hora_inicio_irradiacao_agua_enriquecida = $request->hora_inicio_irradiacao_agua_enriquecida;
-            $registroLote->hora_final_irradiacao_agua_enriquecida = $request->hora_final_irradiacao_agua_enriquecida;
-            $registroLote->ativ_teorica_F18 = $request->ativ_teorica_F18;
-            $registroLote->id_usuario_irradiacao_agua_enriquecida = $request->id_usuario_irradiacao_agua_enriquecida;
-
-            $registroLote->hora_inicio_transferir_F18_sintese = $request->hora_inicio_transferir_F18_sintese;
-            $registroLote->hora_final_transferir_F18_sintese = $request->hora_final_transferir_F18_sintese;
-            $registroLote->id_usuario_transferir_F18_sintese = $request->id_usuario_transferir_F18_sintese;
-            
-            $registroLote->ocorrencias_p3 = $request->ocorrencias_p3;
-            $registroLote->ocorrencias_horario_p3 = $request->ocorrencias_horario_p3;
-            $registroLote->id_usuario_ocorrencias_p3 = $request->id_usuario_ocorrencias_p3;
-
-            $registroLote->logbook_anexado = $request->logbook_anexado;
-            $registroLote->logbook_data = $request->logbook_data;
-            $registroLote->logbook_time = $request->logbook_time;
-            $registroLote->id_usuario_logbook = $request->id_usuario_logbook;
+        $modifiedFields = [
+            'data_fabricacao' => $formattedDate,
+            'completed' => false,
+        ];
         
-        // PAGINA 4
+        if ($request->action == 'partialIrradiacao') {
+            $modifiedFields['lote_agua_enriquecida'] = $request->lote_agua_enriquecida;
+            $modifiedFields['id_usuario_lote_agua_enriquecida'] = $request->id_usuario_lote_agua_enriquecida;
             
-            $registroLote->modulo_sintese = $request->modulo_sintese;
+            $modifiedFields['pressao_ar_comprimido'] = $request->pressao_ar_comprimido;
+            $modifiedFields['pressao_H'] = $request->pressao_H;
+            $modifiedFields['pressao_He_refrigeracao'] = $request->pressao_He_refrigeracao;
+            $modifiedFields['pressao_He_analitico'] = $request->pressao_He_analitico;
+            $modifiedFields['radiacao_ambiental_lab'] = $request->radiacao_ambiental_lab;
+            $modifiedFields['id_usuario_verificacao_p3'] = $request->id_usuario_verificacao_p3;
 
-            $registroLote->kryptofix222_lote = $request->kryptofix222_lote;
-            $registroLote->kryptofix222_data_validade = $request->kryptofix222_data_validade;
-            $registroLote->triflato_manose_lote = $request->triflato_manose_lote;
-            $registroLote->triflato_manose_data_validade = $request->triflato_manose_data_validade;
-            $registroLote->hidroxido_sodio_lote = $request->hidroxido_sodio_lote;
-            $registroLote->hidroxido_sodio_data_validade = $request->hidroxido_sodio_data_validade;
-            $registroLote->agua_injetaveis_lote = $request->agua_injetaveis_lote;
-            $registroLote->agua_injetaveis_data_validade = $request->agua_injetaveis_data_validade;
-            $registroLote->acetronitrila_anidra_lote = $request->acetronitrila_anidra_lote;
-            $registroLote->acetronitrila_anidra_data_validade = $request->acetronitrila_anidra_data_validade;
-            $registroLote->ifp_synthera_lote = $request->ifp_synthera_lote;
-            $registroLote->ifp_synthera_data_validade = $request->ifp_synthera_data_validade;
+            $modifiedFields['hora_inicio_irradiacao_agua_enriquecida'] = $request->hora_inicio_irradiacao_agua_enriquecida;
+            $modifiedFields['hora_final_irradiacao_agua_enriquecida'] = $request->hora_final_irradiacao_agua_enriquecida;
+            $modifiedFields['ativ_teorica_F18'] = $request->ativ_teorica_F18;
+            $modifiedFields['id_usuario_irradiacao_agua_enriquecida'] = $request->id_usuario_irradiacao_agua_enriquecida;
 
-            $registroLote->sep_pak_lote = $request->sep_pak_lote;
-            $registroLote->sep_pak_data_validade = $request->sep_pak_data_validade;
-            $registroLote->coluna_scx_lote = $request->coluna_scx_lote;
-            $registroLote->coluna_scx_data_validade = $request->coluna_scx_data_validade;
-            $registroLote->coluna_c18_lote = $request->coluna_c18_lote;
-            $registroLote->coluna_c18_data_validade = $request->coluna_c18_data_validade;
-            $registroLote->coluna_alumina_lote = $request->coluna_alumina_lote;
-            $registroLote->coluna_alumina_data_validade = $request->coluna_alumina_data_validade;
-            $registroLote->seringa_3ml_lote = $request->seringa_3ml_lote;
-            $registroLote->seringa_3ml_data_validade = $request->seringa_3ml_data_validade;
-            $registroLote->agulha_05x25_lote = $request->agulha_05x25_lote;
-            $registroLote->agulha_05x25_data_validade = $request->agulha_05x25_data_validade;
-            $registroLote->agua_injetavel_seringa_lote = $request->agua_injetavel_seringa_lote;
-            $registroLote->agua_injetavel_seringa_data_validade = $request->agua_injetavel_seringa_data_validade;
-            $registroLote->etanol_seringa_lote = $request->etanol_seringa_lote;
-            $registroLote->etanol_seringa_data_validade = $request->etanol_seringa_data_validade;
-            $registroLote->NaHCO3_seringa_lote = $request->NaHCO3_seringa_lote;
-            $registroLote->NaHCO3_seringa_data_validade = $request->NaHCO3_seringa_data_validade;
-
-            $registroLote->id_usuario_separado_registrado_p4 = $request->id_usuario_separado_registrado_p4;
-            $registroLote->data_separado_registrado_p4 = $request->data_separado_registrado_p4;
-
-            $registroLote->id_usuario_recebido_conferido_p4 = $request->id_usuario_recebido_conferido_p4;
-            $registroLote->data_recebido_conferido_p4 = $request->data_recebido_conferido_p4;
-
-        // PAGINA 5
+            $modifiedFields['hora_inicio_transferir_F18_sintese'] = $request->hora_inicio_transferir_F18_sintese;
+            $modifiedFields['hora_final_transferir_F18_sintese'] = $request->hora_final_transferir_F18_sintese;
+            $modifiedFields['id_usuario_transferir_F18_sintese'] = $request->id_usuario_transferir_F18_sintese;
             
-            $registroLote->hora_inicio_montagem_kit_synthera = $request->hora_inicio_montagem_kit_synthera;
-            $registroLote->hora_final_montagem_kit_synthera = $request->hora_final_montagem_kit_synthera;
-            $registroLote->id_usuario_execucao_montagem_kit_synthera = $request->id_usuario_execucao_montagem_kit_synthera;
-            $registroLote->id_usuario_verificacao_montagem_kit_synthera = $request->id_usuario_verificacao_montagem_kit_synthera;
+            $modifiedFields['ocorrencias_p3'] = $request->ocorrencias_p3;
+            $modifiedFields['ocorrencias_horario_p3'] = $request->ocorrencias_horario_p3;
+            $modifiedFields['id_usuario_ocorrencias_p3'] = $request->id_usuario_ocorrencias_p3;
+
+            $modifiedFields['logbook_anexado'] = $request->logbook_anexado;
+            $modifiedFields['logbook_data'] = $request->logbook_data;
+            $modifiedFields['logbook_time'] = $request->logbook_time;
+            $modifiedFields['id_usuario_logbook'] = $request->id_usuario_logbook;
+        }
+
+        if ($request->action == 'partialSintese') {
+            $modifiedFields['modulo_sintese'] = $request->modulo_sintese;
+
+            $modifiedFields['kryptofix222_lote'] = $request->kryptofix222_lote;
+            $modifiedFields['kryptofix222_data_validade'] = $request->kryptofix222_data_validade;
+            $modifiedFields['triflato_manose_lote'] = $request->triflato_manose_lote;
+            $modifiedFields['triflato_manose_data_validade'] = $request->triflato_manose_data_validade;
+            $modifiedFields['hidroxido_sodio_lote'] = $request->hidroxido_sodio_lote;
+            $modifiedFields['hidroxido_sodio_data_validade'] = $request->hidroxido_sodio_data_validade;
+            $modifiedFields['agua_injetaveis_lote'] = $request->agua_injetaveis_lote;
+            $modifiedFields['agua_injetaveis_data_validade'] = $request->agua_injetaveis_data_validade;
+            $modifiedFields['acetronitrila_anidra_lote'] = $request->acetronitrila_anidra_lote;
+            $modifiedFields['acetronitrila_anidra_data_validade'] = $request->acetronitrila_anidra_data_validade;
+            $modifiedFields['ifp_synthera_lote'] = $request->ifp_synthera_lote;
+            $modifiedFields['ifp_synthera_data_validade'] = $request->ifp_synthera_data_validade;
+
+            $modifiedFields['sep_pak_lote'] = $request->sep_pak_lote;
+            $modifiedFields['sep_pak_data_validade'] = $request->sep_pak_data_validade;
+            $modifiedFields['coluna_scx_lote'] = $request->coluna_scx_lote;
+            $modifiedFields['coluna_scx_data_validade'] = $request->coluna_scx_data_validade;
+            $modifiedFields['coluna_c18_lote'] = $request->coluna_c18_lote;
+            $modifiedFields['coluna_c18_data_validade'] = $request->coluna_c18_data_validade;
+            $modifiedFields['coluna_alumina_lote'] = $request->coluna_alumina_lote;
+            $modifiedFields['coluna_alumina_data_validade'] = $request->coluna_alumina_data_validade;
+            $modifiedFields['seringa_3ml_lote'] = $request->seringa_3ml_lote;
+            $modifiedFields['seringa_3ml_data_validade'] = $request->seringa_3ml_data_validade;
+            $modifiedFields['agulha_05x25_lote'] = $request->agulha_05x25_lote;
+            $modifiedFields['agulha_05x25_data_validade'] = $request->agulha_05x25_data_validade;
+            $modifiedFields['agua_injetavel_seringa_lote'] = $request->agua_injetavel_seringa_lote;
+            $modifiedFields['agua_injetavel_seringa_data_validade'] = $request->agua_injetavel_seringa_data_validade;
+            $modifiedFields['etanol_seringa_lote'] = $request->etanol_seringa_lote;
+            $modifiedFields['etanol_seringa_data_validade'] = $request->etanol_seringa_data_validade;
+            $modifiedFields['NaHCO3_seringa_lote'] = $request->NaHCO3_seringa_lote;
+            $modifiedFields['NaHCO3_seringa_data_validade'] = $request->NaHCO3_seringa_data_validade;
+
+            $modifiedFields['id_usuario_separado_registrado_p4'] = $request->id_usuario_separado_registrado_p4;
+            $modifiedFields['data_separado_registrado_p4'] = $request->data_separado_registrado_p4;
+
+            $modifiedFields['id_usuario_recebido_conferido_p4'] = $request->id_usuario_recebido_conferido_p4;
+            $modifiedFields['data_recebido_conferido_p4'] = $request->data_recebido_conferido_p4;
             
-            $registroLote->temperatura_lab_producao = $request->temperatura_lab_producao;
-            $registroLote->umidade_lab_producao = $request->umidade_lab_producao;
-            $registroLote->id_usuario_verificacao_p5 = $request->id_usuario_verificacao_p5;
+            $modifiedFields['hora_inicio_montagem_kit_synthera'] = $request->hora_inicio_montagem_kit_synthera;
+            $modifiedFields['hora_final_montagem_kit_synthera'] = $request->hora_final_montagem_kit_synthera;
+            $modifiedFields['id_usuario_execucao_montagem_kit_synthera'] = $request->id_usuario_execucao_montagem_kit_synthera;
+            $modifiedFields['id_usuario_verificacao_montagem_kit_synthera'] = $request->id_usuario_verificacao_montagem_kit_synthera;
+            
+            $modifiedFields['temperatura_lab_producao'] = $request->temperatura_lab_producao;
+            $modifiedFields['umidade_lab_producao'] = $request->umidade_lab_producao;
+            $modifiedFields['id_usuario_verificacao_p5'] = $request->id_usuario_verificacao_p5;
 
-            $registroLote->limpeza_celula = $request->has('limpeza_celula') ? true : false;
-            $registroLote->verif_volume_H218O = $request->has('verif_volume_H218O') ? true : false;
-            $registroLote->verif_frasco_rejeitos = $request->has('verif_frasco_rejeitos') ? true : false;
-            $registroLote->verif_bolsa_ar = $request->has('verif_bolsa_ar') ? true : false;
-            $registroLote->abrir_valvula_ar_comprimido = $request->has('abrir_valvula_ar_comprimido') ? true : false;
-            $registroLote->abrir_valvula_nitrogenio = $request->has('abrir_valvula_nitrogenio') ? true : false;
-            $registroLote->verif_pos_capilares = $request->has('verif_pos_capilares') ? true : false;
-            $registroLote->ligar_controle_synthera = $request->has('ligar_controle_synthera') ? true : false;
-            $registroLote->ligar_notebook_synthera = $request->has('ligar_notebook_synthera') ? true : false;
-            $registroLote->iniciar_programa_mpb = $request->has('iniciar_programa_mpb') ? true : false;
-            $registroLote->retirar_ifp_usado = $request->has('retirar_ifp_usado') ? true : false;
-            $registroLote->inserir_ifp_synthera = $request->has('inserir_ifp_synthera') ? true : false;
-            $registroLote->conectar_theodorico = $request->has('conectar_theodorico') ? true : false;
+            $modifiedFields['limpeza_celula'] = $request->has('limpeza_celula') ? true : false;
+            $modifiedFields['verif_volume_H218O'] = $request->has('verif_volume_H218O') ? true : false;
+            $modifiedFields['verif_frasco_rejeitos'] = $request->has('verif_frasco_rejeitos') ? true : false;
+            $modifiedFields['verif_bolsa_ar'] = $request->has('verif_bolsa_ar') ? true : false;
+            $modifiedFields['abrir_valvula_ar_comprimido'] = $request->has('abrir_valvula_ar_comprimido') ? true : false;
+            $modifiedFields['abrir_valvula_nitrogenio'] = $request->has('abrir_valvula_nitrogenio') ? true : false;
+            $modifiedFields['verif_pos_capilares'] = $request->has('verif_pos_capilares') ? true : false;
+            $modifiedFields['ligar_controle_synthera'] = $request->has('ligar_controle_synthera') ? true : false;
+            $modifiedFields['ligar_notebook_synthera'] = $request->has('ligar_notebook_synthera') ? true : false;
+            $modifiedFields['iniciar_programa_mpb'] = $request->has('iniciar_programa_mpb') ? true : false;
+            $modifiedFields['retirar_ifp_usado'] = $request->has('retirar_ifp_usado') ? true : false;
+            $modifiedFields['inserir_ifp_synthera'] = $request->has('inserir_ifp_synthera') ? true : false;
+            $modifiedFields['conectar_theodorico'] = $request->has('conectar_theodorico') ? true : false;
 
-        // PAGINA 6
+            $modifiedFields['iniciar_auto_teste'] = $request->has('iniciar_auto_teste') ? true : false;
+            $modifiedFields['efetuar_diluicao_triflato_manose'] = $request->has('efetuar_diluicao_triflato_manose') ? true : false;
+            $modifiedFields['remover_bloco_vermelho'] = $request->has('remover_bloco_vermelho') ? true : false;
+            $modifiedFields['fechar_portas_bbs'] = $request->has('fechar_portas_bbs') ? true : false;
+            $modifiedFields['pressionar_start'] = $request->has('pressionar_start') ? true : false;
+            $modifiedFields['id_usuario_verificacao_acoes'] = $request->id_usuario_verificacao_acoes;
 
-            $registroLote->iniciar_auto_teste = $request->has('iniciar_auto_teste') ? true : false;
-            $registroLote->efetuar_diluicao_triflato_manose = $request->has('efetuar_diluicao_triflato_manose') ? true : false;
-            $registroLote->remover_bloco_vermelho = $request->has('remover_bloco_vermelho') ? true : false;
-            $registroLote->fechar_portas_bbs = $request->has('fechar_portas_bbs') ? true : false;
-            $registroLote->pressionar_start = $request->has('pressionar_start') ? true : false;
-            $registroLote->id_usuario_verificacao_acoes = $request->id_usuario_verificacao_acoes;
+            $modifiedFields['ativ_chegada_18F'] = $request->ativ_chegada_18F;
+            $modifiedFields['ativ_residual_18F'] = $request->ativ_residual_18F;
+            $modifiedFields['ativ_modulo_sintese'] = $request->ativ_modulo_sintese;
+            $modifiedFields['ativ_modulo_fracionamento'] = $request->ativ_modulo_fracionamento;
+            $modifiedFields['hora_inicio_sintese'] = $request->hora_inicio_sintese;
+            $modifiedFields['hora_final_sintese'] = $request->hora_final_sintese;
+            $modifiedFields['rendimento_sintese'] = $request->rendimento_sintese;
+            $modifiedFields['id_usuario_execucao_p6'] = $request->id_usuario_execucao_p6;
+            $modifiedFields['id_usuario_verificacao_p6'] = $request->id_usuario_verificacao_p6;
 
-            $registroLote->ativ_chegada_18F = $request->ativ_chegada_18F;
-            $registroLote->ativ_residual_18F = $request->ativ_residual_18F;
-            $registroLote->ativ_modulo_sintese = $request->ativ_modulo_sintese;
-            $registroLote->ativ_modulo_fracionamento = $request->ativ_modulo_fracionamento;
-            $registroLote->hora_inicio_sintese = $request->hora_inicio_sintese;
-            $registroLote->hora_final_sintese = $request->hora_final_sintese;
-            $registroLote->rendimento_sintese = $request->rendimento_sintese;
-            $registroLote->id_usuario_execucao_p6 = $request->id_usuario_execucao_p6;
-            $registroLote->id_usuario_verificacao_p6 = $request->id_usuario_verificacao_p6;
+            $modifiedFields['ocorrencias_p6'] = $request->ocorrencias_p6;
+            $modifiedFields['ocorrencias_horario_p6'] = $request->ocorrencias_horario_p6;
+            $modifiedFields['id_usuario_execucao_ocorrencias_p6'] = $request->id_usuario_execucao_ocorrencias_p6;
+            $modifiedFields['id_usuario_verificacao_ocorrencias_p6'] = $request->id_usuario_verificacao_ocorrencias_p6;
+        }
 
-            $registroLote->ocorrencias_p6 = $request->ocorrencias_p6;
-            $registroLote->ocorrencias_horario_p6 = $request->ocorrencias_horario_p6;
-            $registroLote->id_usuario_execucao_ocorrencias_p6 = $request->id_usuario_execucao_ocorrencias_p6;
-            $registroLote->id_usuario_verificacao_ocorrencias_p6 = $request->id_usuario_verificacao_ocorrencias_p6;
+        if ($request->action == 'partialFracionamento') {
+            $modifiedFields['kit_fracionamento_1_lote'] = $request->kit_fracionamento_1_lote;
+            $modifiedFields['kit_fracionamento_1_data_validade'] = $request->kit_fracionamento_1_data_validade;
+            $modifiedFields['kit_fracionamento_2_lote'] = $request->kit_fracionamento_2_lote;
+            $modifiedFields['kit_fracionamento_2_data_validade'] = $request->kit_fracionamento_2_data_validade;
+            $modifiedFields['filtro_millex_gs_lote'] = $request->filtro_millex_gs_lote;
+            $modifiedFields['filtro_millex_gs_data_validade'] = $request->filtro_millex_gs_data_validade;
+            $modifiedFields['filtro_millex_gv_lote'] = $request->filtro_millex_gv_lote;
+            $modifiedFields['filtro_millex_gv_data_validade'] = $request->filtro_millex_gv_data_validade;
+            $modifiedFields['soro_fisiologico_lote'] = $request->soro_fisiologico_lote;
+            $modifiedFields['soro_fisiologico_data_validade'] = $request->soro_fisiologico_data_validade;
+            $modifiedFields['agulha_09x40_lote'] = $request->agulha_09x40_lote;
+            $modifiedFields['agulha_09x40_data_validade'] = $request->agulha_09x40_data_validade;
+            $modifiedFields['frascos_15ml_lote'] = $request->frascos_15ml_lote;
+            $modifiedFields['frascos_15ml_qtd'] = $request->frascos_15ml_qtd;
+            $modifiedFields['frascos_15ml_data_validade'] = $request->frascos_15ml_data_validade;
+            $modifiedFields['frascos_bulk_lote'] = $request->frascos_bulk_lote;
+            $modifiedFields['frascos_bulk_data_validade'] = $request->frascos_bulk_data_validade;
+            $modifiedFields['id_usuario_separado_registrado_p7'] = $request->id_usuario_separado_registrado_p7;
+            $modifiedFields['data_separado_registrado_p7'] = $request->data_separado_registrado_p7;
+            $modifiedFields['id_usuario_recebido_conferido_p7'] = $request->id_usuario_recebido_conferido_p7;
+            $modifiedFields['data_recebido_conferido_p7'] = $request->data_recebido_conferido_p7;
 
-        // PAGINA 7
-
-            $registroLote->kit_fracionamento_1_lote = $request->kit_fracionamento_1_lote;
-            $registroLote->kit_fracionamento_1_data_validade = $request->kit_fracionamento_1_data_validade;
-            $registroLote->kit_fracionamento_2_lote = $request->kit_fracionamento_2_lote;
-            $registroLote->kit_fracionamento_2_data_validade = $request->kit_fracionamento_2_data_validade;
-            $registroLote->filtro_millex_gs_lote = $request->filtro_millex_gs_lote;
-            $registroLote->filtro_millex_gs_data_validade = $request->filtro_millex_gs_data_validade;
-            $registroLote->filtro_millex_gv_lote = $request->filtro_millex_gv_lote;
-            $registroLote->filtro_millex_gv_data_validade = $request->filtro_millex_gv_data_validade;
-            $registroLote->soro_fisiologico_lote = $request->soro_fisiologico_lote;
-            $registroLote->soro_fisiologico_data_validade = $request->soro_fisiologico_data_validade;
-            $registroLote->agulha_09x40_lote = $request->agulha_09x40_lote;
-            $registroLote->agulha_09x40_data_validade = $request->agulha_09x40_data_validade;
-            $registroLote->frascos_15ml_lote = $request->frascos_15ml_lote;
-            $registroLote->frascos_15ml_qtd = $request->frascos_15ml_qtd;
-            $registroLote->frascos_15ml_data_validade = $request->frascos_15ml_data_validade;
-            $registroLote->frascos_bulk_lote = $request->frascos_bulk_lote;
-            $registroLote->frascos_bulk_data_validade = $request->frascos_bulk_data_validade;
-            $registroLote->id_usuario_separado_registrado_p7 = $request->id_usuario_separado_registrado_p7;
-            $registroLote->data_separado_registrado_p7 = $request->data_separado_registrado_p7;
-            $registroLote->id_usuario_recebido_conferido_p7 = $request->id_usuario_recebido_conferido_p7;
-            $registroLote->data_recebido_conferido_p7 = $request->data_recebido_conferido_p7;
-
-            $registroLote->ligar_theodorico = $request->has('ligar_theodorico') ? true : false;
-            $registroLote->colocar_castelo_chumbo_dws = $request->has('colocar_castelo_chumbo_dws') ? true : false;
-            $registroLote->pressionar_botao_park = $request->has('pressionar_botao_park') ? true : false;
-            $registroLote->pressionar_botao_pinch_open = $request->has('pressionar_botao_pinch_open') ? true : false;
-            $registroLote->retirar_kit_usado = $request->has('retirar_kit_usado') ? true : false;
-            $registroLote->realizar_limpeza_theodorico = $request->has('realizar_limpeza_theodorico') ? true : false;
-            $registroLote->conectar_capilares_synthera_bulk = $request->has('conectar_capilares_synthera_bulk') ? true : false;
-            $registroLote->conectar_kit_fracionamento_1 = $request->has('conectar_kit_fracionamento_1') ? true : false;
-            $registroLote->fechar_bomba_peristaltica = $request->has('fechar_bomba_peristaltica') ? true : false;
+            $modifiedFields['ligar_theodorico'] = $request->has('ligar_theodorico') ? true : false;
+            $modifiedFields['colocar_castelo_chumbo_dws'] = $request->has('colocar_castelo_chumbo_dws') ? true : false;
+            $modifiedFields['pressionar_botao_park'] = $request->has('pressionar_botao_park') ? true : false;
+            $modifiedFields['pressionar_botao_pinch_open'] = $request->has('pressionar_botao_pinch_open') ? true : false;
+            $modifiedFields['retirar_kit_usado'] = $request->has('retirar_kit_usado') ? true : false;
+            $modifiedFields['realizar_limpeza_theodorico'] = $request->has('realizar_limpeza_theodorico') ? true : false;
+            $modifiedFields['conectar_capilares_synthera_bulk'] = $request->has('conectar_capilares_synthera_bulk') ? true : false;
+            $modifiedFields['conectar_kit_fracionamento_1'] = $request->has('conectar_kit_fracionamento_1') ? true : false;
+            $modifiedFields['fechar_bomba_peristaltica'] = $request->has('fechar_bomba_peristaltica') ? true : false;
         
-        // PAGINA 8
-
-            $registroLote->pressionar_botao_pinch_close = $request->has('pressionar_botao_pinch_close') ? true : false;
-            $registroLote->conectar_kit_fracionamento_2 = $request->has('conectar_kit_fracionamento_2') ? true : false;
-            $registroLote->prender_capilares_parede_theodorico = $request->has('prender_capilares_parede_theodorico') ? true : false;
-            $registroLote->conectar_filtros_millex_gs = $request->has('conectar_filtros_millex_gs') ? true : false;
-            $registroLote->verificar_linhas_conectadas = $request->has('verificar_linhas_conectadas') ? true : false;
-            $registroLote->verificar_conexoes_capilares = $request->has('verificar_conexoes_capilares') ? true : false;
-            $registroLote->verificar_agulha_succao = $request->has('verificar_agulha_succao') ? true : false;
-            $registroLote->fechar_porta = $request->has('fechar_porta') ? true : false;
-            $registroLote->programar_fracionamento_software = $request->has('programar_fracionamento_software') ? true : false;
-            $registroLote->imprimir_etiqueta_frascos = $request->has('imprimir_etiqueta_frascos') ? true : false;
-            $registroLote->alimentar_antecamara_frascos = $request->has('alimentar_antecamara_frascos') ? true : false;
-            $registroLote->marcar_posicao_frascos = $request->has('marcar_posicao_frascos') ? true : false;
-            $registroLote->pressionar_botao_from_synt = $request->has('pressionar_botao_from_synt') ? true : false;
-            $registroLote->pressionar_botao_bulk_dilution = $request->has('pressionar_botao_bulk_dilution') ? true : false;
-            $registroLote->pressionar_botao_start = $request->has('pressionar_botao_start') ? true : false;
-            $registroLote->id_usuario_verificado_p8 = $request->id_usuario_verificado_p8;
+            $modifiedFields['pressionar_botao_pinch_close'] = $request->has('pressionar_botao_pinch_close') ? true : false;
+            $modifiedFields['conectar_kit_fracionamento_2'] = $request->has('conectar_kit_fracionamento_2') ? true : false;
+            $modifiedFields['prender_capilares_parede_theodorico'] = $request->has('prender_capilares_parede_theodorico') ? true : false;
+            $modifiedFields['conectar_filtros_millex_gs'] = $request->has('conectar_filtros_millex_gs') ? true : false;
+            $modifiedFields['verificar_linhas_conectadas'] = $request->has('verificar_linhas_conectadas') ? true : false;
+            $modifiedFields['verificar_conexoes_capilares'] = $request->has('verificar_conexoes_capilares') ? true : false;
+            $modifiedFields['verificar_agulha_succao'] = $request->has('verificar_agulha_succao') ? true : false;
+            $modifiedFields['fechar_porta'] = $request->has('fechar_porta') ? true : false;
+            $modifiedFields['programar_fracionamento_software'] = $request->has('programar_fracionamento_software') ? true : false;
+            $modifiedFields['imprimir_etiqueta_frascos'] = $request->has('imprimir_etiqueta_frascos') ? true : false;
+            $modifiedFields['alimentar_antecamara_frascos'] = $request->has('alimentar_antecamara_frascos') ? true : false;
+            $modifiedFields['marcar_posicao_frascos'] = $request->has('marcar_posicao_frascos') ? true : false;
+            $modifiedFields['pressionar_botao_from_synt'] = $request->has('pressionar_botao_from_synt') ? true : false;
+            $modifiedFields['pressionar_botao_bulk_dilution'] = $request->has('pressionar_botao_bulk_dilution') ? true : false;
+            $modifiedFields['pressionar_botao_start'] = $request->has('pressionar_botao_start') ? true : false;
+            $modifiedFields['id_usuario_verificado_p8'] = $request->id_usuario_verificado_p8;
             
-            $registroLote->atividade_fdg_18f = $request->atividade_fdg_18f;
-            $registroLote->volume_soro_fisiologico = $request->volume_soro_fisiologico;
-            $registroLote->imprimir_anexar_relatorio_producao = $request->has('imprimir_anexar_relatorio_producao') ? true : false;
-            $registroLote->hora_inicio_p8 = $request->hora_inicio_p8;
-            $registroLote->hora_final_p8 = $request->hora_final_p8;
-            $registroLote->id_usuario_fracionamento_executado = $request->id_usuario_fracionamento_executado;
+            $modifiedFields['atividade_fdg_18f'] = $request->atividade_fdg_18f;
+            $modifiedFields['volume_soro_fisiologico'] = $request->volume_soro_fisiologico;
+            $modifiedFields['imprimir_anexar_relatorio_producao'] = $request->has('imprimir_anexar_relatorio_producao') ? true : false;
+            $modifiedFields['hora_inicio_p8'] = $request->hora_inicio_p8;
+            $modifiedFields['hora_final_p8'] = $request->hora_final_p8;
+            $modifiedFields['id_usuario_fracionamento_executado'] = $request->id_usuario_fracionamento_executado;
         
-        // PAGINA 9
+            $modifiedFields['ocorrencias_p9'] = $request->ocorrencias_p9;
+            $modifiedFields['ocorrencias_horario_p9'] = $request->ocorrencias_horario_p9;
+            $modifiedFields['id_usuario_execucao_ocorrencias_p9'] = $request->id_usuario_execucao_ocorrencias_p9;
+            $modifiedFields['id_usuario_verificacao_ocorrencias_p9'] = $request->id_usuario_verificacao_ocorrencias_p9;
+        }
 
-            $registroLote->ocorrencias_p9 = $request->ocorrencias_p9;
-            $registroLote->ocorrencias_horario_p9 = $request->ocorrencias_horario_p9;
-            $registroLote->id_usuario_execucao_ocorrencias_p9 = $request->id_usuario_execucao_ocorrencias_p9;
-            $registroLote->id_usuario_verificacao_ocorrencias_p9 = $request->id_usuario_verificacao_ocorrencias_p9;
+        if ($request->action == 'partialExpedicao') {
+            $modifiedFields['embalagem_balde_qtd'] = $request->embalagem_balde_qtd;
+            $modifiedFields['embalagem_balde_separado'] = $request->embalagem_balde_separado;
+            $modifiedFields['embalagem_balde_conferido'] = $request->has('embalagem_balde_conferido') ? true : false;
+            $modifiedFields['embalagem_case_qtd'] = $request->embalagem_case_qtd;
+            $modifiedFields['embalagem_case_separado'] = $request->embalagem_case_separado;
+            $modifiedFields['embalagem_case_conferido'] = $request->has('embalagem_case_conferido') ? true : false;
+            $modifiedFields['etiquetas_it_qtd'] = $request->etiquetas_it_qtd;
+            $modifiedFields['etiquetas_it_separado'] = $request->etiquetas_it_separado;
+            $modifiedFields['etiquetas_it_conferido'] = $request->has('etiquetas_it_conferido') ? true : false;
+            $modifiedFields['bulas_fdg_qtd'] = $request->bulas_fdg_qtd;
+            $modifiedFields['bulas_fdg_separado'] = $request->bulas_fdg_separado;
+            $modifiedFields['bulas_fdg_conferido'] = $request->has('bulas_fdg_conferido') ? true : false;
+            $modifiedFields['id_usuario_separado_embalagem_p10'] = $request->id_usuario_separado_embalagem_p10;
+            $modifiedFields['horario_separado_embalagem_p10'] = $request->horario_separado_embalagem_p10;
+            $modifiedFields['id_usuario_conferido_embalagem_p10'] = $request->id_usuario_conferido_embalagem_p10;
+            $modifiedFields['horario_conferido_embalagem_p10'] = $request->horario_conferido_embalagem_p10;
 
-        // PAGINA 10
-
-            $registroLote->embalagem_balde_qtd = $request->embalagem_balde_qtd;
-            $registroLote->embalagem_balde_separado = $request->embalagem_balde_separado;
-            $registroLote->embalagem_balde_conferido = $request->has('embalagem_balde_conferido') ? true : false;
-            $registroLote->embalagem_case_qtd = $request->embalagem_case_qtd;
-            $registroLote->embalagem_case_separado = $request->embalagem_case_separado;
-            $registroLote->embalagem_case_conferido = $request->has('embalagem_case_conferido') ? true : false;
-            $registroLote->etiquetas_it_qtd = $request->etiquetas_it_qtd;
-            $registroLote->etiquetas_it_separado = $request->etiquetas_it_separado;
-            $registroLote->etiquetas_it_conferido = $request->has('etiquetas_it_conferido') ? true : false;
-            $registroLote->bulas_fdg_qtd = $request->bulas_fdg_qtd;
-            $registroLote->bulas_fdg_separado = $request->bulas_fdg_separado;
-            $registroLote->bulas_fdg_conferido = $request->has('bulas_fdg_conferido') ? true : false;
-            $registroLote->id_usuario_separado_embalagem_p10 = $request->id_usuario_separado_embalagem_p10;
-            $registroLote->horario_separado_embalagem_p10 = $request->horario_separado_embalagem_p10;
-            $registroLote->id_usuario_conferido_embalagem_p10 = $request->id_usuario_conferido_embalagem_p10;
-            $registroLote->horario_conferido_embalagem_p10 = $request->horario_conferido_embalagem_p10;
-
-            $registroLote->decl_exped_qtd = $request->decl_exped_qtd;
-            $registroLote->decl_exped_separado = $request->decl_exped_separado;
-            $registroLote->decl_exped_conferido = $request->has('decl_exped_conferido') ? true : false;
-            $registroLote->ficha_emerg_qtd = $request->ficha_emerg_qtd;
-            $registroLote->ficha_emerg_separado = $request->ficha_emerg_separado;
-            $registroLote->ficha_emerg_conferido = $request->has('ficha_emerg_conferido') ? true : false;
-            $registroLote->nota_fiscal_qtd = $request->nota_fiscal_qtd;
-            $registroLote->nota_fiscal_separado = $request->nota_fiscal_separado;
-            $registroLote->nota_fiscal_conferido = $request->has('nota_fiscal_conferido') ? true : false;
-            $registroLote->termo_doacao_qtd = $request->termo_doacao_qtd;
-            $registroLote->termo_doacao_separado = $request->termo_doacao_separado;
-            $registroLote->termo_doacao_conferido = $request->has('termo_doacao_conferido') ? true : false;
-            $registroLote->ident_veiculo_qtd = $request->ident_veiculo_qtd;
-            $registroLote->ident_veiculo_separado = $request->ident_veiculo_separado;
-            $registroLote->ident_veiculo_conferido = $request->has('ident_veiculo_conferido') ? true : false;
-            $registroLote->form_tam_qtd = $request->form_tam_qtd;
-            $registroLote->form_tam_separado = $request->form_tam_separado;
-            $registroLote->form_tam_conferido = $request->has('form_tam_conferido') ? true : false;
-            $registroLote->form_iata_qtd = $request->form_iata_qtd;
-            $registroLote->form_iata_separado = $request->form_iata_separado;
-            $registroLote->form_iata_conferido = $request->has('form_iata_conferido') ? true : false;
-            $registroLote->id_usuario_separado_expedicao_p10 = $request->id_usuario_separado_expedicao_p10;
-            $registroLote->horario_separado_expedicao_p10 = $request->horario_separado_expedicao_p10;
-            $registroLote->id_usuario_conferido_expedicao_p10 = $request->id_usuario_conferido_expedicao_p10;
-            $registroLote->horario_conferido_expedicao_p10 = $request->horario_conferido_expedicao_p10;
+            $modifiedFields['decl_exped_qtd'] = $request->decl_exped_qtd;
+            $modifiedFields['decl_exped_separado'] = $request->decl_exped_separado;
+            $modifiedFields['decl_exped_conferido'] = $request->has('decl_exped_conferido') ? true : false;
+            $modifiedFields['ficha_emerg_qtd'] = $request->ficha_emerg_qtd;
+            $modifiedFields['ficha_emerg_separado'] = $request->ficha_emerg_separado;
+            $modifiedFields['ficha_emerg_conferido'] = $request->has('ficha_emerg_conferido') ? true : false;
+            $modifiedFields['nota_fiscal_qtd'] = $request->nota_fiscal_qtd;
+            $modifiedFields['nota_fiscal_separado'] = $request->nota_fiscal_separado;
+            $modifiedFields['nota_fiscal_conferido'] = $request->has('nota_fiscal_conferido') ? true : false;
+            $modifiedFields['termo_doacao_qtd'] = $request->termo_doacao_qtd;
+            $modifiedFields['termo_doacao_separado'] = $request->termo_doacao_separado;
+            $modifiedFields['termo_doacao_conferido'] = $request->has('termo_doacao_conferido') ? true : false;
+            $modifiedFields['ident_veiculo_qtd'] = $request->ident_veiculo_qtd;
+            $modifiedFields['ident_veiculo_separado'] = $request->ident_veiculo_separado;
+            $modifiedFields['ident_veiculo_conferido'] = $request->has('ident_veiculo_conferido') ? true : false;
+            $modifiedFields['form_tam_qtd'] = $request->form_tam_qtd;
+            $modifiedFields['form_tam_separado'] = $request->form_tam_separado;
+            $modifiedFields['form_tam_conferido'] = $request->has('form_tam_conferido') ? true : false;
+            $modifiedFields['form_iata_qtd'] = $request->form_iata_qtd;
+            $modifiedFields['form_iata_separado'] = $request->form_iata_separado;
+            $modifiedFields['form_iata_conferido'] = $request->has('form_iata_conferido') ? true : false;
+            $modifiedFields['id_usuario_separado_expedicao_p10'] = $request->id_usuario_separado_expedicao_p10;
+            $modifiedFields['horario_separado_expedicao_p10'] = $request->horario_separado_expedicao_p10;
+            $modifiedFields['id_usuario_conferido_expedicao_p10'] = $request->id_usuario_conferido_expedicao_p10;
+            $modifiedFields['horario_conferido_expedicao_p10'] = $request->horario_conferido_expedicao_p10;
             
-            $registroLote->horario_final_emb_exped = $request->horario_final_emb_exped;
-            $registroLote->id_usuario_execucao_p10 = $request->id_usuario_execucao_p10;
-            $registroLote->id_usuario_verificacao_p10 = $request->id_usuario_verificacao_p10;
+            $modifiedFields['horario_final_emb_exped'] = $request->horario_final_emb_exped;
+            $modifiedFields['id_usuario_execucao_p10'] = $request->id_usuario_execucao_p10;
+            $modifiedFields['id_usuario_verificacao_p10'] = $request->id_usuario_verificacao_p10;
 
-            $registroLote->ocorrencias_p10 = $request->ocorrencias_p10;
-            $registroLote->ocorrencias_horario_p10 = $request->ocorrencias_horario_p10;
-            $registroLote->id_usuario_execucao_ocorrencias_p10 = $request->id_usuario_execucao_ocorrencias_p10;
-            $registroLote->id_usuario_verificacao_ocorrencias_p10 = $request->id_usuario_verificacao_ocorrencias_p10;
+            $modifiedFields['ocorrencias_p10'] = $request->ocorrencias_p10;
+            $modifiedFields['ocorrencias_horario_p10'] = $request->ocorrencias_horario_p10;
+            $modifiedFields['id_usuario_execucao_ocorrencias_p10'] = $request->id_usuario_execucao_ocorrencias_p10;
+            $modifiedFields['id_usuario_verificacao_ocorrencias_p10'] = $request->id_usuario_verificacao_ocorrencias_p10;
+        }
 
-        // PAGINA 11
-            $registroLote->aspecto_resultado = $request->aspecto_resultado;
-            $registroLote->aspecto_data = $request->aspecto_data;
-            $registroLote->id_usuario_aspecto = $request->id_usuario_aspecto;
-            $registroLote->ph_1_resultado = $request->ph_1_resultado;
-            $registroLote->ph_1_data = $request->ph_1_data;
-            $registroLote->id_usuario_ph_1 = $request->id_usuario_ph_1;
-            $registroLote->ph_2_resultado = $request->ph_2_resultado;
-            $registroLote->ph_2_data = $request->ph_2_data;
-            $registroLote->id_usuario_ph_2 = $request->id_usuario_ph_2;
-            $registroLote->pureza_radionuclidica_1_resultado = $request->pureza_radionuclidica_1_resultado;
-            $registroLote->pureza_radionuclidica_1_data = $request->pureza_radionuclidica_1_data;
-            $registroLote->id_usuario_pureza_radionuclidica_1 = $request->id_usuario_pureza_radionuclidica_1;
-            $registroLote->pureza_radionuclidica_2_resultado = $request->pureza_radionuclidica_2_resultado;
-            $registroLote->pureza_radionuclidica_2_data = $request->pureza_radionuclidica_2_data;
-            $registroLote->id_usuario_pureza_radionuclidica_2 = $request->id_usuario_pureza_radionuclidica_2;
-            $registroLote->meia_vida_resultado = $request->meia_vida_resultado;
-            $registroLote->meia_vida_data = $request->meia_vida_data;
-            $registroLote->id_usuario_meia_vida = $request->id_usuario_meia_vida;
-            $registroLote->solventes_resultado = $request->solventes_resultado;
-            $registroLote->solventes_data = $request->solventes_data;
-            $registroLote->id_usuario_solventes = $request->id_usuario_solventes;
+        if ($request->action == 'partialCQFQ') {
+            $modifiedFields['aspecto_resultado'] = $request->aspecto_resultado;
+            $modifiedFields['aspecto_data'] = $request->aspecto_data;
+            $modifiedFields['id_usuario_aspecto'] = $request->id_usuario_aspecto;
+            $modifiedFields['ph_1_resultado'] = $request->ph_1_resultado;
+            $modifiedFields['ph_1_data'] = $request->ph_1_data;
+            $modifiedFields['id_usuario_ph_1'] = $request->id_usuario_ph_1;
+            $modifiedFields['ph_2_resultado'] = $request->ph_2_resultado;
+            $modifiedFields['ph_2_data'] = $request->ph_2_data;
+            $modifiedFields['id_usuario_ph_2'] = $request->id_usuario_ph_2;
+            $modifiedFields['pureza_radionuclidica_1_resultado'] = $request->pureza_radionuclidica_1_resultado;
+            $modifiedFields['pureza_radionuclidica_1_data'] = $request->pureza_radionuclidica_1_data;
+            $modifiedFields['id_usuario_pureza_radionuclidica_1'] = $request->id_usuario_pureza_radionuclidica_1;
+            $modifiedFields['pureza_radionuclidica_2_resultado'] = $request->pureza_radionuclidica_2_resultado;
+            $modifiedFields['pureza_radionuclidica_2_data'] = $request->pureza_radionuclidica_2_data;
+            $modifiedFields['id_usuario_pureza_radionuclidica_2'] = $request->id_usuario_pureza_radionuclidica_2;
+            $modifiedFields['meia_vida_resultado'] = $request->meia_vida_resultado;
+            $modifiedFields['meia_vida_data'] = $request->meia_vida_data;
+            $modifiedFields['id_usuario_meia_vida'] = $request->id_usuario_meia_vida;
+            $modifiedFields['solventes_resultado'] = $request->solventes_resultado;
+            $modifiedFields['solventes_data'] = $request->solventes_data;
+            $modifiedFields['id_usuario_solventes'] = $request->id_usuario_solventes;
 
-            $registroLote->ocorrencias_p11 = $request->ocorrencias_p11;
-            $registroLote->id_usuario_verificacao_ocorrencias_p11 = $request->id_usuario_verificacao_ocorrencias_p11;
+            $modifiedFields['ocorrencias_p11'] = $request->ocorrencias_p11;
+            $modifiedFields['id_usuario_verificacao_ocorrencias_p11'] = $request->id_usuario_verificacao_ocorrencias_p11;
 
-        // PAGINA 12
-            $registroLote->pureza_radioquimica_a_codigo = $request->pureza_radioquimica_a_codigo;
-            $registroLote->pureza_radioquimica_a_resultado = $request->pureza_radioquimica_a_resultado;
-            $registroLote->pureza_radioquimica_a_data = $request->pureza_radioquimica_a_data;
-            $registroLote->id_usuario_pureza_radioquimica_a = $request->id_usuario_pureza_radioquimica_a;
-            $registroLote->pureza_radioquimica_b_resultado = $request->pureza_radioquimica_b_resultado;
-            $registroLote->pureza_radioquimica_b_data = $request->pureza_radioquimica_b_data;
-            $registroLote->id_usuario_pureza_radioquimica_b = $request->id_usuario_pureza_radioquimica_b;
-            $registroLote->pureza_quimica_resultado = $request->pureza_quimica_resultado;
-            $registroLote->pureza_quimica_data = $request->pureza_quimica_data;
-            $registroLote->id_usuario_pureza_quimica = $request->id_usuario_pureza_quimica;
+            $modifiedFields['pureza_radioquimica_a_codigo'] = $request->pureza_radioquimica_a_codigo;
+            $modifiedFields['pureza_radioquimica_a_resultado'] = $request->pureza_radioquimica_a_resultado;
+            $modifiedFields['pureza_radioquimica_a_data'] = $request->pureza_radioquimica_a_data;
+            $modifiedFields['id_usuario_pureza_radioquimica_a'] = $request->id_usuario_pureza_radioquimica_a;
+            $modifiedFields['pureza_radioquimica_b_resultado'] = $request->pureza_radioquimica_b_resultado;
+            $modifiedFields['pureza_radioquimica_b_data'] = $request->pureza_radioquimica_b_data;
+            $modifiedFields['id_usuario_pureza_radioquimica_b'] = $request->id_usuario_pureza_radioquimica_b;
+            $modifiedFields['pureza_quimica_resultado'] = $request->pureza_quimica_resultado;
+            $modifiedFields['pureza_quimica_data'] = $request->pureza_quimica_data;
+            $modifiedFields['id_usuario_pureza_quimica'] = $request->id_usuario_pureza_quimica;
             
-            $registroLote->ocorrencias_p12 = $request->ocorrencias_p12;
-            $registroLote->id_usuario_verificacao_ocorrencias_p12 = $request->id_usuario_verificacao_ocorrencias_p12;
+            $modifiedFields['ocorrencias_p12'] = $request->ocorrencias_p12;
+            $modifiedFields['id_usuario_verificacao_ocorrencias_p12'] = $request->id_usuario_verificacao_ocorrencias_p12;
             
-            $registroLote->aprovacao_fisico_quimico = $request->aprovacao_fisico_quimico;
-            $registroLote->data_aprovacao_fisico_quimico = $request->data_aprovacao_fisico_quimico;
-            $registroLote->id_usuario_aprovacao_fisico_quimico = $request->id_usuario_aprovacao_fisico_quimico;
+            $modifiedFields['aprovacao_fisico_quimico'] = $request->aprovacao_fisico_quimico;
+            $modifiedFields['data_aprovacao_fisico_quimico'] = $request->data_aprovacao_fisico_quimico;
+            $modifiedFields['id_usuario_aprovacao_fisico_quimico'] = $request->id_usuario_aprovacao_fisico_quimico;
+        }
 
-        // PÁGINA 13
-            $registroLote->endotoxinas_codigo = $request->endotoxinas_codigo;
-            $registroLote->endotoxinas_1_resultado = $request->endotoxinas_1_resultado;
-            $registroLote->endotoxinas_2_resultado = $request->endotoxinas_2_resultado;
-            $registroLote->endotoxinas_3_resultado = $request->endotoxinas_3_resultado;
-            $registroLote->endotoxinas_4_resultado = $request->endotoxinas_4_resultado;
-            $registroLote->endotoxinas_data = $request->endotoxinas_data;
-            $registroLote->id_usuario_endotoxinas = $request->id_usuario_endotoxinas;
-            $registroLote->codigo_calibracao_pts = $request->codigo_calibracao_pts;
-            $registroLote->lote_cartucho_pts = $request->lote_cartucho_pts;
+        if ($request->action == 'partialCQM') {
+            $modifiedFields['endotoxinas_codigo'] = $request->endotoxinas_codigo;
+            $modifiedFields['endotoxinas_1_resultado'] = $request->endotoxinas_1_resultado;
+            $modifiedFields['endotoxinas_2_resultado'] = $request->endotoxinas_2_resultado;
+            $modifiedFields['endotoxinas_3_resultado'] = $request->endotoxinas_3_resultado;
+            $modifiedFields['endotoxinas_4_resultado'] = $request->endotoxinas_4_resultado;
+            $modifiedFields['endotoxinas_data'] = $request->endotoxinas_data;
+            $modifiedFields['id_usuario_endotoxinas'] = $request->id_usuario_endotoxinas;
+            $modifiedFields['codigo_calibracao_pts'] = $request->codigo_calibracao_pts;
+            $modifiedFields['lote_cartucho_pts'] = $request->lote_cartucho_pts;
 
-            $registroLote->membrana_equipamento = $request->membrana_equipamento;
-            $registroLote->membrana_lote = $request->membrana_lote;
-            $registroLote->membrana_validade = $request->membrana_validade;
-            $registroLote->id_usuario_membrana = $request->id_usuario_membrana;
+            $modifiedFields['membrana_equipamento'] = $request->membrana_equipamento;
+            $modifiedFields['membrana_lote'] = $request->membrana_lote;
+            $modifiedFields['membrana_validade'] = $request->membrana_validade;
+            $modifiedFields['id_usuario_membrana'] = $request->id_usuario_membrana;
 
-            $registroLote->pressao_teste_bolha_fornecida = $request->pressao_teste_bolha_fornecida;
-            $registroLote->pressao_teste_bolha_obtida = $request->pressao_teste_bolha_obtida;
-            $registroLote->id_usuario_pressao_teste_bolha = $request->id_usuario_pressao_teste_bolha;
+            $modifiedFields['pressao_teste_bolha_fornecida'] = $request->pressao_teste_bolha_fornecida;
+            $modifiedFields['pressao_teste_bolha_obtida'] = $request->pressao_teste_bolha_obtida;
+            $modifiedFields['id_usuario_pressao_teste_bolha'] = $request->id_usuario_pressao_teste_bolha;
 
-            $registroLote->ocorrencias_p13 = $request->ocorrencias_p13;
-            $registroLote->id_usuario_verificacao_ocorrencias_p13 = $request->id_usuario_verificacao_ocorrencias_p13;
+            $modifiedFields['ocorrencias_p13'] = $request->ocorrencias_p13;
+            $modifiedFields['id_usuario_verificacao_ocorrencias_p13'] = $request->id_usuario_verificacao_ocorrencias_p13;
             
-            $registroLote->aprovacao_microbiologico = $request->aprovacao_microbiologico;
-            $registroLote->data_aprovacao_microbiologico = $request->data_aprovacao_microbiologico;
-            $registroLote->id_usuario_aprovacao_microbiologico = $request->id_usuario_aprovacao_microbiologico;
+            $modifiedFields['aprovacao_microbiologico'] = $request->aprovacao_microbiologico;
+            $modifiedFields['data_aprovacao_microbiologico'] = $request->data_aprovacao_microbiologico;
+            $modifiedFields['id_usuario_aprovacao_microbiologico'] = $request->id_usuario_aprovacao_microbiologico;
 
-        // PÁGINA 14
-            $registroLote->esterilidade_data_inicio_analise = $request->esterilidade_data_inicio_analise;
-            $registroLote->id_usuario_esterilidade = $request->id_usuario_esterilidade;
+            $modifiedFields['esterilidade_data_inicio_analise'] = $request->esterilidade_data_inicio_analise;
+            $modifiedFields['id_usuario_esterilidade'] = $request->id_usuario_esterilidade;
 
-            $registroLote->esterilidade_codigo = $request->esterilidade_codigo;
-            $registroLote->esterilidade_1_resultado = $request->esterilidade_1_resultado;
-            $registroLote->esterilidade_1_data = $request->esterilidade_1_data;
-            $registroLote->id_usuario_esterilidade_1 = $request->id_usuario_esterilidade_1;
-            $registroLote->esterilidade_2_resultado = $request->esterilidade_2_resultado;
-            $registroLote->esterilidade_2_data = $request->esterilidade_2_data;
-            $registroLote->id_usuario_esterilidade_2 = $request->id_usuario_esterilidade_2;
-            $registroLote->esterilidade_3_resultado = $request->esterilidade_3_resultado;
-            $registroLote->esterilidade_3_data = $request->esterilidade_3_data;
-            $registroLote->id_usuario_esterilidade_3 = $request->id_usuario_esterilidade_3;
+            $modifiedFields['esterilidade_codigo'] = $request->esterilidade_codigo;
+            $modifiedFields['esterilidade_1_resultado'] = $request->esterilidade_1_resultado;
+            $modifiedFields['esterilidade_1_data'] = $request->esterilidade_1_data;
+            $modifiedFields['id_usuario_esterilidade_1'] = $request->id_usuario_esterilidade_1;
+            $modifiedFields['esterilidade_2_resultado'] = $request->esterilidade_2_resultado;
+            $modifiedFields['esterilidade_2_data'] = $request->esterilidade_2_data;
+            $modifiedFields['id_usuario_esterilidade_2'] = $request->id_usuario_esterilidade_2;
+            $modifiedFields['esterilidade_3_resultado'] = $request->esterilidade_3_resultado;
+            $modifiedFields['esterilidade_3_data'] = $request->esterilidade_3_data;
+            $modifiedFields['id_usuario_esterilidade_3'] = $request->id_usuario_esterilidade_3;
 
-            $registroLote->ocorrencias_p14 = $request->ocorrencias_p14;
+            $modifiedFields['ocorrencias_p14'] = $request->ocorrencias_p14;
             
-            $registroLote->aprovacao_esterilidade = $request->aprovacao_esterilidade;
-            $registroLote->data_aprovacao_esterilidade = $request->data_aprovacao_esterilidade;
-            $registroLote->id_usuario_aprovacao_esterilidade = $request->id_usuario_aprovacao_esterilidade;
+            $modifiedFields['aprovacao_esterilidade'] = $request->aprovacao_esterilidade;
+            $modifiedFields['data_aprovacao_esterilidade'] = $request->data_aprovacao_esterilidade;
+            $modifiedFields['id_usuario_aprovacao_esterilidade'] = $request->id_usuario_aprovacao_esterilidade;
+        }
 
-        // PÁGINA 15
-            $registroLote->id_usuario_supervisor_controle_qualidade = $request->id_usuario_supervisor_controle_qualidade;
-            $registroLote->atendimento_criterios = $request->atendimento_criterios;
-            $registroLote->aprovacao_lote = $request->aprovacao_lote;
-            $registroLote->id_usuario_resposavel_garantia_qualidade = $request->id_usuario_resposavel_garantia_qualidade;
-            $registroLote->hora_emissao_laudo = $request->hora_emissao_laudo;
+        if ($request->action == 'totalAprovacao') {
+            // Check if user is authenticated and their password matches the provided one
+            $user = User::find(Auth::id());
+            
+            if (!Hash::check($request->password, $user->password))
+            return redirect()->back()->with('alert-danger', 'Senha incorreta.')->with('modal', '#confirmModal')->withInput();
+        
+            $modifiedFields['id_usuario_supervisor_controle_qualidade'] = $request->id_usuario_supervisor_controle_qualidade;
+            $modifiedFields['atendimento_criterios'] = $request->atendimento_criterios;
+            $modifiedFields['aprovacao_lote'] = $request->aprovacao_lote;
+            $modifiedFields['id_usuario_resposavel_garantia_qualidade'] = $request->id_usuario_resposavel_garantia_qualidade;
+            $modifiedFields['hora_emissao_laudo'] = $request->hora_emissao_laudo;
+            
+            $modifiedFields['completed'] = true;
+        }
 
-            $registroLote->save();
-
-        return redirect()->route('registros_lote')->with('alert-success', 'Registro de lote salvo com sucesso.');
+        $registro_lote = Registro_Lote::UpdateOrCreate(
+            ['lote' => $request->lote],
+            $modifiedFields
+        );
+        
+        return redirect()->back()->with('alert-success', 'Registro de lote salvo com sucesso.')->withInput();
     }
     
     public function make_pdf(Request $request){
