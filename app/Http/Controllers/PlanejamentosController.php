@@ -318,7 +318,7 @@ class PlanejamentosController extends Controller
         }
         catch(\Exception $exception){
             DB::rollBack();
-            return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Planejamento, pois outras informações dependem dele.' . $exception);
+            return redirect()->back()->with('alert-danger', 'Você não tem permissão para excluir esse Planejamento, pois outras informações dependem dele.');
         } 
     }
 }

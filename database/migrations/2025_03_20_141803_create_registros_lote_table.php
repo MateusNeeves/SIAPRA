@@ -14,6 +14,7 @@ return new class extends Migration
             $table->id();
             $table->boolean('completed')->default(false);
             $table->string('lote')->unique();
+                $table->foreign('lote')->references('lote')->on('planejamentos')->onDelete('cascade');
             $table->date('data_fabricacao');
 
             // PAGINA 3

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_usuario');
             $table->date('data_producao');
-            $table->string('lote');
+            $table->string('lote')->unique();
 
             $table->integer('fator_seguranca');
 
