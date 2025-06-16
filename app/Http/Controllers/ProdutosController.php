@@ -31,7 +31,7 @@ function get_infos_store(){
 }
 
 function get_infos_view(Request $request){
-    $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADES_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA) WHERE P.ID = ?', [$request->id_view])[0];
+    $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADE_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA) WHERE P.ID = ?', [$request->id_view])[0];
             
     $forns = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
     $fornecedores = [];
@@ -54,7 +54,7 @@ function get_infos_view(Request $request){
 class ProdutosController extends Controller
 {
     public function index(){
-        $produtos = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADES_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA)');
+        $produtos = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADE_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA)');
         
         $produtos = json_decode(json_encode($produtos), true);
         return view('produtos/visualizar', ['produtos' => $produtos]);
@@ -187,7 +187,7 @@ class ProdutosController extends Controller
     }
 
     public function edit(Request $request){
-        $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADES_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA) WHERE P.ID = ?', [$request->id_edit])[0];
+        $produto = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADE_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA) WHERE P.ID = ?', [$request->id_edit])[0];
                 
         $fornecedores = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$produto->id]);
         $fornSelected = [];

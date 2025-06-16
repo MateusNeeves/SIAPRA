@@ -29,8 +29,8 @@ class UnidadesMedidaController extends Controller
             ['nome' => $request->nome,
             'sigla' => $request->sigla],
             
-            ['nome' => 'unique:unidades_medida',
-            'sigla' => 'unique:unidades_medida'],
+            ['nome' => 'unique:unidade_medida',
+            'sigla' => 'unique:unidade_medida'],
             
             ['nome.unique' => 'Já existe uma Unidade de Medida com esse Nome',
             'sigla.unique' => 'Já existe uma Unidade de Medida com essa Sigla']
@@ -87,8 +87,8 @@ class UnidadesMedidaController extends Controller
             ['nome' => $request->nome,
             'sigla' => $request->sigla],
             
-            ['nome' => Rule::unique('unidades_medida')->ignore($request->id_edit),
-            'sigla' => Rule::unique('unidades_medida')->ignore($request->id_edit)],
+            ['nome' => Rule::unique('unidade_medida')->ignore($request->id_edit),
+            'sigla' => Rule::unique('unidade_medida')->ignore($request->id_edit)],
             
             ['nome.unique' => 'Já existe uma Unidade de Medida com esse Nome',
             'sigla.unique' => 'Já existe uma Unidade de Medida com essa Sigla']

@@ -7,7 +7,7 @@
                     {{$title[0]}}
                 </div>
 
-                @if (array_intersect(['Admin', 'Almoxarife'], Auth::user()->getClassNamesAttribute()))
+                {{-- @if (array_intersect(['Admin', 'Almoxarife'], Auth::user()->getClassNamesAttribute())) --}}
                     <div class="flex mb-2">
                         <a class="btn btn-orange bg-gradient me-2 ms-3" href="{{route($path. '.register')}}"> Novo </a>
 
@@ -32,7 +32,7 @@
                             }
                         });
                     </script>
-                @endif
+                {{-- @endif --}}
 
 
                 <div class="container overflow-auto mb-4">

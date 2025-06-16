@@ -29,7 +29,7 @@
 
     <!-- Descricao -->
     <div class="mt-4">
-        <x-input-label :value="__('Descricao *')" />
+        <x-input-label :value="__('Descrição *')" />
         <x-text-input id="descricao" class="block mt-1 w-full" type="text" name="descricao" :value="old('descricao', $produto->descricao ?? '')" required/>
     </div>
 
@@ -116,7 +116,7 @@
 
     <!-- Descricao -->
     <div class="mt-4">
-        <x-input-label class="h6" :value="__('Descricao')" />
+        <x-input-label class="h6" :value="__('Descrição')" />
         <x-input-label class="mt-2 text-secondary" :value="__($produtoV->descricao ?? '')" />
     </div>
 
