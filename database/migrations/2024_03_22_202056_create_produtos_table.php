@@ -22,7 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_unidade_medida');
 
             $table->foreign('id_tipo')->references('id')->on('tipos_produtos');
-            $table->foreign('id_unidade_medida')->references('id')->on('unidades_medida');
+            $table->foreign('id_unidade_medida')->references('id')->on('unidade_medida');
         });
     }
 
