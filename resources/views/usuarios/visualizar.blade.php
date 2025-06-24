@@ -35,13 +35,13 @@
             <x-input-label :value="__('CPF *')" />
             <x-input-label :value="__('(Apenas Números)')" />
         </div>
-        <x-text-input id="cpf" class="block mt-1 w-full" type="text" maxlength="11" name="cpf" :value="old('name', $usuario->cpf ?? '')" required/>
+        <x-text-input id="cpf" class="block mt-1 w-full" type="text" maxlength="11" name="cpf" :value="old('cpf', $usuario->cpf ?? '')" required/>
     </div>
 
     <!-- Email -->
     <div class="mt-4">
         <x-input-label :value="__('Email *')" />
-        <x-text-input id="email" class="block mt-1 w-full" type="text" name="email" :value="old('name', $usuario->email ?? '')" required/>
+        <x-text-input id="email" class="block mt-1 w-full" type="text" name="email" :value="old('email', $usuario->email ?? '')" required/>
     </div>
 
     <!-- Telefone -->
@@ -50,7 +50,7 @@
             <x-input-label :value="__('Telefone *')" />
             <x-input-label :value="__('(Apenas Números)')" />
         </div>
-        <x-text-input id="phone" class="block mt-1 w-full" type="text" maxlength="11" name="phone" :value="old('name', $usuario->phone ?? '')" required/>
+        <x-text-input id="phone" class="block mt-1 w-full" type="text" maxlength="11" name="phone" :value="old('phone', $usuario->phone ?? '')" required/>
     </div>
 
     <!-- Senha -->
