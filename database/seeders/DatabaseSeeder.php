@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\Classe;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,21 +15,46 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('classes')->insert([
+        $classes = [
             ['nome' => 'Admin', 'descricao' => 'Administrador do sistema.'],
             ['nome' => 'Almoxarife', 'descricao' => 'Responsável pelo gerenciamento do Almoxarifado.'],
             ['nome' => 'Visualizador', 'descricao' => 'Permite apenas visualização.'],
             ['nome' => 'Farmacêutico', 'descricao' => 'Responsável pelo Garantia de Qualidade.'],
             ['nome' => 'Produção', 'descricao' => 'Responsável pela Produção.'],
-        ]);
+        ];
 
-        DB::table('users')->insert(
+        foreach ($classes as $classe) {
+            Classe::firstOrCreate(
+                ['nome' => $classe['nome']],
+                ['descricao' => $classe['descricao']]
+            );
+        }
+
+
+        /*DB::table('users')->insert(
             ['username' => 'admin', 'password' => bcrypt('admin'), 'name' => 'admin', 'cpf' => '00000000000', 'email' => 'admin@admin.com', 'phone' => '00000000000']
         );
 
         DB::table('users_classes')->insert(
             ['id_user' => '1', 'id_classe' => '1']
+        );  */
+
+
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'username' => 'admin',
+                'password' => bcrypt('admin'),
+                'name' => 'admin',
+                'cpf' => '00000000000',
+                'phone' => '00000000000'
+            ]
         );
+
+        $adminClass = Classe::where('nome', 'Admin')->first();
+
+        $admin->classes()->syncWithoutDetaching([$adminClass->id]);
+
 
         DB::table('dest_produtos')->insert(
             ['nome' => 'VENCIDO']
