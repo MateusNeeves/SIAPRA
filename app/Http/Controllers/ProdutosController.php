@@ -549,8 +549,19 @@ class ProdutosController extends Controller
     }
 
     public function mov_out_select(Request $request){
-        $now = Carbon::createFromFormat("H:i:s", date('H:i:s'));
-        $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE FROM PRODUTOS_MOV_IN L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? AND L.QTD_ITENS_ESTOQUE > 0 AND L.DATA_VALIDADE > ? AND L.QUARENTENA = ? ORDER BY L.DATA_VALIDADE ASC', [$request->id_view, $now, 'Não']);
+        $now = now()->toDateString();
+
+        $lotes = DB::select('
+            SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE 
+            FROM PRODUTOS_MOV_IN L 
+            INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) 
+            WHERE L.ID_PRODUTO = ? 
+            AND L.QTD_ITENS_ESTOQUE > 0 
+            AND L.DATA_VALIDADE > ? 
+            AND L.QUARENTENA = ? 
+            ORDER BY L.DATA_VALIDADE ASC
+        ', [$request->id_view, $now, 'NAO']);
+
         $lotes = json_decode(json_encode($lotes), true);
 
         if ($lotes == []){
@@ -565,10 +576,8 @@ class ProdutosController extends Controller
                 'lotesP' => $lotes,
                 'title_modal' => 'Selecione o lote para retirada:',
                 'route_modal' => '.mov_out'
-    
             ]);
         }
-
 
         return redirect()->back()->with($make_movInfos)->withInput();
     }
