@@ -549,18 +549,19 @@ class ProdutosController extends Controller
     }
 
     public function mov_out_select(Request $request){
-        $now = now()->toDateString();
+        $hoje = Carbon::today()->toDateString();
 
-        $lotes = DB::select('
-            SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE 
-            FROM PRODUTOS_MOV_IN L 
-            INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) 
-            WHERE L.ID_PRODUTO = ? 
-            AND L.QTD_ITENS_ESTOQUE > 0 
-            AND L.DATA_VALIDADE > ? 
-            AND L.QUARENTENA = ? 
-            ORDER BY L.DATA_VALIDADE ASC
-        ', [$request->id_view, $now, 'NAO']);
+        $lotes = DB::select(
+            'SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE
+            FROM PRODUTOS_MOV_IN L
+            INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID)
+            WHERE L.ID_PRODUTO = ?
+            AND L.QTD_ITENS_ESTOQUE > 0
+            AND L.DATA_VALIDADE >= ?
+            AND L.QUARENTENA = ?
+            ORDER BY L.DATA_VALIDADE ASC',
+            [$request->id_view, $hoje, 'NAO']
+        );
 
         $lotes = json_decode(json_encode($lotes), true);
 
