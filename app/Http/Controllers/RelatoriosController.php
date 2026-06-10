@@ -134,6 +134,20 @@ class RelatoriosController extends Controller
             $mpdf->Output($nome_arquivo, 'D');
         }
         else if ($request->tipo_relatorio == 'inventario'){
+
+            $mesTexto = '';
+
+        if ($request->mes && $request->mes != 'todos') {
+            $meses = [
+                1 => 'JANEIRO', 2 => 'FEVEREIRO', 3 => 'MARÇO',
+                4 => 'ABRIL', 5 => 'MAIO', 6 => 'JUNHO',
+                7 => 'JULHO', 8 => 'AGOSTO', 9 => 'SETEMBRO',
+                10 => 'OUTUBRO', 11 => 'NOVEMBRO', 12 => 'DEZEMBRO'
+            ];
+
+        $mesTexto = ' - ' . $meses[(int)$request->mes];
+    }
+
             $tipos = Tipo_Produto::all()->pluck('nome', 'id')->toArray();
             
             foreach ($tipos as $id => $nome) {
@@ -142,17 +156,26 @@ class RelatoriosController extends Controller
                     'inventario' => []
                 ];
             }
+            $dataInicio = "{$request->ano}-01-01";
+            $dataFim = "{$request->ano}-12-31";
+
+            if ($request->mes && $request->mes != 'todos') {
+                $mes = str_pad($request->mes, 2, '0', STR_PAD_LEFT);
+
+                $dataInicio = "{$request->ano}-{$mes}-01";
+                $dataFim = date("Y-m-t", strtotime($dataInicio));
+            }
 
             $inventario = DB::select(
                 "SELECT P.ID, P.NOME, P.ID_TIPO,
                         COALESCE(SUM(L.QTD_ITENS_RECEBIDOS), 0) AS QTD,
-                        COALESCE(SUM(L.PRECO), 0) AS VALOR_TOTAL
-                 FROM PRODUTOS P
-                 INNER JOIN PRODUTOS_MOV_IN L 
-                     ON L.ID_PRODUTO = P.ID 
-                 WHERE L.DATA_ENTREGA BETWEEN ? AND ?
-                 GROUP BY P.ID, P.NOME, P.ID_TIPO", 
-                ["{$request->ano}-01-01", "{$request->ano}-12-31"]
+                        COALESCE(SUM(L.QTD_ITENS_RECEBIDOS * L.PRECO), 0) AS VALOR_TOTAL
+                FROM PRODUTOS P
+                INNER JOIN PRODUTOS_MOV_IN L 
+                    ON L.ID_PRODUTO = P.ID 
+                WHERE L.DATA_ENTREGA BETWEEN ? AND ?
+                GROUP BY P.ID, P.NOME, P.ID_TIPO", 
+                [$dataInicio, $dataFim]
             );
 
             foreach ($inventario as $produto) {
@@ -209,10 +232,11 @@ class RelatoriosController extends Controller
                         page-break-before: always;
                     }
                 </style>
-
                 <p class="data-emissao">Data de Emissão: ' . date('d/m/Y') . '</p>
                 <br>
-                <h2>RELATÓRIO DO INVENTÁRIO DO ALMOXARIFADO DA DIPRA DE ' . htmlspecialchars($request->ano) . '</h2>
+                <h2>RELATÓRIO DO INVENTÁRIO DO ALMOXARIFADO DA DIPRA DE ' 
+                . htmlspecialchars($request->ano) . $mesTexto . 
+                '</h2>
             ';
 
             // Adiciona uma tabela para cada tipo de produto

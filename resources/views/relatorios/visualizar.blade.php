@@ -29,6 +29,25 @@
                             <input type="number" value="{{ date('Y') }}" max="{{ date('Y') }}" min="1970" name="ano" id="ano" class="p-2 border rounded"  style="width: 100px">
                         </label>
                     </div>
+
+                    <div id="mes_container" class="mb-4 hidden">
+                        <label class="block text-gray-700">Mês:</label>
+                        <select name="mes" id="mes" class="w-full mt-2 p-2 border rounded">
+                            <option value="todos">Todos</option>
+                            <option value="1">Janeiro</option>
+                            <option value="2">Fevereiro</option>
+                            <option value="3">Março</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Maio</option>
+                            <option value="6">Junho</option>
+                            <option value="7">Julho</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+                    </div>
                     <div class="flex justify-content-center my-4">
 
                         <button disabled id="submitBtn" class="btn btn-orange bg-gradient me-2" >
@@ -44,12 +63,22 @@
         document.getElementById('tipo_relatorio').addEventListener('change', function() {
             let mesesContainer = document.getElementById('meses_container');
             let anoContainer = document.getElementById('ano_container');
+            let mesContainer = document.getElementById('mes_container');
+
             if (this.value === 'itens_a_vencer') {
                 mesesContainer.classList.remove('hidden');
                 anoContainer.classList.add('hidden');
-            } else {
+                mesContainer.classList.add('hidden');
+            } 
+            else if (this.value === 'inventario') {
                 mesesContainer.classList.add('hidden');
                 anoContainer.classList.remove('hidden');
+                mesContainer.classList.remove('hidden');
+            } 
+            else {
+                mesesContainer.classList.add('hidden');
+                anoContainer.classList.add('hidden');
+                mesContainer.classList.add('hidden');
             }
 
             if (this.value) {

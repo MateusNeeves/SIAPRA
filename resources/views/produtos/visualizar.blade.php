@@ -224,7 +224,7 @@
                 @else
                     @foreach ($lotesV as $lote)
                         @php 
-                            if ($lote['quarentena'] == "Não")
+                            if ($lote['quarentena'] == "NAO")
                                 $total += $lote['qtd_itens_estoque']; 
                         @endphp
                 
