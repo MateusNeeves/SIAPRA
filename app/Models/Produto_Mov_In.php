@@ -24,5 +24,15 @@ class Produto_Mov_In extends Model
         'data_entrega',
         'data_validade',
         'quarentena',
+        'status_lote',
     ];
+
+    public function statusProduto()
+    {
+        return $this->belongsTo(
+            Status_Produto::class,
+            'status_lote',
+            'id'
+        );
+    }
 }
