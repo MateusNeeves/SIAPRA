@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Models\Produto_Mov_In;
 use App\Models\Produto_Mov_Out;
 use App\Models\Unidade_Medida;
+use App\Models\Motivacao_Saida;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -586,9 +587,12 @@ class ProdutosController extends Controller
     public function mov_out(Request $request){
         $dest_produtos = Dest_Produto::where('nome', '!=', 'VENCIDO')->get();
 
+        $motivacoes_saida = Motivacao_Saida::all();
+
         $register_movInfos = array_merge(get_infos_view($request), [
             'modal' => ['#viewModal', '#movOutModal'],
             'dest_produtos' => $dest_produtos,
+            'motivacoes_saida' => $motivacoes_saida,
             'qtd_estoque_lote' => $request->qtd_estoque_lote,
             'id_lote' => $request->id_lote
         ]);
@@ -600,12 +604,22 @@ class ProdutosController extends Controller
         try{
             DB::beginTransaction();
 
+            $destino = Dest_Produto::findOrFail($request->destino);
+
+            $ehSaida = mb_strtolower(
+                trim($destino->nome),
+                'UTF-8'
+            ) === 'saída';
+
             $mov = new Produto_Mov_Out;
     
             $mov->id_produtos_mov_in = $request->id_lote;
             $mov->id_destino = $request->destino;
             $mov->qtd_itens_movidos = $request->qtd_itens_movidos;
             $mov->data_mov_out = $request->data_mov_out;
+            $mov->motivo_saida = $ehSaida
+                ? $request->motivo_saida
+                : null;
 
             $mov->save();
 

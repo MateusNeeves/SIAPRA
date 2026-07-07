@@ -361,21 +361,69 @@
         $id_lote = Session::get('id_lote') ?? null;
         $qtd_estoque_lote = Session::get('qtd_estoque_lote') ?? null;
         $destinos = Session::get('dest_produtos') ?? [];
+        $motivacoes_saida = Session::get('motivacoes_saida') ?? [];
     @endphp
 
     <!-- Data Retirada -->
-    <div >
+    <div>
         <x-input-label :value="__('Data Retirada *')" />
-        <x-text-input id="data_mov_out" class="block mt-1 w-full" type="date" name="data_mov_out" :value="old('data_mov_out')" required/>
+
+        <x-text-input
+            id="data_mov_out"
+            class="block mt-1 w-full"
+            type="date"
+            name="data_mov_out"
+            :value="old('data_mov_out')"
+            required
+        />
     </div>
 
     <!-- Destino do Produto -->
     <div class="mt-4">
         <x-input-label :value="__('Destino do Produto *')" />
-        <select id="destino" class="block mt-1 w-full border rounded" name="destino" required>
+
+        <select
+            id="destino"
+            class="block mt-1 w-full border rounded"
+            name="destino"
+            required
+        >
             <option value="" hidden></option>
+
             @foreach ($destinos as $destino)
-                <option value="{{$destino['id']}}" {{$destino['nome'] == (old('destino') ?? "") ? "selected" : ""}}> {{$destino['nome']}} </option>
+                <option
+                    value="{{$destino['id']}}"
+                    data-nome="{{$destino['nome']}}"
+                    {{$destino['id'] == old('destino') ? "selected" : ""}}
+                >
+                    {{$destino['nome']}}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <!-- Motivação da Saída -->
+    <div
+        class="mt-4"
+        id="motivacao_saida_container"
+        style="display: none;"
+    >
+        <x-input-label :value="__('Motivação da Saída *')" />
+
+        <select
+            id="motivo_saida"
+            class="block mt-1 w-full border rounded"
+            name="motivo_saida"
+        >
+            <option value="" hidden></option>
+
+            @foreach ($motivacoes_saida as $motivacao)
+                <option
+                    value="{{$motivacao['id']}}"
+                    {{$motivacao['id'] == old('motivo_saida') ? "selected" : ""}}
+                >
+                    {{$motivacao['motivacao']}}
+                </option>
             @endforeach
         </select>
     </div>
@@ -383,11 +431,65 @@
     <!-- Quantidade de Itens Retirados -->
     <div class="mt-4">
         <x-input-label :value="__('Quantidade de Itens Retirados *')" />
-        <x-text-input id="qtd_itens_movidos" class="block mt-1 w-full" type="number" min="0" max="{{$qtd_estoque_lote}}" name="qtd_itens_movidos" :value="old('qtd_itens_movidos', $produto->qtd_itens_movidos ?? '')" required/>
+
+        <x-text-input
+            id="qtd_itens_movidos"
+            class="block mt-1 w-full"
+            type="number"
+            min="0"
+            max="{{$qtd_estoque_lote}}"
+            name="qtd_itens_movidos"
+            :value="old('qtd_itens_movidos')"
+            required
+        />
     </div>
 
-    <input hidden name="id_lote" id="id_lote" value="{{$id_lote}}">
+    <input
+        hidden
+        name="id_lote"
+        id="id_lote"
+        value="{{$id_lote}}"
+    >
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const destinoSelect = document.getElementById('destino');
+            const motivacaoContainer = document.getElementById('motivacao_saida_container');
+            const motivacaoSelect = document.getElementById('motivo_saida');
+
+            if (!destinoSelect || !motivacaoContainer || !motivacaoSelect) {
+                return;
+            }
+
+            function atualizarCampoMotivacao() {
+                const opcaoSelecionada =
+                    destinoSelect.options[destinoSelect.selectedIndex];
+
+                const nomeDestino =
+                    opcaoSelecionada?.dataset.nome?.trim().toLocaleLowerCase('pt-BR');
+
+                const destinoEhSaida = nomeDestino === 'saída';
+
+                if (destinoEhSaida) {
+                    motivacaoContainer.style.display = 'block';
+                    motivacaoSelect.required = true;
+                    motivacaoSelect.disabled = false;
+                } else {
+                    motivacaoContainer.style.display = 'none';
+                    motivacaoSelect.required = false;
+                    motivacaoSelect.disabled = true;
+                    motivacaoSelect.value = '';
+                }
+            }
+
+            destinoSelect.addEventListener(
+                'change',
+                atualizarCampoMotivacao
+            );
+
+            atualizarCampoMotivacao();
+        });
+    </script>
 @endsection
 
 @section('view_mov')
