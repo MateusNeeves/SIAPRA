@@ -256,6 +256,7 @@
     @php
         $fabricantes_lote = Session::get('fabricantes_lote') ?? null;
         $fornecedores_lote = Session::get('fornecedores_lote') ?? null;
+        $status_lotes = Session::get('status_lotes') ?? null;
     @endphp
 
     <!-- Fabricante -->
@@ -273,6 +274,43 @@
     <div class="mt-4">
         <x-input-label :value="__('Lote Fabricante *')" />
         <x-text-input id="lote_fabricante" class="block mt-1 w-full" type="text" name="lote_fabricante" :value="old('lote_fabricante')" required/>
+    </div>
+
+    <!-- Status Lote -->
+    <div class="mt-4">
+        <x-input-label :value="__('Status Lote *')" />
+
+        <select
+            id="status_lote"
+            class="block mt-1 w-full border rounded"
+            name="status_lote"
+            required
+        >
+            <option value=""></option>
+
+            @foreach ($status_lotes ?? [] as $status)
+                <option
+                    value="{{ $status['id'] }}"
+                    {{ $status['id'] == old('status_lote') ? 'selected' : '' }}
+                >
+                    {{ $status['status'] }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+
+    <!-- Descrição Status Lote -->
+    <div class="mt-4" id="descricao_status_lote_container" style="display: none;">
+        <x-input-label :value="__('Descrição *')" />
+
+        <textarea
+            id="descricao_status_lote"
+            name="descricao_status_lote"
+            class="block mt-1 w-full border-gray-300 rounded-md shadow-sm"
+            rows="3"
+            maxlength="500"
+        >{{ old('descricao_status_lote') }}</textarea>
     </div>
     
     <!-- Fornecedor -->
@@ -309,6 +347,35 @@
         <x-input-label :value="__('Data Validade *')" />
         <x-text-input id="data_validade" class="block mt-1 w-full" type="date" name="data_validade" :value="old('data_validade')" required/>
     </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const statusLote = document.getElementById('status_lote');
+        const descricaoContainer = document.getElementById(
+            'descricao_status_lote_container'
+        );
+        const descricao = document.getElementById('descricao_status_lote');
+
+        function atualizarDescricao() {
+            const precisaDescricao =
+                statusLote.value === '2' ||
+                statusLote.value === '3';
+
+            descricaoContainer.style.display =
+                precisaDescricao ? 'block' : 'none';
+
+            descricao.required = precisaDescricao;
+
+            if (!precisaDescricao) {
+                descricao.value = '';
+            }
+        }
+
+        statusLote.addEventListener('change', atualizarDescricao);
+
+        atualizarDescricao();
+    });
+</script>
 
 @endsection
 
@@ -507,24 +574,68 @@
                         <th class="text-start table-orange" scope="col"> Data </th>
                         <th class="text-start table-orange" scope="col"> Qtd Itens</th>
                         <th class="text-start table-orange" scope="col"> Destino </th>
+                        <th class="text-start table-orange" scope="col"> Status Lote </th>
+                        <th class="text-start table-orange" scope="col"> Motivação Saída </th>
                     </tr>
                 </thead>
                 <tbody class="text-sm"> 
                     @foreach ($lotes_entrada as $i => $lote_entrada)
                         <tr class="bg-secondary">
-                            <td class="text-center" style="background-color: rgb(229 231 235);">{{$lote_entrada['id']}}</td>
-                            <td class="text-center" style="background-color: rgb(229 231 235);">ENTRADA</td>      
-                            <td class="text-center" style="background-color: rgb(229 231 235);">{{$lote_entrada['data_entrega']}}</td>      
-                            <td class="text-center" style="background-color: rgb(229 231 235);">{{$lote_entrada['qtd_itens_recebidos']}}</td>      
-                            <td class="text-center" style="background-color: rgb(229 231 235);"></td>      
+                            <td class="text-center" style="background-color: rgb(229 231 235);">
+                                {{$lote_entrada['id']}}
+                            </td>
+
+                            <td class="text-center" style="background-color: rgb(229 231 235);">
+                                ENTRADA
+                            </td>
+
+                            <td class="text-center" style="background-color: rgb(229 231 235);">
+                                {{$lote_entrada['data_entrega']}}
+                            </td>
+
+                            <td class="text-center" style="background-color: rgb(229 231 235);">
+                                {{$lote_entrada['qtd_itens_recebidos']}}
+                            </td>
+
+                            <td class="text-center" style="background-color: rgb(229 231 235);">
+                                -
+                            </td>
+
+                            <td class="text-center" style="background-color: rgb(229 231 235);">
+                                {{$lote_entrada['status_lote'] ?? '-'}}
+                            </td>
+
+                            <td class="text-center" style="background-color: rgb(229 231 235);">
+                                -
+                            </td>
                         </tr>
                         @foreach ($lotes_saida[$i] as $j => $lote_saida)
                             <tr>
                                 <td class="text-center"></td>
-                                <td class="text-center">SAÍDA</td>      
-                                <td class="text-center">{{$lote_saida['data_mov_out']}}</td>      
-                                <td class="text-center">{{$lote_saida['qtd_itens_movidos']}}</td>      
-                                <td class="text-center">{{$lote_saida['nome']}}</td>      
+
+                                <td class="text-center">
+                                    SAÍDA
+                                </td>
+
+                                <td class="text-center">
+                                    {{$lote_saida['data_mov_out']}}
+                                </td>
+
+                                <td class="text-center">
+                                    {{$lote_saida['qtd_itens_movidos']}}
+                                </td>
+
+                                <td class="text-center">
+                                    {{$lote_saida['nome']}}
+                                </td>
+
+                                <td class="text-center">
+                                    -
+                                </td>
+
+                                <td class="text-center">
+                                    {{$lote_saida['motivacao_saida'] ?? '-'}}
+                                </td>
                             </tr>
                         @endforeach
                     @endforeach

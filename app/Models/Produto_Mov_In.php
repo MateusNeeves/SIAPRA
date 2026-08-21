@@ -25,6 +25,7 @@ class Produto_Mov_In extends Model
         'data_validade',
         'quarentena',
         'status_lote',
+        'descricao_status_lote',
     ];
 
     public function statusProduto()
