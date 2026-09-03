@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 use App\Models\Produto_Mov_In;
 use App\Models\Produto_Mov_Out;
 use App\Models\Unidade_Medida;
+use App\Models\Motivacao_Saida;
+use App\Models\Status_Produto;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -433,13 +435,45 @@ class ProdutosController extends Controller
     }
 
     public function view_mov(Request $request){
-        $lotes_entrada = DB::select('SELECT ID, QTD_ITENS_RECEBIDOS, DATA_ENTREGA FROM PRODUTOS_MOV_IN WHERE ID_PRODUTO = ? ORDER BY ID', [$request->id_view]);
+        $lotes_entrada = DB::select(
+            'SELECT
+                L.ID,
+                L.QTD_ITENS_RECEBIDOS,
+                L.DATA_ENTREGA,
+                S.STATUS AS STATUS_LOTE
+            FROM PRODUTOS_MOV_IN L
+            LEFT JOIN STATUS_PRODUTOS S
+                ON L.STATUS_LOTE = S.ID
+            WHERE L.ID_PRODUTO = ?
+            ORDER BY L.ID',
+            [$request->id_view]
+        );
+
         $lotes_entrada = json_decode(json_encode($lotes_entrada), true);
-        
+
         $lotes_saida = [];
+
         foreach ($lotes_entrada as $i => $lote_entrada) {
-            $lotes_saida[$i] = DB::select('SELECT M.QTD_ITENS_MOVIDOS, M.DATA_MOV_OUT, D.NOME FROM PRODUTOS_MOV_OUT M INNER JOIN DEST_PRODUTOS D ON (M.ID_DESTINO = D.ID) WHERE ID_PRODUTOS_MOV_IN = ? ORDER BY DATA_MOV_OUT', [$lote_entrada['id']]);
-            $lotes_saida[$i] = json_decode(json_encode($lotes_saida[$i]), true);
+            $lotes_saida[$i] = DB::select(
+                'SELECT
+                    M.QTD_ITENS_MOVIDOS,
+                    M.DATA_MOV_OUT,
+                    D.NOME,
+                    MS.MOTIVACAO AS MOTIVACAO_SAIDA
+                FROM PRODUTOS_MOV_OUT M
+                INNER JOIN DEST_PRODUTOS D
+                    ON M.ID_DESTINO = D.ID
+                LEFT JOIN MOTIVACAO_SAIDA MS
+                    ON M.MOTIVO_SAIDA = MS.ID
+                WHERE M.ID_PRODUTOS_MOV_IN = ?
+                ORDER BY M.DATA_MOV_OUT',
+                [$lote_entrada['id']]
+            );
+
+            $lotes_saida[$i] = json_decode(
+                json_encode($lotes_saida[$i]),
+                true
+            );
         }
 
         if ($lotes_entrada == []){
@@ -467,24 +501,68 @@ class ProdutosController extends Controller
         return redirect()->back()->with($make_mov_infos)->withInput();
     }
 
-    public function mov_in(Request $request){
-        $fabricantes = DB::select('SELECT * FROM FABRICANTES WHERE ID IN (SELECT ID_FABRICANTE FROM PRODUTOS_FAB WHERE ID_PRODUTO = ?)', [$request->id_view]);
+    public function mov_in(Request $request)
+    {
+        $fabricantes = DB::select(
+            'SELECT * FROM FABRICANTES
+            WHERE ID IN (
+                SELECT ID_FABRICANTE
+                FROM PRODUTOS_FAB
+                WHERE ID_PRODUTO = ?
+            )',
+            [$request->id_view]
+        );
 
-        $fornecedores = DB::select('SELECT * FROM FORNECEDORES WHERE ID IN (SELECT ID_FORNECEDOR FROM PRODUTOS_FORN WHERE ID_PRODUTO = ?)', [$request->id_view]);
+        $fornecedores = DB::select(
+            'SELECT * FROM FORNECEDORES
+            WHERE ID IN (
+                SELECT ID_FORNECEDOR
+                FROM PRODUTOS_FORN
+                WHERE ID_PRODUTO = ?
+            )',
+            [$request->id_view]
+        );
+
+        $status_lotes = DB::select(
+            'SELECT * FROM status_produtos'
+        );
 
         $fabricantes = json_decode(json_encode($fabricantes), true);
         $fornecedores = json_decode(json_encode($fornecedores), true);
+        $status_lotes = json_decode(json_encode($status_lotes), true);
 
         $make_mov_inInfos = array_merge(get_infos_view($request), [
             'modal' => ['#viewModal', '#movInModal'],
             'fornecedores_lote' => $fornecedores,
-            'fabricantes_lote' => $fabricantes
+            'fabricantes_lote' => $fabricantes,
+            'status_lotes' => $status_lotes,
         ]);
 
-        return redirect()->back()->with($make_mov_inInfos)->withInput();
+        return redirect()->back()
+            ->with($make_mov_inInfos)
+            ->withInput();
     }
 
     public function store_mov_in(Request $request){  
+        $request->validate([
+            'status_lote' => 'required|integer|exists:status_produtos,id',
+            'descricao_status_lote' => 'nullable|string|max:500',
+        ]);
+
+        $status = Status_Produto::findOrFail($request->status_lote);
+
+        $precisaDescricao = in_array(
+            mb_strtolower(trim($status->status), 'UTF-8'),
+            ['reprovado', 'descartado'],
+            true
+        );
+
+
+        if ($precisaDescricao) {
+            $request->validate([
+                'descricao_status_lote' => 'required|string|max:500',
+            ]);
+        }
         
         try{
             DB::beginTransaction();
@@ -497,11 +575,17 @@ class ProdutosController extends Controller
             $lote->lote_fabricante = $request->lote_fabricante;
             $lote->id_fornecedor = Fornecedor::where('nome', $request->fornecedor)->get()[0]->id;
             $lote->qtd_itens_recebidos = $request->qtd_itens_recebidos;
-            $lote->qtd_itens_estoque = $request->qtd_itens_recebidos;
+            $lote->qtd_itens_estoque = $status->status === 'Aprovado'
+                ? $request->qtd_itens_recebidos
+                : 0;
             $lote->preco = $request->preco;
             $lote->data_entrega = $request->data_entrega;
             $lote->data_validade = $request->data_validade;
             $lote->quarentena = Produto::where('id', $lote->id_produto)->get()[0]->quarentena;
+            $lote->status_lote = $request->status_lote;
+            $lote->descricao_status_lote = $precisaDescricao
+                ? $request->descricao_status_lote
+                : null;
             
             $lote->save();
 
@@ -551,6 +635,11 @@ class ProdutosController extends Controller
     public function mov_out_select(Request $request){
         $hoje = Carbon::today()->toDateString();
 
+        $statusAprovado = Status_Produto::where(
+            'status',
+            'Aprovado'
+        )->firstOrFail();
+
         $lotes = DB::select(
             'SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE
             FROM PRODUTOS_MOV_IN L
@@ -559,8 +648,9 @@ class ProdutosController extends Controller
             AND L.QTD_ITENS_ESTOQUE > 0
             AND L.DATA_VALIDADE >= ?
             AND L.QUARENTENA = ?
+            AND L.STATUS_LOTE = ?
             ORDER BY L.DATA_VALIDADE ASC',
-            [$request->id_view, $hoje, 'NAO']
+            [$request->id_view, $hoje, 'NAO', $statusAprovado->id]
         );
 
         $lotes = json_decode(json_encode($lotes), true);
@@ -586,9 +676,12 @@ class ProdutosController extends Controller
     public function mov_out(Request $request){
         $dest_produtos = Dest_Produto::where('nome', '!=', 'VENCIDO')->get();
 
+        $motivacoes_saida = Motivacao_Saida::all();
+
         $register_movInfos = array_merge(get_infos_view($request), [
             'modal' => ['#viewModal', '#movOutModal'],
             'dest_produtos' => $dest_produtos,
+            'motivacoes_saida' => $motivacoes_saida,
             'qtd_estoque_lote' => $request->qtd_estoque_lote,
             'id_lote' => $request->id_lote
         ]);
@@ -600,12 +693,22 @@ class ProdutosController extends Controller
         try{
             DB::beginTransaction();
 
+            $destino = Dest_Produto::findOrFail($request->destino);
+
+            $ehSaida = mb_strtolower(
+                trim($destino->nome),
+                'UTF-8'
+            ) === 'saída';
+
             $mov = new Produto_Mov_Out;
     
             $mov->id_produtos_mov_in = $request->id_lote;
             $mov->id_destino = $request->destino;
             $mov->qtd_itens_movidos = $request->qtd_itens_movidos;
             $mov->data_mov_out = $request->data_mov_out;
+            $mov->motivo_saida = $ehSaida
+                ? $request->motivo_saida
+                : null;
 
             $mov->save();
 

@@ -17,6 +17,16 @@ class Produto_Mov_Out extends Model
         'id_produtos_mov_in',
         'id_destino',
         'qtd_itens_movidos',
-        'data_mov_out'
+        'data_mov_out',
+        'motivo_saida',
     ];
+
+    public function motivacaoSaida()
+    {
+        return $this->belongsTo(
+            Motivacao_Saida::class,
+            'motivo_saida',
+            'id'
+        );
+    }
 }
