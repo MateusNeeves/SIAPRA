@@ -224,7 +224,8 @@
                 @else
                     @foreach ($lotesV as $lote)
                         @php 
-                            if ($lote['quarentena'] == "NAO")
+                            if ($lote['quarentena'] == "NAO"
+                                && \Carbon\Carbon::createFromFormat('!Y-m-d', $lote['data_validade'])->greaterThanOrEqualTo(\Carbon\Carbon::today()))
                                 $total += $lote['qtd_itens_estoque']; 
                         @endphp
                 
