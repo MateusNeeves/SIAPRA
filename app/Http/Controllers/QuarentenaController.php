@@ -17,9 +17,9 @@ class QuarentenaController extends Controller
             FROM PRODUTOS_MOV_IN L 
             INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) 
             INNER JOIN PRODUTOS P ON (L.ID_PRODUTO = P.ID) 
-            WHERE L.QUARENTENA = ? 
+            WHERE ' . quarentenaSql() . ' = ?
             ORDER BY L.ID_PRODUTO ASC'
-        , ['Sim']);
+        , ['SIM']);
         
         $lotes = json_decode(json_encode($lotes), true);
         return view('quarentena/visualizar', ['lotes' => $lotes]);

@@ -1,5 +1,16 @@
 <?php
 
+function normalizarQuarentena($valor) {
+    return is_string($valor)
+        ? strtoupper(\Illuminate\Support\Str::ascii(trim($valor)))
+        : $valor;
+}
+
+function quarentenaSql() {
+    // Normaliza os valores legados sem depender da collation do banco.
+    return "UPPER(REPLACE(REPLACE(TRIM(L.QUARENTENA), 'ã', 'a'), 'Ã', 'A'))";
+}
+
 function formatCpf($cpf) {
     return preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "$1.$2.$3-$4", $cpf);
 }
