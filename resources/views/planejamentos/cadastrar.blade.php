@@ -25,6 +25,14 @@
 
                                 const datePicker = new Pikaday({
                                     field: field,
+                                    format: 'DD/MM/YYYY',
+                                    formatStrict: true,
+                                    parse: function(dateString) {
+                                        return moment(dateString, 'DD/MM/YYYY', true).toDate();
+                                    },
+                                    toString: function(date) {
+                                        return moment(date).format('DD/MM/YYYY');
+                                    },
                                     onSelect: function (date) {
                                         field.value = moment(date).format('DD/MM/YYYY');
                                         button.disabled = false; // Habilita o botão quando uma data é selecionada
@@ -40,7 +48,7 @@
 
                                 // Se já houver uma data, carrega no picker e habilita o botão
                                 if (field.value.trim() !== '') {
-                                    datePicker.setDate(moment(field.value, 'DD/MM/YYYY').toDate());
+                                    datePicker.setDate(moment(field.value, 'DD/MM/YYYY', true).toDate());
                                     button.disabled = false;
                                 } else {
                                     button.disabled = true;

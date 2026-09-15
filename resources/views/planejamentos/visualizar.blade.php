@@ -30,6 +30,14 @@
 
                                 const datePicker = new Pikaday({
                                     field: field,
+                                    format: 'DD/MM/YYYY',
+                                    formatStrict: true,
+                                    parse: function(dateString) {
+                                        return moment(dateString, 'DD/MM/YYYY', true).toDate();
+                                    },
+                                    toString: function(date) {
+                                        return moment(date).format('DD/MM/YYYY');
+                                    },
                                     onSelect: function(date) {
                                         field.value = moment(date).format('DD/MM/YYYY');
                                     },
@@ -46,7 +54,7 @@
                                     }
                                 });
                                 if (field.value) {
-                                    datePicker.setDate(moment(field.value, 'DD/MM/YYYY').toDate());
+                                    datePicker.setDate(moment(field.value, 'DD/MM/YYYY', true).toDate());
                                 };
                             });
                             

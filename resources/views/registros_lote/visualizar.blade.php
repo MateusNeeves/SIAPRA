@@ -47,7 +47,7 @@
                                     // Filtra os lotes pela data selecionada
                                     const lotesFiltrados = lotes.filter(lote => lote.data_producao === selectedDate);
 
-                                    // Preenche o select com os IDs dos lotes
+                                    //  Preenche o select com os IDs dos lotes
                                     lotesFiltrados.forEach(lote => {
                                         const option = document.createElement('option');
                                         option.value = lote.lote;
