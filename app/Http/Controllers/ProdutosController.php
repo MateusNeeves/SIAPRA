@@ -75,10 +75,10 @@ class ProdutosController extends Controller
         // VERIFICANDO UNICIDADE
 
         $validator = Validator::make(
-            $request->all(),
+            array_replace($request->all(), array_map('normalizarQuarentena', $request->only('quarentena'))),
             
             ['nome' => 'unique:produtos',
-            'quarentena' => 'in:Sim,Não',],
+            'quarentena' => 'in:SIM,NAO',],
             
             ['nome.unique' => 'Já existe um Produto com esse Nome',
             'quarentena.in' => 'Opção inválida para Quarentena.']
@@ -215,10 +215,10 @@ class ProdutosController extends Controller
     public function update(Request $request){
         // VERIFICANDO UNICIDADE
         $validator = Validator::make(
-            $request->all(),
+            array_replace($request->all(), array_map('normalizarQuarentena', $request->only('quarentena'))),
             
             ['nome' => Rule::unique('produtos')->ignore($request->id_edit),
-            'quarentena' => 'in:Sim,Não',],
+            'quarentena' => 'in:SIM,NAO',],
             
             ['nome.unique' => 'Já existe um Produto com esse Nome',
             'quarentena.in' => 'Opção inválida para Quarentena.']
@@ -647,7 +647,7 @@ class ProdutosController extends Controller
             WHERE L.ID_PRODUTO = ?
             AND L.QTD_ITENS_ESTOQUE > 0
             AND L.DATA_VALIDADE >= ?
-            AND L.QUARENTENA = ?
+            AND ' . quarentenaSql() . ' = ?
             AND L.STATUS_LOTE = ?
             ORDER BY L.DATA_VALIDADE ASC',
             [$request->id_view, $hoje, 'NAO', $statusAprovado->id]

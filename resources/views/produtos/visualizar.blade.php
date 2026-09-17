@@ -81,8 +81,8 @@
         <x-input-label :value="__('Vai para Quarentena? *')" />
         <select id="quarentena" class="block mt-1 w-full border rounded" name="quarentena" required>
             <option value="" hidden></option>
-            <option value="Sim" {{"Sim" == (old('quarentena') ?? $produto->quarentena ?? "") ? "selected" : ""}}> Sim </option>
-            <option value="Não" {{"Não" == (old('quarentena') ?? $produto->quarentena ?? "") ? "selected" : ""}}> Não </option>
+            <option value="Sim" {{normalizarQuarentena(old('quarentena') ?? $produto->quarentena ?? "") === "SIM" ? "selected" : ""}}> Sim </option>
+            <option value="Não" {{normalizarQuarentena(old('quarentena') ?? $produto->quarentena ?? "") === "NAO" ? "selected" : ""}}> Não </option>
         </select>
     </div>
 
@@ -224,11 +224,12 @@
                 @else
                     @foreach ($lotesV as $lote)
                         @php 
-                            if ($lote['quarentena'] == "NAO")
+                            if (normalizarQuarentena($lote['quarentena']) === "NAO"
+                                && \Carbon\Carbon::createFromFormat('!Y-m-d', $lote['data_validade'])->greaterThanOrEqualTo(\Carbon\Carbon::today()))
                                 $total += $lote['qtd_itens_estoque']; 
                         @endphp
                 
-                        <tr class="{{ $lote['quarentena'] == 'Sim' ? 'table-danger' : '' }}">
+                        <tr class="{{ normalizarQuarentena($lote['quarentena']) === 'SIM' ? 'table-danger' : '' }}">
                             <td>{{$lote['id']}}</td>
                             <td>{{$lote['nome']}}</td>
                             <td>{{$lote['lote_fabricante']}}</td>      
