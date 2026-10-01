@@ -46,7 +46,7 @@ function get_infos_view(Request $request){
         $fabricantes[] = $fabricante->nome;
 
 
-    $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE, L.QUARENTENA FROM PRODUTOS_MOV_IN L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) WHERE L.ID_PRODUTO = ? ORDER BY L.ID ASC', [$produto->id]);
+    $lotes = DB::select('SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE, L.QUARENTENA, S.STATUS AS STATUS_LOTE FROM PRODUTOS_MOV_IN L INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID) LEFT JOIN STATUS_PRODUTOS S ON L.STATUS_LOTE = S.ID WHERE L.ID_PRODUTO = ? ORDER BY L.ID ASC', [$produto->id]);
     
     $lotes = json_decode(json_encode($lotes), true);
     
@@ -551,11 +551,8 @@ class ProdutosController extends Controller
 
         $status = Status_Produto::findOrFail($request->status_lote);
 
-        $precisaDescricao = in_array(
-            mb_strtolower(trim($status->status), 'UTF-8'),
-            ['reprovado', 'descartado'],
-            true
-        );
+        $statusNormalizado = normalizarStatusLote($status->status);
+        $precisaDescricao = statusLoteExigeDescricao($statusNormalizado);
 
 
         if ($precisaDescricao) {
@@ -575,7 +572,7 @@ class ProdutosController extends Controller
             $lote->lote_fabricante = $request->lote_fabricante;
             $lote->id_fornecedor = Fornecedor::where('nome', $request->fornecedor)->get()[0]->id;
             $lote->qtd_itens_recebidos = $request->qtd_itens_recebidos;
-            $lote->qtd_itens_estoque = $status->status === 'Aprovado'
+            $lote->qtd_itens_estoque = $statusNormalizado === 'APROVADO'
                 ? $request->qtd_itens_recebidos
                 : 0;
             $lote->preco = $request->preco;
@@ -635,22 +632,18 @@ class ProdutosController extends Controller
     public function mov_out_select(Request $request){
         $hoje = Carbon::today()->toDateString();
 
-        $statusAprovado = Status_Produto::where(
-            'status',
-            'Aprovado'
-        )->firstOrFail();
-
         $lotes = DB::select(
             'SELECT L.ID, F.NOME, L.LOTE_FABRICANTE, L.QTD_ITENS_ESTOQUE, L.DATA_VALIDADE
             FROM PRODUTOS_MOV_IN L
             INNER JOIN FABRICANTES F ON (L.ID_FABRICANTE = F.ID)
+            INNER JOIN STATUS_PRODUTOS S ON L.STATUS_LOTE = S.ID
             WHERE L.ID_PRODUTO = ?
             AND L.QTD_ITENS_ESTOQUE > 0
             AND L.DATA_VALIDADE >= ?
             AND ' . quarentenaSql() . ' = ?
-            AND L.STATUS_LOTE = ?
+            AND ' . statusLoteSql() . ' = ?
             ORDER BY L.DATA_VALIDADE ASC',
-            [$request->id_view, $hoje, 'NAO', $statusAprovado->id]
+            [$request->id_view, $hoje, 'NAO', 'APROVADO']
         );
 
         $lotes = json_decode(json_encode($lotes), true);
@@ -690,8 +683,39 @@ class ProdutosController extends Controller
     }
 
     public function store_mov_out(Request $request){
+        $request->validate([
+            'id_lote' => 'required|integer',
+            'id_view' => 'required|integer',
+            'qtd_itens_movidos' => 'required|integer|min:1',
+        ]);
+
         try{
             DB::beginTransaction();
+
+            // O saldo e a elegibilidade são conferidos após adquirir o bloqueio.
+            $lote = Produto_Mov_In::whereKey($request->id_lote)->lockForUpdate()->first();
+            $erro = null;
+            if (!$lote) {
+                $erro = 'Lote não encontrado.';
+            } elseif ((string) $lote->id_produto !== (string) $request->id_view) {
+                $erro = 'O lote não pertence ao produto informado.';
+            } elseif (normalizarStatusLote($lote->statusProduto?->status) !== 'APROVADO') {
+                $erro = 'Somente lotes aprovados podem ser utilizados para saída.';
+            } elseif (normalizarQuarentena($lote->quarentena) !== 'NAO') {
+                $erro = 'Lotes em quarentena não podem ser utilizados para saída.';
+            } elseif (Validator::make(['validade' => $lote->data_validade],
+                ['validade' => 'required|date_format:Y-m-d'])->fails()
+                || Carbon::createFromFormat('!Y-m-d', $lote->data_validade)->lessThan(Carbon::today())) {
+                $erro = 'O lote está vencido ou possui validade inválida.';
+            }
+            if ($erro !== null) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['id_lote' => $erro]);
+            }
+            if ($lote->qtd_itens_estoque <= 0 || $request->qtd_itens_movidos > $lote->qtd_itens_estoque) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'qtd_itens_movidos' => 'A quantidade solicitada excede o saldo disponível do lote.',
+                ]);
+            }
 
             $destino = Dest_Produto::findOrFail($request->destino);
 
@@ -712,7 +736,7 @@ class ProdutosController extends Controller
 
             $mov->save();
 
-            Produto_Mov_In::findOrFail($request->id_lote)->decrement('qtd_itens_estoque', $request->qtd_itens_movidos);
+            $lote->decrement('qtd_itens_estoque', $request->qtd_itens_movidos);
 
             $produto = DB::select('SELECT P.ID, P.NOME FROM PRODUTOS P WHERE P.ID = (SELECT L.ID_PRODUTO FROM PRODUTOS_MOV_IN L WHERE L.ID = ?)', [$mov->id_produtos_mov_in])[0];
             $produto = json_decode(json_encode($produto), true);
@@ -744,6 +768,10 @@ class ProdutosController extends Controller
             
             DB::commit();
             return redirect()->back()->with($store_movInfos);
+        }
+        catch (\Illuminate\Validation\ValidationException $exception) {
+            DB::rollback();
+            throw $exception;
         }
         catch (\Exception $exception) {
             DB::rollback();
