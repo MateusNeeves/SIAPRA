@@ -224,7 +224,9 @@
                 @else
                     @foreach ($lotesV as $lote)
                         @php 
-                            if (normalizarQuarentena($lote['quarentena']) === "NAO"
+                            if ($lote['qtd_itens_estoque'] > 0
+                                && normalizarQuarentena($lote['quarentena']) === "NAO"
+                                && normalizarStatusLote($lote['status_lote'] ?? null) === 'APROVADO'
                                 && \Carbon\Carbon::createFromFormat('!Y-m-d', $lote['data_validade'])->greaterThanOrEqualTo(\Carbon\Carbon::today()))
                                 $total += $lote['qtd_itens_estoque']; 
                         @endphp
@@ -292,6 +294,7 @@
             @foreach ($status_lotes ?? [] as $status)
                 <option
                     value="{{ $status['id'] }}"
+                    data-exige-descricao="{{ statusLoteExigeDescricao($status['status']) ? '1' : '0' }}"
                     {{ $status['id'] == old('status_lote') ? 'selected' : '' }}
                 >
                     {{ $status['status'] }}
@@ -359,8 +362,7 @@
 
         function atualizarDescricao() {
             const precisaDescricao =
-                statusLote.value === '2' ||
-                statusLote.value === '3';
+                statusLote.options[statusLote.selectedIndex]?.dataset.exigeDescricao === '1';
 
             descricaoContainer.style.display =
                 precisaDescricao ? 'block' : 'none';

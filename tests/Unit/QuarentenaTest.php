@@ -62,6 +62,7 @@ class QuarentenaTest extends TestCase
                     $html = $this->renderTabela([[
                         'id' => 1, 'nome' => 'Fabricante', 'lote_fabricante' => 'Lote A',
                         'qtd_itens_estoque' => 100, 'data_validade' => $validade, 'quarentena' => $valor,
+                        'status_lote' => 'APROVADO',
                     ]]);
                     $total = $normalizado === 'NAO' && $valido ? 100 : 0;
                     $this->assertStringContainsString('Total: '.$total.'</th>', $html);

@@ -26,6 +26,8 @@ class RelatoriosController extends Controller
                         SELECT SUM(L2.QTD_ITENS_ESTOQUE)
                         FROM PRODUTOS_MOV_IN AS L2
                         WHERE ID_PRODUTO = P.ID 
+                        AND EXISTS (SELECT 1 FROM STATUS_PRODUTOS S WHERE S.ID = L2.STATUS_LOTE
+                            AND " . statusLoteSql() . " = 'APROVADO')
                         AND L2.DATA_VALIDADE > NOW() + INTERVAL '$request->meses MONTH'
                     ) > P.QTD_MINIMA THEN 'False'
                     ELSE 'True'
