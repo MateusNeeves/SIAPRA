@@ -161,26 +161,28 @@ class RelatoriosController extends Controller
                     'inventario' => []
                 ];
             }
-            $dataInicio = "{$request->ano}-01-01";
             $dataFim = "{$request->ano}-12-31";
 
             if ($request->mes && $request->mes != 'todos') {
                 $mes = str_pad($request->mes, 2, '0', STR_PAD_LEFT);
 
-                $dataInicio = "{$request->ano}-{$mes}-01";
-                $dataFim = date("Y-m-t", strtotime($dataInicio));
+                $dataFim = date("Y-m-t", strtotime("{$request->ano}-{$mes}-01"));
             }
 
+            // Saldo atual dos lotes recebidos até o limite, sem reconstruir estoque histórico.
             $inventario = DB::select(
                 "SELECT P.ID, P.NOME, P.ID_TIPO,
-                        COALESCE(SUM(L.QTD_ITENS_RECEBIDOS), 0) AS QTD,
-                        COALESCE(SUM(L.QTD_ITENS_RECEBIDOS * L.PRECO), 0) AS VALOR_TOTAL
+                        COALESCE(SUM(L.QTD_ITENS_ESTOQUE), 0) AS QTD,
+                        COALESCE(SUM(1.0 * L.PRECO * L.QTD_ITENS_ESTOQUE / NULLIF(L.QTD_ITENS_RECEBIDOS, 0)), 0) AS VALOR_TOTAL
                 FROM PRODUTOS P
                 INNER JOIN PRODUTOS_MOV_IN L 
                     ON L.ID_PRODUTO = P.ID 
-                WHERE L.DATA_ENTREGA BETWEEN ? AND ?
+                INNER JOIN STATUS_PRODUTOS S ON S.ID = L.STATUS_LOTE
+                WHERE L.DATA_ENTREGA <= ?
+                    AND L.QTD_ITENS_ESTOQUE > 0
+                    AND " . statusLoteSql() . " = 'APROVADO'
                 GROUP BY P.ID, P.NOME, P.ID_TIPO", 
-                [$dataInicio, $dataFim]
+                [$dataFim]
             );
 
             foreach ($inventario as $produto) {
