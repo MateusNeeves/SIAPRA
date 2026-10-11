@@ -10,6 +10,7 @@ use Mpdf\Mpdf;
 use DateInterval;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class RelatoriosController extends Controller
 {
@@ -39,7 +40,9 @@ class RelatoriosController extends Controller
                 ORDER BY L.DATA_VALIDADE ASC"
             );
 
-            $mpdf = new Mpdf();
+            $tempDir = storage_path('framework/mpdf');
+            File::ensureDirectoryExists($tempDir);
+            $mpdf = new Mpdf(['tempDir' => $tempDir]);
 
             // Comece a construir o HTML para o relatório
             $html = '
@@ -191,7 +194,9 @@ class RelatoriosController extends Controller
                 }
             }
 
-            $mpdf = new Mpdf();
+            $tempDir = storage_path('framework/mpdf');
+            File::ensureDirectoryExists($tempDir);
+            $mpdf = new Mpdf(['tempDir' => $tempDir]);
 
             // Comece a construir o HTML para o relatório
             $html = '
