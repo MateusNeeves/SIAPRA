@@ -534,6 +534,9 @@ class ProdutosController extends Controller
         $fabricantes = json_decode(json_encode($fabricantes), true);
         $fornecedores = json_decode(json_encode($fornecedores), true);
         $status_lotes = json_decode(json_encode($status_lotes), true);
+        $status_lotes = array_values(array_filter($status_lotes,
+            fn ($status) => normalizarStatusLote($status['status']) !== 'QUARENTENA'
+        ));
 
         $make_mov_inInfos = array_merge(get_infos_view($request), [
             'modal' => ['#viewModal', '#movInModal'],
@@ -556,6 +559,11 @@ class ProdutosController extends Controller
         $status = Status_Produto::findOrFail($request->status_lote);
 
         $statusNormalizado = normalizarStatusLote($status->status);
+        if ($statusNormalizado === 'QUARENTENA') {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'status_lote' => 'A quarentena da entrada é definida pelo cadastro do produto. Selecione outro status.',
+            ]);
+        }
         $precisaDescricao = statusLoteExigeDescricao($statusNormalizado);
 
 
