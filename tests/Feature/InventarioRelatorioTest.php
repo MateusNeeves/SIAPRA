@@ -74,11 +74,18 @@ class InventarioRelatorioTest extends TestCase
         $pdf->shouldReceive('WriteHTML')->once()->andReturnUsing(function (string $content) use (&$html) {
             $html = $content;
         });
-        $pdf->shouldReceive('Output')->once()->with('relatorio_inventario_almoxarifado_dipra_'.$ano.'_.pdf', 'D');
+        $pdf->shouldReceive('Output')->once()->with('relatorio_inventario_almoxarifado_sepra_'.$ano.'_.pdf', 'D');
         (new RelatoriosController())->generate(Request::create('/', 'POST', [
             'tipo_relatorio' => 'inventario', 'ano' => $ano, 'mes' => $mes,
         ]));
         return preg_replace('/>\s+</', '><', $html);
+    }
+
+    public function test_titulo_do_inventario_usa_sepra(): void
+    {
+        $html = $this->relatorio();
+        $this->assertStringContainsString('RELATÓRIO DO INVENTÁRIO DO ALMOXARIFADO DA SEPRA', $html);
+        $this->assertStringNotContainsString('DIPRA', strtoupper($html));
     }
 
     private function assertProduto(string $html, int $qtd, string $valor): void

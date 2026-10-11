@@ -32,7 +32,7 @@ class QuarentenaController extends Controller
             $lote = Produto_Mov_In::findOrFail($request->id_lote);
             
             $lote->update([
-                'quarentena' => 'Não'
+                'quarentena' => 'NAO'
             ]);
 
             $log = new Log();

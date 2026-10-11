@@ -59,6 +59,10 @@ class ProdutosController extends Controller
         $produtos = DB::select('SELECT P.ID, P.NOME, P.DESCRICAO, T.NOME AS TIPO, P.QTD_ACEITAVEL, P.QTD_MINIMA, P.QUARENTENA, U.NOME AS UNIDADE_MEDIDA FROM PRODUTOS P INNER JOIN TIPOS_PRODUTOS T ON (P.ID_TIPO = T.ID) INNER JOIN UNIDADE_MEDIDA U ON (U.ID = P.ID_UNIDADE_MEDIDA)');
         
         $produtos = json_decode(json_encode($produtos), true);
+        foreach ($produtos as &$produto) {
+            $produto['quarentena'] = normalizarQuarentena($produto['quarentena']);
+        }
+        unset($produto);
         return view('produtos/visualizar', ['produtos' => $produtos]);
     }
 
@@ -105,7 +109,7 @@ class ProdutosController extends Controller
             $produto->id_tipo = Tipo_Produto::where('nome', $request->tipo)->first()->id;
             $produto->qtd_aceitavel = $request->qtd_aceitavel;
             $produto->qtd_minima = $request->qtd_minima;
-            $produto->quarentena = $request->quarentena;
+            $produto->quarentena = normalizarQuarentena($request->quarentena);
             $produto->id_unidade_medida = Unidade_Medida::where('nome', $request->unidade_medida)->first()->id;
     
             $produto->save();
@@ -249,7 +253,7 @@ class ProdutosController extends Controller
                     'id_tipo' => Tipo_Produto::where('nome', $request->tipo)->get()[0]->id,
                     'qtd_aceitavel' => $request->qtd_aceitavel,
                     'qtd_minima' => $request->qtd_minima,
-                    'quarentena' => $request->quarentena,
+                    'quarentena' => normalizarQuarentena($request->quarentena),
                     'id_unidade_medida' => Unidade_Medida::where('nome', $request->unidade_medida)->get()[0]->id
                 ]);
 
@@ -578,7 +582,7 @@ class ProdutosController extends Controller
             $lote->preco = $request->preco;
             $lote->data_entrega = $request->data_entrega;
             $lote->data_validade = $request->data_validade;
-            $lote->quarentena = Produto::where('id', $lote->id_produto)->get()[0]->quarentena;
+            $lote->quarentena = normalizarQuarentena(Produto::where('id', $lote->id_produto)->get()[0]->quarentena);
             $lote->status_lote = $request->status_lote;
             $lote->descricao_status_lote = $precisaDescricao
                 ? $request->descricao_status_lote

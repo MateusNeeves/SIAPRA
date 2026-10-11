@@ -64,9 +64,9 @@ class QuarentenaTest extends TestCase
                         'qtd_itens_estoque' => 100, 'data_validade' => $validade, 'quarentena' => $valor,
                         'status_lote' => 'APROVADO',
                     ]]);
-                    $total = $normalizado === 'NAO' && $valido ? 100 : 0;
+                    $total = $valido ? 100 : 0;
                     $this->assertStringContainsString('Total: '.$total.'</th>', $html);
-                    foreach (['Lote A', '100', $validade, $valor] as $celula) {
+                    foreach (['Lote A', '100', $validade, $normalizado] as $celula) {
                         $this->assertStringContainsString('<td>'.$celula.'</td>', $html);
                     }
                     $classe = $normalizado === 'SIM' ? 'table-danger' : '';

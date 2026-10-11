@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\ProdutosController;
+use App\Http\Controllers\QuarentenaController;
 use Carbon\Carbon;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\Compilers\BladeCompiler;
@@ -150,9 +152,10 @@ class TotalEstoqueTest extends TestCase
             'zero' => [['qtd_itens_estoque' => 0], 0, 0],
             'negativo' => [['qtd_itens_estoque' => -5], 0, 0],
             'saldo numerico string' => [['qtd_itens_estoque' => '10'], 10, 1],
-            'quarentena' => [['quarentena' => 'Sim'], 0, 0],
-            'quarentena nula' => [['quarentena' => null], 0, 0],
-            'quarentena vazia' => [['quarentena' => ''], 0, 0],
+            'quarentena' => [['quarentena' => 'SIM'], 10, 0],
+            'quarentena legada' => [['quarentena' => ' Sim '], 10, 0],
+            'quarentena nula' => [['quarentena' => null], 10, 0],
+            'quarentena vazia' => [['quarentena' => ''], 10, 0],
             'status nulo' => [['status_lote' => null], 0, 0],
             'status orfao' => [['status_lote' => 999], 0, 0],
         ];
@@ -188,8 +191,94 @@ class TotalEstoqueTest extends TestCase
             ['data_validade' => '2026-09-30'], ['qtd_itens_estoque' => 0]] as $data) {
             $this->lote($data);
         }
-        $this->assertTotal(25, 7);
+        $this->assertTotal(35, 7);
         $this->assertCount(2, $this->selected());
+    }
+
+    public static function quarentenas(): array
+    {
+        return [
+            ['Sim', 'SIM'], ['sim', 'SIM'], [' SIM ', 'SIM'],
+            ['Não', 'NAO'], ['Nao', 'NAO'], ['não', 'NAO'], [' Não ', 'NAO'],
+        ];
+    }
+
+    #[DataProvider('quarentenas')]
+    public function test_cadastro_e_edicao_persistem_quarentena_canonica(string $valor, string $canonico): void
+    {
+        DB::table('acoes')->insert([
+            ['id' => 3, 'descricao' => 'Adicionar Produto'],
+            ['id' => 4, 'descricao' => 'Editar Produto'],
+        ]);
+        $controller = new ProdutosController();
+        $data = ['nome' => 'Novo produto', 'tipo' => 'Teste', 'unidade_medida' => 'Teste',
+            'qtd_aceitavel' => 20, 'qtd_minima' => 5, 'quarentena' => $valor];
+        $controller->store($this->request($data));
+        $novo = DB::table('produtos')->where('nome', 'Novo produto')->first();
+        $this->assertNotNull($novo, session('alert-danger', 'Cadastro não persistido'));
+        $this->assertSame($canonico, $novo->quarentena);
+
+        // Edit a different product so that the assertion cannot pass on the stored creation value.
+        $controller->update($this->request(array_replace($data, ['id_edit' => 1, 'nome' => 'Produto editado'])));
+        $editado = DB::table('produtos')->where('id', 1)->first();
+        $this->assertSame('Produto editado', $editado->nome, session('alert-danger', 'Edição não persistida'));
+        $this->assertSame($canonico, $editado->quarentena);
+        $this->assertSame(2, DB::table('logs')->count());
+    }
+
+    #[DataProvider('quarentenas')]
+    public function test_entrada_normaliza_produto_legado_sem_modificar_original(string $valor, string $canonico): void
+    {
+        DB::table('produtos')->where('id', 1)->update(['quarentena' => $valor]);
+        (new ProdutosController())->store_mov_in($this->request([
+            'status_lote' => 41, 'fabricante' => 'Teste', 'fornecedor' => 'Teste',
+            'lote_fabricante' => 'Novo lote', 'qtd_itens_recebidos' => 10, 'preco' => 1,
+            'data_entrega' => '2026-10-01', 'data_validade' => '2026-10-02',
+        ]));
+        $this->assertSame($canonico, DB::table('produtos_mov_in')->value('quarentena'), session('alert-danger', 'Entrada não persistida'));
+        $this->assertSame($valor, DB::table('produtos')->value('quarentena'));
+        $this->assertTotal(10);
+        $this->assertCount($canonico === 'NAO' ? 1 : 0, $this->selected());
+    }
+
+    public function test_retirada_da_quarentena_persiste_nao(): void
+    {
+        DB::table('acoes')->insert(['id' => 3, 'descricao' => 'Retirada de Lote da Quarentena']);
+        $id = $this->lote(['quarentena' => ' Sim ']);
+        $this->assertTotal(10);
+        $this->assertCount(0, $this->selected());
+        (new QuarentenaController())->remove($this->request(['id_lote' => $id]));
+        $this->assertSame('NAO', DB::table('produtos_mov_in')->where('id', $id)->value('quarentena'));
+        $this->assertSame(1, DB::table('logs')->count());
+        $this->assertTotal(10);
+        $this->assertCount(1, $this->selected());
+    }
+
+    #[DataProvider('quarentenas')]
+    public function test_exibicao_de_produto_e_lote_legados(string $valor, string $canonico): void
+    {
+        DB::table('produtos')->where('id', 1)->update(['quarentena' => $valor]);
+        $this->lote(['quarentena' => $valor]);
+        $controller = new ProdutosController();
+        $controller->view($this->request());
+        $this->assertStringContainsString('<td>'.$canonico.'</td>', $this->renderSession());
+
+        $source = file_get_contents(resource_path('views/produtos/visualizar.blade.php'));
+        $start = strpos($source, '<!-- Quarentena? -->');
+        $end = strpos($source, '<!-- Unidade de Medida -->', $start);
+        $html = Blade::render(substr($source, $start, $end - $start), ['produtoV' => session('produtoV')]);
+        $this->assertMatchesRegularExpression('/>\s*'.$canonico.'\s*<\/label>/', $html);
+
+        $produtos = $controller->index()->getData()['produtos'];
+        $source = file_get_contents(resource_path('views/produtos/layout.blade.php'));
+        $start = strpos($source, '<tbody>');
+        $end = strpos($source, '</tbody>', $start) + strlen('</tbody>');
+        $html = Blade::render(substr($source, $start, $end - $start), [
+            'infos' => $produtos, 'indexes' => ['quarentena'],
+        ]);
+        $this->assertStringContainsString('class="quarentena text-start">'.$canonico.'</td>', $html);
+        $this->assertSame($valor, DB::table('produtos')->value('quarentena'));
+        $this->assertSame($valor, DB::table('produtos_mov_in')->value('quarentena'));
     }
 
     public function test_entrada_e_saida_reais_usam_saldo_atual(): void
@@ -262,7 +351,8 @@ class TotalEstoqueTest extends TestCase
             'array' => [[], [1], [], 'qtd_itens_movidos'],
             'vencido' => [['data_validade' => '2026-09-30'], 1, [], 'id_lote'],
             'sem validade' => [['data_validade' => null], 1, [], 'id_lote'],
-            'quarentena' => [['quarentena' => ' Sim '], 1, [], 'id_lote'],
+            'quarentena' => [['quarentena' => 'SIM'], 1, [], 'id_lote'],
+            'quarentena legada' => [['quarentena' => ' Sim '], 1, [], 'id_lote'],
             'quarentena desconhecida' => [['quarentena' => null], 1, [], 'id_lote'],
             'reprovado' => [['status_lote' => 90], 1, [], 'id_lote'],
             'descartado' => [['status_lote' => 91], 1, [], 'id_lote'],

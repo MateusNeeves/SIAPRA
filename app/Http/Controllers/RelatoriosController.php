@@ -85,7 +85,7 @@ class RelatoriosController extends Controller
 
                 <p class="data-emissao">Data de Emissão: ' . date('d/m/Y') . '</p>
                 <br>
-                <h2>RELATÓRIO DE ITENS A VENCER NO ALMOXARIFADO DA DIPRA NOS PRÓXIMOS ' . htmlspecialchars($request->meses) . ' MESES</h2>
+                <h2>RELATÓRIO DE ITENS A VENCER NO ALMOXARIFADO DA SEPRA NOS PRÓXIMOS ' . htmlspecialchars($request->meses) . ' MESES</h2>
 
                 <table>
                     <thead>
@@ -243,7 +243,7 @@ class RelatoriosController extends Controller
                 </style>
                 <p class="data-emissao">Data de Emissão: ' . date('d/m/Y') . '</p>
                 <br>
-                <h2>RELATÓRIO DO INVENTÁRIO DO ALMOXARIFADO DA DIPRA DE ' 
+                <h2>RELATÓRIO DO INVENTÁRIO DO ALMOXARIFADO DA SEPRA DE '
                 . htmlspecialchars($request->ano) . $mesTexto . 
                 '</h2>
             ';
@@ -295,7 +295,7 @@ class RelatoriosController extends Controller
             // Escreva o conteúdo HTML no PDF
             $mpdf->WriteHTML($html);
 
-            $nome_arquivo = 'relatorio_inventario_almoxarifado_dipra_' . $request->ano . '_.pdf';
+            $nome_arquivo = 'relatorio_inventario_almoxarifado_sepra_' . $request->ano . '_.pdf';
 
             $mpdf->Output($nome_arquivo, 'D');
         }

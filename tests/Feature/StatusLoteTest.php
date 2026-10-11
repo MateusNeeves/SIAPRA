@@ -129,13 +129,14 @@ class StatusLoteTest extends TestCase
                         'lote_fabricante' => 'Legado', 'qtd_itens_estoque' => 10, 'status_lote' => $id,
                         'data_validade' => $validade, 'quarentena' => $quarentena]);
                 }
-                $valido = $canonico === 'APROVADO' && normalizarQuarentena($quarentena) === 'NAO' && $validade >= '2026-09-30';
+                $valido = $canonico === 'APROVADO' && $validade >= '2026-09-30';
+                $disponivel = $valido && normalizarQuarentena($quarentena) === 'NAO';
                 $infos = \App\Http\Controllers\get_infos_view($this->request());
                 $html = $this->renderFragment('<!-- Lista de QTD em Estoque -->', '</table>', ['lotesV' => $infos['lotesV']]);
                 $this->assertStringContainsString('Total: '.($valido ? 20 : 0).'</th>', $html);
                 session()->forget('lotesP');
                 (new ProdutosController())->mov_out_select($this->request());
-                $this->assertCount($valido ? 2 : 0, session('lotesP', []));
+                $this->assertCount($disponivel ? 2 : 0, session('lotesP', []));
             }
         }
     }
