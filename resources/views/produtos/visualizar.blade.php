@@ -189,7 +189,7 @@
     <!-- Quarentena? -->
     <div class="mt-4">
         <x-input-label class="h6" :value="__('Quarentena?')" />
-        <x-input-label class="mt-2 text-secondary" :value="__($produtoV->quarentena ?? '')" />
+        <x-input-label class="mt-2 text-secondary" :value="normalizarQuarentena($produtoV->quarentena ?? '')" />
     </div>
     
     <!-- Unidade de Medida -->
@@ -225,7 +225,6 @@
                     @foreach ($lotesV as $lote)
                         @php 
                             if ($lote['qtd_itens_estoque'] > 0
-                                && normalizarQuarentena($lote['quarentena']) === "NAO"
                                 && normalizarStatusLote($lote['status_lote'] ?? null) === 'APROVADO'
                                 && \Carbon\Carbon::createFromFormat('!Y-m-d', $lote['data_validade'])->greaterThanOrEqualTo(\Carbon\Carbon::today()))
                                 $total += $lote['qtd_itens_estoque']; 
@@ -237,7 +236,7 @@
                             <td>{{$lote['lote_fabricante']}}</td>      
                             <td>{{$lote['qtd_itens_estoque']}}</td>      
                             <td>{{$lote['data_validade']}}</td>      
-                            <td>{{$lote['quarentena']}}</td>      
+                            <td>{{normalizarQuarentena($lote['quarentena'])}}</td>
                         </tr>
                     @endforeach
                 @endif

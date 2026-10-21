@@ -10,6 +10,7 @@ use Mpdf\Mpdf;
 use DateInterval;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class RelatoriosController extends Controller
 {
@@ -39,7 +40,9 @@ class RelatoriosController extends Controller
                 ORDER BY L.DATA_VALIDADE ASC"
             );
 
-            $mpdf = new Mpdf();
+            $tempDir = storage_path('framework/mpdf');
+            File::ensureDirectoryExists($tempDir);
+            $mpdf = new Mpdf(['tempDir' => $tempDir]);
 
             // Comece a construir o HTML para o relatório
             $html = '
@@ -82,7 +85,7 @@ class RelatoriosController extends Controller
 
                 <p class="data-emissao">Data de Emissão: ' . date('d/m/Y') . '</p>
                 <br>
-                <h2>RELATÓRIO DE ITENS A VENCER NO ALMOXARIFADO DA DIPRA NOS PRÓXIMOS ' . htmlspecialchars($request->meses) . ' MESES</h2>
+                <h2>RELATÓRIO DE ITENS A VENCER NO ALMOXARIFADO DA SEPRA NOS PRÓXIMOS ' . htmlspecialchars($request->meses) . ' MESES</h2>
 
                 <table>
                     <thead>
@@ -158,26 +161,28 @@ class RelatoriosController extends Controller
                     'inventario' => []
                 ];
             }
-            $dataInicio = "{$request->ano}-01-01";
             $dataFim = "{$request->ano}-12-31";
 
             if ($request->mes && $request->mes != 'todos') {
                 $mes = str_pad($request->mes, 2, '0', STR_PAD_LEFT);
 
-                $dataInicio = "{$request->ano}-{$mes}-01";
-                $dataFim = date("Y-m-t", strtotime($dataInicio));
+                $dataFim = date("Y-m-t", strtotime("{$request->ano}-{$mes}-01"));
             }
 
+            // Saldo atual dos lotes recebidos até o limite, sem reconstruir estoque histórico.
             $inventario = DB::select(
                 "SELECT P.ID, P.NOME, P.ID_TIPO,
-                        COALESCE(SUM(L.QTD_ITENS_RECEBIDOS), 0) AS QTD,
-                        COALESCE(SUM(L.QTD_ITENS_RECEBIDOS * L.PRECO), 0) AS VALOR_TOTAL
+                        COALESCE(SUM(L.QTD_ITENS_ESTOQUE), 0) AS QTD,
+                        COALESCE(SUM(1.0 * L.PRECO * L.QTD_ITENS_ESTOQUE / NULLIF(L.QTD_ITENS_RECEBIDOS, 0)), 0) AS VALOR_TOTAL
                 FROM PRODUTOS P
                 INNER JOIN PRODUTOS_MOV_IN L 
                     ON L.ID_PRODUTO = P.ID 
-                WHERE L.DATA_ENTREGA BETWEEN ? AND ?
+                INNER JOIN STATUS_PRODUTOS S ON S.ID = L.STATUS_LOTE
+                WHERE L.DATA_ENTREGA <= ?
+                    AND L.QTD_ITENS_ESTOQUE > 0
+                    AND " . statusLoteSql() . " = 'APROVADO'
                 GROUP BY P.ID, P.NOME, P.ID_TIPO", 
-                [$dataInicio, $dataFim]
+                [$dataFim]
             );
 
             foreach ($inventario as $produto) {
@@ -191,7 +196,9 @@ class RelatoriosController extends Controller
                 }
             }
 
-            $mpdf = new Mpdf();
+            $tempDir = storage_path('framework/mpdf');
+            File::ensureDirectoryExists($tempDir);
+            $mpdf = new Mpdf(['tempDir' => $tempDir]);
 
             // Comece a construir o HTML para o relatório
             $html = '
@@ -236,7 +243,7 @@ class RelatoriosController extends Controller
                 </style>
                 <p class="data-emissao">Data de Emissão: ' . date('d/m/Y') . '</p>
                 <br>
-                <h2>RELATÓRIO DO INVENTÁRIO DO ALMOXARIFADO DA DIPRA DE ' 
+                <h2>RELATÓRIO DO INVENTÁRIO DO ALMOXARIFADO DA SEPRA DE '
                 . htmlspecialchars($request->ano) . $mesTexto . 
                 '</h2>
             ';
@@ -288,7 +295,7 @@ class RelatoriosController extends Controller
             // Escreva o conteúdo HTML no PDF
             $mpdf->WriteHTML($html);
 
-            $nome_arquivo = 'relatorio_inventario_almoxarifado_dipra_' . $request->ano . '_.pdf';
+            $nome_arquivo = 'relatorio_inventario_almoxarifado_sepra_' . $request->ano . '_.pdf';
 
             $mpdf->Output($nome_arquivo, 'D');
         }
