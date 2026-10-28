@@ -67,13 +67,13 @@
     <!-- Quantidade Aceitável -->
     <div class="mt-4">
         <x-input-label :value="__('Quantidade Aceitável *')" />
-        <x-text-input id="qtd_aceitavel" class="block mt-1 w-full" type="number" step="0.001" name="qtd_aceitavel" :value="old('qtd_aceitavel', $produto->qtd_aceitavel ?? '')" required/>
+        <x-text-input id="qtd_aceitavel" class="block mt-1 w-full" type="number" step="0.001" name="qtd_aceitavel" :value="old('qtd_aceitavel', normalizarQuantidade($produto->qtd_aceitavel ?? ''))" required/>
     </div>
 
     <!-- Quantidade Mínima -->
     <div class="mt-4">
         <x-input-label :value="__('Quantidade Mínima *')" />
-        <x-text-input id="qtd_minima" class="block mt-1 w-full" type="number" step="0.001" name="qtd_minima" :value="old('qtd_minima', $produto->qtd_minima ?? '')" required/>
+        <x-text-input id="qtd_minima" class="block mt-1 w-full" type="number" step="0.001" name="qtd_minima" :value="old('qtd_minima', normalizarQuantidade($produto->qtd_minima ?? ''))" required/>
     </div>
 
     <!-- Quarentena -->
@@ -177,13 +177,13 @@
     <!-- Quantidade Aceitável -->
     <div class="mt-4">
         <x-input-label class="h6" :value="__('Quantidade Aceitável')" />
-        <x-input-label class="mt-2 text-secondary" :value="__($produtoV->qtd_aceitavel ?? '')" />
+        <x-input-label class="mt-2 text-secondary" :value="formatarQuantidade($produtoV->qtd_aceitavel ?? '')" />
     </div>
 
     <!-- Quantidade Mínima -->
     <div class="mt-4">
         <x-input-label class="h6" :value="__('Quantidade Mínima')" />
-        <x-input-label class="mt-2 text-secondary" :value="__($produtoV->qtd_minima ?? '')" />
+        <x-input-label class="mt-2 text-secondary" :value="formatarQuantidade($produtoV->qtd_minima ?? '')" />
     </div>
 
     <!-- Quarentena? -->
