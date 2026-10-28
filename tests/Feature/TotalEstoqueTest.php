@@ -63,7 +63,8 @@ class TotalEstoqueTest extends TestCase
         foreach (['fabricantes', 'fornecedores', 'tipos_produtos', 'unidade_medida'] as $table) {
             DB::table($table)->insert(['id' => 1, 'nome' => 'Teste']);
         }
-        DB::table('produtos')->insert(['id' => 1, 'nome' => 'Produto', 'id_tipo' => 1,
+        // Use the generated ID (1 in this empty TEMP table), advancing PostgreSQL SERIAL.
+        DB::table('produtos')->insert(['nome' => 'Produto', 'id_tipo' => 1,
             'id_unidade_medida' => 1, 'quarentena' => 'NAO']);
         DB::table('status_produtos')->insert([
             ['id' => 41, 'status' => 'Aprovado'], ['id' => 77, 'status' => ' Áprovádo '],

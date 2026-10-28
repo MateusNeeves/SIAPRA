@@ -10,18 +10,21 @@
                     <div class="mb-4">
                         <label class="block text-gray-700">Escolha o tipo de relatório:</label>
                         <select name="tipo_relatorio" id="tipo_relatorio" class="w-full mt-2 p-2 border rounded">
-                            <option value="" selected disabled>Selecione um relatório...</option>
-                            <option value="itens_a_vencer">Itens a vencer</option>
-                            <option value="inventario">Inventário do almoxarifado</option>
+                            <option value="" @selected(!old('tipo_relatorio')) disabled>Selecione um relatório...</option>
+                            <option value="itens_a_vencer" @selected(old('tipo_relatorio') === 'itens_a_vencer')>Itens a vencer</option>
+                            <option value="inventario" @selected(old('tipo_relatorio') === 'inventario')>Inventário do almoxarifado</option>
                         </select>
                         
                     </div>
                     
-                    <div id="meses_container" class="mb-4 hidden">
+                    <div id="meses_container" class="mb-4 {{ old('tipo_relatorio') === 'itens_a_vencer' ? '' : 'hidden' }}">
                         <label class="block text-gray-700">Itens a vencer nos próximos 
-                            <input type="number" min="1" max="12" name="meses" id="meses" class="p-2 border rounded" value="1" style="width: 50px">
+                            <input type="number" min="1" max="12" name="meses" id="meses" class="p-2 border rounded @error('meses') is-invalid @enderror" value="{{ old('meses', 1) }}" @error('meses') aria-invalid="true" aria-describedby="meses-erro" @enderror style="width: 50px">
                             meses
                         </label>
+                        @error('meses')
+                            <p id="meses-erro" class="text-danger small mt-1" role="alert">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div id="ano_container" class="mb-4 hidden">
@@ -87,5 +90,6 @@
                 document.getElementById('submitBtn').setAttribute('disabled', 'disabled');
             }
         });
+        document.getElementById('tipo_relatorio').dispatchEvent(new Event('change'));
     </script>
 </x-app-layout>

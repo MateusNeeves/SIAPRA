@@ -1,5 +1,25 @@
 <?php
 
+function normalizarQuantidade($valor) {
+    if ($valor === null || $valor === '') {
+        return '';
+    }
+    // Trabalhar com texto evita arredondamento e perda de precisão decimal.
+    if (!is_scalar($valor) || !preg_match('/^[+-]?\d+(?:\.\d+)?$/D', (string) $valor)) {
+        return $valor;
+    }
+    $valor = (string) $valor;
+    return str_contains($valor, '.') ? rtrim(rtrim($valor, '0'), '.') : $valor;
+}
+
+function formatarQuantidade($valor) {
+    $normalizado = normalizarQuantidade($valor);
+    if (!is_string($normalizado) || !preg_match('/^[+-]?\d+(?:\.\d+)?$/D', $normalizado)) {
+        return $normalizado;
+    }
+    return str_replace('.', ',', $normalizado);
+}
+
 function normalizarQuarentena($valor) {
     return normalizarTextoEnum($valor);
 }

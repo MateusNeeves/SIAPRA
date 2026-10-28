@@ -61,6 +61,8 @@ class ProdutosController extends Controller
         $produtos = json_decode(json_encode($produtos), true);
         foreach ($produtos as &$produto) {
             $produto['quarentena'] = normalizarQuarentena($produto['quarentena']);
+            $produto['qtd_aceitavel'] = formatarQuantidade($produto['qtd_aceitavel']);
+            $produto['qtd_minima'] = formatarQuantidade($produto['qtd_minima']);
         }
         unset($produto);
         return view('produtos/visualizar', ['produtos' => $produtos]);
