@@ -12,33 +12,40 @@ use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Tests\TestCase;
 
-// Isolate the mPDF overload; execute the real controller and SQL against memory only.
+// Isolate mPDF; use SQLite memory or explicitly configured PostgreSQL TEMP tables.
 #[RunTestsInSeparateProcesses]
 #[PreserveGlobalState(false)]
 class InventarioRelatorioTest extends TestCase
 {
+    use \Tests\Support\PostgresTemporario;
+    use \Tests\Support\VerificaPdf;
+
     protected function setUp(): void
     {
         parent::setUp();
-        config([
-            'database.default' => 'sqlite',
-            'database.connections.sqlite.database' => ':memory:',
-            'database.connections.sqlite.url' => null,
-        ]);
-        DB::purge('sqlite');
-        $this->assertSame('sqlite', DB::connection()->getDriverName());
-        $this->assertSame(':memory:', DB::connection()->getDatabaseName());
-        DB::connection()->getPdo()->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
-        $this->assertSame('', DB::selectOne('PRAGMA database_list')->file);
+        if (getenv('SIAPRA_TEST_PGSQL') === '1') {
+            $this->iniciarPostgresTemporario();
+        } else {
+            config([
+                'database.default' => 'sqlite',
+                'database.connections.sqlite.database' => ':memory:',
+                'database.connections.sqlite.url' => null,
+            ]);
+            DB::purge('sqlite');
+            $this->assertSame('sqlite', DB::connection()->getDriverName());
+            $this->assertSame(':memory:', DB::connection()->getDatabaseName());
+            DB::connection()->getPdo()->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
+            $this->assertSame('', DB::selectOne('PRAGMA database_list')->file);
+        }
 
         // Same isolated-fixture pattern as StatusLoteTest; no RefreshDatabase/migrations.
         foreach ([
             'status_produtos (id INTEGER PRIMARY KEY, status TEXT)',
             'tipos_produtos (id INTEGER PRIMARY KEY, nome TEXT)',
             'produtos (id INTEGER PRIMARY KEY, nome TEXT, id_tipo INTEGER)',
-            'produtos_mov_in (id INTEGER PRIMARY KEY, id_produto INTEGER, qtd_itens_recebidos INTEGER, qtd_itens_estoque INTEGER, preco NUMERIC(9,2), data_entrega DATE, status_lote INTEGER, data_validade DATE, quarentena TEXT)',
+            'produtos_mov_in (id '.(getenv('SIAPRA_TEST_PGSQL') === '1' ? 'SERIAL' : 'INTEGER').' PRIMARY KEY, id_produto INTEGER, qtd_itens_recebidos INTEGER, qtd_itens_estoque INTEGER, preco NUMERIC(9,2), data_entrega DATE, status_lote INTEGER, data_validade DATE, quarentena TEXT)',
         ] as $table) {
-            DB::statement('CREATE TABLE '.$table);
+            DB::statement('CREATE TEMPORARY TABLE '.$table);
         }
         DB::table('tipos_produtos')->insert(['id' => 1, 'nome' => 'Material']);
         DB::table('produtos')->insert(['id' => 205, 'nome' => 'Produto inventariado', 'id_tipo' => 1]);
@@ -52,6 +59,7 @@ class InventarioRelatorioTest extends TestCase
 
     protected function tearDown(): void
     {
+        $this->encerrarPostgresTemporario();
         DB::disconnect('sqlite');
         parent::tearDown();
     }
@@ -74,18 +82,22 @@ class InventarioRelatorioTest extends TestCase
         $pdf->shouldReceive('WriteHTML')->once()->andReturnUsing(function (string $content) use (&$html) {
             $html = $content;
         });
-        $pdf->shouldReceive('Output')->once()->with('relatorio_inventario_almoxarifado_sepra_'.$ano.'_.pdf', 'D');
+        $pdf->shouldReceive('Output')->once()->with('relatorio_inventario_almoxarifado_'.$ano.'_.pdf', 'D');
         (new RelatoriosController())->generate(Request::create('/', 'POST', [
             'tipo_relatorio' => 'inventario', 'ano' => $ano, 'mes' => $mes,
         ]));
         return preg_replace('/>\s+</', '><', $html);
     }
 
-    public function test_titulo_do_inventario_usa_sepra(): void
+    public function test_titulo_do_inventario_e_neutro(): void
     {
         $html = $this->relatorio();
-        $this->assertStringContainsString('RELATÓRIO DO INVENTÁRIO DO ALMOXARIFADO DA SEPRA', $html);
+        $this->assertStringContainsString('<h2>Inventário do Almoxarifado</h2>', $html);
         $this->assertStringNotContainsString('DIPRA', strtoupper($html));
+        $this->assertStringNotContainsString('SEPRA', strtoupper($html));
+        $this->assertStringContainsString('Referência: 2026', $html);
+        $this->assertStringContainsString('Saldo atual dos lotes aprovados recebidos até 31/12/2026', $html);
+        $this->assertStringContainsString('Data de Emissão: '.date('d/m/Y'), $html);
     }
 
     private function assertProduto(string $html, int $qtd, string $valor): void
@@ -160,7 +172,8 @@ class InventarioRelatorioTest extends TestCase
         $this->lote(['data_entrega' => '2026-10-01']);
         $html = $this->relatorio('9');
         $this->assertProduto($html, 300, '1.500,00');
-        $this->assertStringContainsString('2026 - SETEMBRO', $html);
+        $this->assertStringContainsString('Referência: setembro/2026', $html);
+        $this->assertStringContainsString('Saldo atual dos lotes aprovados recebidos até 30/09/2026', $html);
     }
 
     public function test_fim_de_fevereiro_em_ano_bissexto(): void
@@ -168,5 +181,35 @@ class InventarioRelatorioTest extends TestCase
         $this->lote(['data_entrega' => '2024-02-29']);
         $this->lote(['data_entrega' => '2024-03-01']);
         $this->assertProduto($this->relatorio('2', '2024'), 100, '500,00');
+    }
+
+    public function test_renderiza_inventario_com_mpdf_real(): void
+    {
+        $this->lote();
+        $this->verificarPdfReal($this->relatorio('9'), 'inventario');
+    }
+
+    public function test_zebrado_e_nome_extenso_no_pdf_real(): void
+    {
+        for ($i = 0; $i < 24; $i++) {
+            $id = 300 + $i;
+            DB::table('produtos')->insert(['id' => $id, 'id_tipo' => 1,
+                'nome' => $i === 0 ? 'Curto' : ($i === 1 ? 'Nome com varias palavras' : str_repeat('ProdutoABC123', 20).$i)]);
+            $this->lote(['id_produto' => $id]);
+        }
+        $html = $this->relatorio('9');
+        $dom = new \DOMDocument();
+        @$dom->loadHTML($html);
+        $xpath = new \DOMXPath($dom);
+        foreach ($xpath->query('//tbody/tr') as $indice => $linha) {
+            foreach ($linha->getElementsByTagName('td') as $celula) {
+                $this->assertSame($indice % 2 ? 'linha-par' : '', $celula->getAttribute('class'));
+            }
+        }
+        $antes = $this->verificarPdfReal(str_replace(' overflow: wrap;', '', $html), 'f7-inventario-antes');
+        $depois = $this->verificarPdfReal($html, 'f6-f7-inventario', 2);
+        $this->assertGreaterThanOrEqual(8, $depois['menor_fonte']);
+        $this->assertGreaterThan($antes['menor_fonte'], $depois['menor_fonte']);
+        $this->assertStringContainsString('0.969 0.969 0.969 rg', base64_decode($depois['conteudo']));
     }
 }

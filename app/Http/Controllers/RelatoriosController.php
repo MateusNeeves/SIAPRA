@@ -109,17 +109,12 @@ class RelatoriosController extends Controller
         else if ($request->tipo_relatorio == 'inventario'){
 
             $mesTexto = '';
-
-        if ($request->mes && $request->mes != 'todos') {
-            $meses = [
-                1 => 'JANEIRO', 2 => 'FEVEREIRO', 3 => 'MARÇO',
-                4 => 'ABRIL', 5 => 'MAIO', 6 => 'JUNHO',
-                7 => 'JULHO', 8 => 'AGOSTO', 9 => 'SETEMBRO',
-                10 => 'OUTUBRO', 11 => 'NOVEMBRO', 12 => 'DEZEMBRO'
-            ];
-
-        $mesTexto = ' - ' . $meses[(int)$request->mes];
-    }
+            if ($request->mes && $request->mes != 'todos') {
+                $meses = [1 => 'janeiro', 2 => 'fevereiro', 3 => 'março', 4 => 'abril',
+                    5 => 'maio', 6 => 'junho', 7 => 'julho', 8 => 'agosto',
+                    9 => 'setembro', 10 => 'outubro', 11 => 'novembro', 12 => 'dezembro'];
+                $mesTexto = $meses[(int) $request->mes] . '/';
+            }
 
             $tipos = Tipo_Produto::all()->pluck('nome', 'id')->toArray();
             
@@ -168,53 +163,10 @@ class RelatoriosController extends Controller
             File::ensureDirectoryExists($tempDir);
             $mpdf = new Mpdf(['tempDir' => $tempDir]);
 
-            // Comece a construir o HTML para o relatório
-            $html = '
-                <style>
-                    h2 {
-                        text-align: center;
-                    }
-                    h4 {
-                        text-align: center;
-                        color: #ff0000;
-                    }
-                    table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        font-family: Arial, sans-serif;
-                    }
-                    th, td {
-                        border: 1px solid #ddd;
-                        padding: 8px;
-                        text-align: center;
-                    }
-                    th {
-                        background-color: #ca500d;
-                        color: white;
-                        font-weight: bold;
-                    }
-                    tr:nth-child(even) {
-                        background-color: #f9f9f9;
-                    }
-                    .estoque-baixo {
-                        color: #ff0000 !important;
-                    }
-                    .data-emissao {
-                        text-align: center;
-                        font-size: 14px;
-                        font-style: italic;
-                        margin-bottom: 10px;
-                    }
-                    .break-page {
-                        page-break-before: always;
-                    }
-                </style>
-                <p class="data-emissao">Data de Emissão: ' . date('d/m/Y') . '</p>
-                <br>
-                <h2>RELATÓRIO DO INVENTÁRIO DO ALMOXARIFADO DA SEPRA DE '
-                . htmlspecialchars($request->ano) . $mesTexto . 
-                '</h2>
-            ';
+            $html = $this->estilosPdf() . $this->cabecalhoPdf('Inventário do Almoxarifado', [
+                'Referência: ' . $mesTexto . $request->ano,
+                'Saldo atual dos lotes aprovados recebidos até ' . date('d/m/Y', strtotime($dataFim)),
+            ]);
 
             // Adiciona uma tabela para cada tipo de produto
             $first = true; // Controla a quebra de página
@@ -230,23 +182,24 @@ class RelatoriosController extends Controller
                     <table>
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Nome do Produto</th>
-                                <th>Quantidade</th>
-                                <th>Valor Total (R$)</th>
+                                <th width="10%">ID</th>
+                                <th width="50%">Nome do Produto</th>
+                                <th width="16%">Quantidade</th>
+                                <th width="24%">Valor Total (R$)</th>
                             </tr>
                         </thead>
                         <tbody>';
                 
                 // Se houver produtos no inventário
                 if (!empty($tipo['inventario'])) {
-                    foreach ($tipo['inventario'] as $produto) {
+                    foreach ($tipo['inventario'] as $indice => $produto) {
+                        $atributos = $indice % 2 ? ' class="linha-par"' : '';
                         $html .= '
                             <tr>
-                                <td>' . htmlspecialchars($produto['id']) . '</td>
-                                <td>' . htmlspecialchars($produto['nome']) . '</td>
-                                <td>' . htmlspecialchars($produto['qtd']) . '</td>
-                                <td>R$ ' . number_format($produto['valor_total'], 2, ',', '.') . '</td>
+                                <td' . $atributos . '>' . htmlspecialchars($produto['id']) . '</td>
+                                <td' . $atributos . '>' . htmlspecialchars($produto['nome']) . '</td>
+                                <td' . $atributos . '>' . htmlspecialchars($produto['qtd']) . '</td>
+                                <td' . $atributos . '>R$ ' . number_format($produto['valor_total'], 2, ',', '.') . '</td>
                             </tr>';
                     }
                 } else {
@@ -263,7 +216,7 @@ class RelatoriosController extends Controller
             // Escreva o conteúdo HTML no PDF
             $mpdf->WriteHTML($html);
 
-            $nome_arquivo = 'relatorio_inventario_almoxarifado_sepra_' . $request->ano . '_.pdf';
+            $nome_arquivo = 'relatorio_inventario_almoxarifado_' . $request->ano . '_.pdf';
 
             $mpdf->Output($nome_arquivo, 'D');
         }
