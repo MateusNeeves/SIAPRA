@@ -88,31 +88,28 @@
     </div>
 
     @if (Session::has('modal'))
+        <script src="{{ asset('js/produtos-modais.js') }}"></script>
         <script>
+            // Captura a instância que possui Select2 antes do outro jQuery defer do layout.
+            (function($) {
             $(window).on('load', function() {
-                var modals = {!! json_encode(Session::get('modal')) !!}; // Converte o array de strings para JSON
-                var z = 1051 - (modals.length - 1) * 10; // Calcula o z-index inicial baseado no número de modais
-            
-                // Itera sobre os modais na ordem normal
-                modals.forEach(function(modalId) {
-                    $(modalId).modal('show'); // Mostra cada modal
-                    $(modalId).css('z-index', z); // Define o z-index do modal
-                    z += 10; // Aumenta o z-index para o próximo modal
+                // Mantém o dropdown Select2 dentro da região de foco do seu modal.
+                $('.modal .multiple-select').each(function() {
+                    if ($(this).data('select2')) {
+                        $(this).select2('destroy');
+                    }
+                    $(this).select2({ theme: 'bootstrap-5', dropdownParent: $(this).closest('.modal') });
                 });
+                abrirModaisProdutos({!! json_encode(Session::get('modal')) !!});
             });
+            })(window.jQuery);
         </script>
     @endif
 
     <script>
         function closeModal() {
-        
-            var modals = {!! json_encode(Session::get('modal')) !!}; // Converte o array de strings para JSON
-            for (var i = modals.length - 1; i >= 0; i--) {
-                var modalId = modals[i];
-                var currentZ = parseInt($(modalId).css('z-index')); // Obtém o z-index atual e converte para número
-                
-                $(modalId).css('z-index', currentZ + 10); // Incrementa o z-index em 10
-            }
+            // Compatibilidade com os botões existentes. A restauração ocorre em hidden.bs.modal,
+            // inclusive quando o fechamento não passa por este onclick.
         }
     </script>
 
