@@ -337,8 +337,8 @@ $(document).ready(function(){
         layout: {
             topStart: {},
             topEnd: {},
-            bottomStart: {},
-            bottomEnd: {},
+            bottomStart: 'info',
+            bottomEnd: 'paging',
         },
         select: true,
         ordering: false,
@@ -346,7 +346,22 @@ $(document).ready(function(){
         language:{
             "emptyTable": "Nenhum registro encontrado",
             "zeroRecords": "Nenhum registro encontrado",
+            "info": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+            "infoEmpty": "Nenhum registro encontrado",
+            "infoFiltered": "(Filtrados de _MAX_ registros)",
+            "paginate": {
+                "next": "Próximo",
+                "previous": "Anterior",
+                "first": "Primeiro",
+                "last": "Último"
+            },
         }
+    });
+
+    // Os botões leem a linha visível no DOM; não manter seleção fora da página.
+    tableImprimir.on('page.dt search.dt', function () {
+        tableImprimir.rows({ selected: true }).deselect();
+        $('#remove_button, #selectButton, #exp_button, #details_button').prop('disabled', true);
     });
     
     tableImprimir.columns().eq(0).each(function(colIdx){
