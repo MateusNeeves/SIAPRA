@@ -23,17 +23,12 @@
             {{-- <x-input-error :messages="$errors->get('password')" class="mt-2" /> --}}
         </div>
         
-        <div class="flex flex-column mt-4">
-            <x-input-error :messages="$errors->get('username')" class="mt-2" />
-            <a class="underline text-sm" href="{{ route('password.request') }}">Esqueci minha senha</a>
-            {{-- @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif --}}
-            <div style="flex: 1;"></div>
+        <x-input-error :messages="$errors->get('username')" class="mt-2" />
 
-            <x-primary-button class="btn-orange ms-3">
+        <div class="flex items-center justify-between gap-3 mt-4">
+            <a class="whitespace-nowrap underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">Esqueci minha senha</a>
+
+            <x-primary-button class="btn-orange">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
