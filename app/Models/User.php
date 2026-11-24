@@ -32,6 +32,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'temp_password',
+        'temp_password_expires_at',
     ];
 
     public function classes(): BelongsToMany{
@@ -46,6 +48,7 @@ class User extends Authenticatable
     protected function casts(): array{
         return [
             'password' => 'hashed',
+            'temp_password_expires_at' => 'datetime',
         ];
     }
 }

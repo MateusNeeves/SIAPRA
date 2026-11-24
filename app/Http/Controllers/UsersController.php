@@ -152,10 +152,11 @@ class UsersController extends Controller
             DB::beginTransaction();
 
             // SALVANDO TIPO DE PRODUTO
-            $user = User::findOrFail($request->id_edit);
+            $user = User::whereKey($request->id_edit)->lockForUpdate()->firstOrFail();
 
             $userAntes = $user->toArray();
 
+            app(\App\Services\RecuperacaoSenhaService::class)->clear($user);
             $user->update([
                 'username' => mb_strtolower($request->username),
                 'name' => $request->name,

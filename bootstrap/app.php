@@ -11,7 +11,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // Remove legacy recaller input before any middleware can resolve the user.
+        $middleware->prepend(\App\Http\Middleware\DesativarRememberMe::class);
+        $middleware->web(append: [
+            \App\Http\Middleware\RestringirSessaoTemporaria::class,
+        ]);
+        $middleware->prependToPriorityList(
+            \Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests::class,
+            \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class
+        );
+        $middleware->prependToPriorityList(
+            \Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests::class,
+            \App\Http\Middleware\RestringirSessaoTemporaria::class
+        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

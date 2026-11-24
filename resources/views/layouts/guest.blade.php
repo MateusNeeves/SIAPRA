@@ -24,21 +24,20 @@
 
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col items-center pt-6 sm:pt-0 bg-gray-100">
-            <div class="mt-6">
-                <img class="mt-6" src="{{ asset('images/logo-crcn-ne-vertical-principal.png') }}" alt="Logo" width="150" height="75">
+        <div class="min-h-screen flex flex-col items-center justify-center px-4 py-6 sm:py-8 bg-gray-100">
+            <div>
+                <img class="w-32 h-auto [@media(max-height:700px)]:w-24" src="{{ asset('images/logo-crcn-ne-vertical-principal.png') }}" alt="Logo" width="924" height="1016">
             </div>
-            <br> <br><br>
-            <div class=" flex flex-col items-center sm:justify-center" style="width: 500px">
-                <h1 class="text-center" style="font-family: 'Roboto Condensed', sans-serif; font-size: 4rem; color: #f3523b; font-weight: 1000">
+            <div class="w-full max-w-md flex flex-col items-center mt-6">
+                <h1 class="text-center leading-none" style="font-family: 'Roboto Condensed', sans-serif; font-size: 4rem; color: #f3523b; font-weight: 1000">
                     SIAPRA
                 </h1>
-                
-                <h1 class="text-center" style="font-family: 'Roboto Condensed', sans-serif; font-size: 1.5rem; color: #f3523b; font-weight: 350;">
+
+                <h1 class="text-center leading-tight mt-2" style="font-family: 'Roboto Condensed', sans-serif; font-size: 1.5rem; color: #f3523b; font-weight: 350;">
                     Sistema de Apoio à Produção <br> de Radiofármacos
                 </h1>
-                
-                <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+
+                <div class="w-full mt-6 px-6 py-4 bg-white shadow-md overflow-hidden rounded-lg">
                     {{ $slot }}
                 </div>
             </div>
