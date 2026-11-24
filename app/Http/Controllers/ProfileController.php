@@ -72,16 +72,14 @@ class ProfileController extends Controller
             'password' => ['required', 'confirmed', 'min:4'],
         ]);
 
-        $user = $request->user();
-
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors([
-                'current_password' => 'Senha atual incorreta.',
-            ]);
+        try {
+            app(\App\Services\RecuperacaoSenhaService::class)->voluntary($request);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            logger()->error('Falha transacional na troca de senha.');
+            return back()->withErrors(['password' => 'Não foi possível alterar a senha. Tente novamente.']);
         }
-
-        $user->password = $request->password;
-        $user->save();
 
         return Redirect::route('profile.password.edit')
             ->with('status', 'password-updated');

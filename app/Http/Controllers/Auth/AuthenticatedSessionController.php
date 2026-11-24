@@ -28,6 +28,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if ($request->session()->exists('recuperacao_senha')) {
+            return redirect()->route('password.forced.edit');
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

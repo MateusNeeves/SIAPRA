@@ -41,7 +41,16 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
+        try {
+            $authenticated = app(\App\Services\RecuperacaoSenhaService::class)->authenticate($this);
+        } catch (\Throwable $e) {
+            Auth::guard('web')->logoutCurrentDevice();
+            $this->session()->invalidate();
+            $this->session()->regenerateToken();
+            logger()->error('Autenticação indisponível.');
+            $authenticated = false;
+        }
+        if (!$authenticated) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([

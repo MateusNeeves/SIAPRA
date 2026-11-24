@@ -12,6 +12,8 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
+    Route::get('/esqueci-senha', [\App\Http\Controllers\Auth\RecuperacaoSenhaController::class, 'create'])->name('password.request');
+    Route::post('/esqueci-senha', [\App\Http\Controllers\Auth\RecuperacaoSenhaController::class, 'store'])->name('password.email');
     // Route::get('register', [RegisteredUserController::class, 'create'])
     //             ->name('register');
 
@@ -36,6 +38,8 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/redefinir-senha', [\App\Http\Controllers\Auth\RecuperacaoSenhaController::class, 'edit'])->name('password.forced.edit');
+    Route::post('/redefinir-senha', [\App\Http\Controllers\Auth\RecuperacaoSenhaController::class, 'update'])->name('password.forced.update');
     // Route::get('verify-email', EmailVerificationPromptController::class)
     //             ->name('verification.notice');
 
